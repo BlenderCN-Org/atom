@@ -1,0 +1,158 @@
+{
+  "entities": [
+    {
+      "position": [
+        11.444995880126953,
+        8.0550088882446289
+      ],
+      "id": "",
+      "density": 2.0,
+      "class": "Box",
+      "rotation": 0.0
+    },
+    {
+      "position": [
+        -15.979999542236328,
+        -7.0
+      ],
+      "id": "player",
+      "class": "Player",
+      "rotation": 0.0
+    },
+    {
+      "position": [
+        28.939937591552734,
+        -0.38000243902206421
+      ],
+      "id": "",
+      "class": "Sticker",
+      "rotation": 0.0
+    },
+    {
+      "position": [
+        -2.5400004386901855,
+        5.3999991416931152
+      ],
+      "id": "",
+      "class": "Sticker",
+      "rotation": 0.0
+    },
+    {
+      "position": [
+        -10.599994659423828,
+        -0.57999765872955322
+      ],
+      "id": "",
+      "class": "Sticker",
+      "rotation": 0.0
+    },
+    {
+      "position": [
+        -10.359992980957031,
+        9.7000083923339844
+      ],
+      "id": "",
+      "class": "Sticker",
+      "rotation": 0.0
+    },
+    {
+      "position": [
+        0.0,
+        0.0
+      ],
+      "id": "",
+      "class": "Automatic Camera",
+      "rotation": 0.0
+    },
+    {
+      "position": [
+        -2.1799983978271484,
+        13.20001220703125
+      ],
+      "id": "",
+      "class": "Sticker",
+      "rotation": 0.0
+    },
+    {
+      "position": [
+        11.199995994567871,
+        12.299989700317383
+      ],
+      "id": "",
+      "density": 2.0,
+      "class": "Box",
+      "rotation": 0.0
+    },
+    {
+      "rotation": 0.0,
+      "length": 3.9000000953674316,
+      "position": [
+        8.4399929046630859,
+        4.2999982833862305
+      ],
+      "id": "",
+      "class": "Platform"
+    },
+    {
+      "rotation": 0.0,
+      "length": 10.0,
+      "position": [
+        -11.079997062683105,
+        -10.039999961853027
+      ],
+      "id": "",
+      "class": "Platform"
+    },
+    {
+      "position": [
+        6.0000438690185547,
+        -9.8799943923950195
+      ],
+      "id": "",
+      "class": "Moveable",
+      "rotation": 0.0
+    },
+    {
+      "position": [
+        14.400010108947754,
+        -9.750004768371582
+      ],
+      "id": "",
+      "class": "FallingPlatform",
+      "rotation": 0.0
+    },
+    {
+      "position": [
+        20.840007781982422,
+        -9.4799985885620117
+      ],
+      "id": "",
+      "class": "FallingPlatform",
+      "rotation": 0.0
+    },
+    {
+      "rotation": 0.0,
+      "length": 5.0,
+      "position": [
+        38.199993133544922,
+        -5.0199956893920898
+      ],
+      "id": "",
+      "class": "Platform"
+    },
+    {
+      "impulse": [
+        5.0,
+        25.0
+      ],
+      "position": [
+        26.679996490478516,
+        -9.7999954223632812
+      ],
+      "id": "",
+      "countdown": 0.0,
+      "class": "Trampoline",
+      "rotation": 0.0
+    }
+  ]
+}

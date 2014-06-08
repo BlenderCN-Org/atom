@@ -1,0 +1,8 @@
+#include "box.cpp"
+#include "player.cpp"
+#include "sticker.cpp"
+#include "automatic_camera.cpp"
+#include "moving_platform.cpp"
+#include "falling_platform.cpp"
+#include "trampoline.cpp"
+#include "soldier.cpp"

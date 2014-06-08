@@ -1,0 +1,10 @@
+Zavislosti:
+ - OpenGL (4.2)
+ - GLEW
+ - SDL (1.2)
+ - vorbis/vorbisfile
+ - ogg
+ - libpng
+ - Qt4
+ - Box2D (2.3.0)
+ - Bullet

@@ -1,0 +1,15 @@
+{
+  "shader_dir" : "data/shaders",
+
+  "screen_width" : 1280,
+  "screen_height" : 720,
+  "screen_bpp" : 32,
+  "color_log" : false,
+  "debug" : false,
+  "debug_inotify" : false,
+  "debug_video" : false,
+  "debug_audio" : false,
+  "debug_input" : false,
+  "debug_resources" : false,
+  "debug_counters" : false
+}

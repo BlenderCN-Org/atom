@@ -1,0 +1,255 @@
+#include "core/utils/utils.h"
+
+#ifdef __GNUC__
+#include <cxxabi.h>
+#endif
+
+#include <cstdarg>
+#include <fstream>
+#include <iomanip>
+#include <string>
+#include <sstream>
+#include <chrono>
+#include <vorbis/codec.h>
+#include "core/video/image.h"
+#include "core/video/texture.h"
+#include "core/utils/gl_utils.h"
+#include "core/video/framebuffer.h"
+#include "core/video/renderbuffer.h"
+#include "core/exception.h"
+#include "core/log.h"
+
+namespace atom {
+
+i64 nano_time()
+{
+  // predpokladame ze high_resolution_clock ma presnost na nanosekundy
+  std::chrono::nanoseconds now = std::chrono::high_resolution_clock::now().time_since_epoch();
+  return now.count();
+  // ak high_resolution_clock nema danu presnost bude potrebne nasledovne pretypovanie
+//  auto now = std::chrono::high_resolution_clock::now().time_since_epoch();
+//  return std::chrono::duration_cast<std::chrono::nano>(now).count();
+}
+
+i64 micro_time()
+{
+  auto now = std::chrono::high_resolution_clock::now().time_since_epoch();
+  return std::chrono::duration_cast<std::chrono::microseconds>(now).count();
+}
+
+i64 milli_time()
+{
+  auto now = std::chrono::high_resolution_clock::now().time_since_epoch();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
+}
+
+u64 get_file_size(std::ifstream &file_stream)
+{
+  assert(file_stream.is_open());
+  if (!file_stream.is_open())
+    return -1;
+
+  std::streampos current = file_stream.tellg();
+  file_stream.seekg(0, std::ios_base::end);
+  std::streampos end = file_stream.tellg();
+  file_stream.seekg(current);
+
+  return end;
+}
+
+String to_string(unsigned value)
+{
+  std::stringstream output;
+  output << value;
+  return output.str();
+}
+
+String to_string(const Vec2f &v)
+{
+  std::stringstream output;
+  output << "(" << v[0] << ", " << v[1] << ")";
+  return output.str();
+}
+
+String to_string(const Vec3f &v)
+{
+  std::stringstream output;
+  output << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+  return output.str();
+}
+
+String to_string(const Vec4f &v)
+{
+  std::stringstream output;
+  output << "(" << v[0] << ", " << v[1] << ", " << v[2] << ", " << v[3] << ")";
+  return output.str();
+}
+
+String to_string(const Quatf &q)
+{
+  std::stringstream output;
+  output << "(w=" << q.w << ", x=" << q.x << ", y=" << q.y << ", z=" << q.z << ")";
+  return output.str();
+}
+
+String to_string(const Mat4f &m)
+{
+  std::stringstream output;
+  for (unsigned i = 0; i < 4; ++i)
+    output << m(0, i) << ", " << m(1, i) << ", " << m(2, i) << ", " << m(3, i) << std::endl;
+  return output.str();
+}
+
+String demangle(const char *mangled_name)
+{
+  assert(mangled_name != nullptr);
+
+#ifdef __GNUC__
+  size_t length;
+  int status;
+  // pouzi free na uvolnenie pamate
+  uptr<char, void(*)(void*)> demangled_name(
+    abi::__cxa_demangle(mangled_name, nullptr, &length, &status), ::free);
+
+  switch (status) {
+    case 0:
+      return String(demangled_name.get());
+
+    case -1:
+      log::warning("Memory allocation failed in demangle function");
+      break;
+
+    case -2:
+      log::warning("This is not a valid C++ mangled name %s", mangled_name);
+      break;
+
+    case -3:
+      log::warning("Invalid arguments for abi::__cxx_demangle");
+      break;
+  }
+#endif
+
+  return String(mangled_name);
+}
+
+StringArray split_string(const String &str, char delim)
+{
+  StringArray tokens;
+  String::size_type s = 0;
+  String::size_type e = 0;
+  // najdi vsetky casti ukoncene oddelovacom
+  while ((e = str.find(delim, s)) != String::npos) {
+    int count = e - s;
+    tokens.push_back(str.substr(s, count));
+    s = e + 1;
+  }
+  // posledny podretazec nemusi byt ukonceni oddelovacom
+  if (s <= str.size()) {
+    tokens.push_back(str.substr(s));
+  }
+
+  return tokens;
+}
+
+namespace utils {
+
+void vorbis_open_error(int code, const char *filename)
+{
+  const char *error_message;
+
+  switch (code) {
+    case OV_EREAD:
+      error_message = "Can't read file";
+      break;
+
+    case OV_ENOTVORBIS:
+      error_message = "This is not a vorbis ogg file";
+      break;
+
+    case OV_EVERSION:
+      error_message = "Vorbis version mismatch";
+      break;
+
+    case OV_EBADHEADER:
+      error_message = "Invalid Vorbis bitstream header";
+      break;
+
+    case OV_EFAULT:
+      error_message = "Internal logic vault (maybe bug or heap/stack corruption)";
+      break;
+
+    default:
+      error_message = "Unknown error";
+      break;
+  };
+
+  error("%s (%i) \"%s\"", error_message, code, filename);
+}
+
+bool load_file_into_string(const char *filename, String &dst)
+{
+  assert(filename != nullptr);
+
+  if (filename == nullptr)
+    return false;
+
+  std::ifstream input(filename);
+
+  if (!input.is_open()) {
+    return false;
+  }
+
+  int length = get_file_size(input);
+
+  if (length < 0) {
+    error("Getting file size error \"%s\"", filename);
+    return false;
+  } else if (length == 0) {
+    return false;
+  }
+
+  /// @todo otestovat ci length nema byt o 1 vacsie
+  dst.erase();
+  dst.reserve(length);
+  dst.append(std::istreambuf_iterator<char>(input), std::istreambuf_iterator<char>());
+
+  return true;
+}
+
+bool load_file_into_string(const String &filename, String &dst)
+{
+  return load_file_into_string(filename.c_str(), dst);
+}
+
+uptr<Image> to_image(VideoService &vs, Texture &texture)
+{
+  GL_ERROR_GUARD;
+  if (texture.type() != TextureType::TEXTURE_2D) {
+    error("Only TEXTURE_2D type is supported/can be converted into image");
+    return nullptr;
+  }
+
+  uptr<Image> image(new Image(texture.format(), texture.width(), texture.height()));
+
+  vs.bind_texture(0, texture);
+  glGetTexImage(GL_TEXTURE_2D, 0, texture.get_gl_data_format(), texture.get_gl_data_type(),
+      image->pixels());
+  vs.unbind_texture(0);
+  return image;
+}
+
+}
+
+void error(const char *format, ...)
+{
+  const size_t BUFFER_SIZE = 4096;
+  char buffer[BUFFER_SIZE];
+  va_list ap;
+  va_start(ap, format);
+  vsnprintf(buffer, BUFFER_SIZE, format, ap);
+  log::error(buffer);
+  va_end(ap);
+  throw Exception(buffer);
+}
+
+}
