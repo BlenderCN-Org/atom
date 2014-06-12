@@ -15,7 +15,6 @@ Usage:
 
 Notes:
  * supported platforms: linux, windows
- * protoc must support python 3 (required by Blender plugin), must be located in /usr/local/bin/
  * platform macros: __linux__, _WIN32
  * compiler macros: __GNUC__, __clang__, _MSC_VER
 
@@ -179,6 +178,7 @@ def check_required_linux_libs(ctx):
     ctx.check_cxx(uselib_store='SDL', header_name='SDL/SDL.h', lib=['SDL'])
     ctx.check_cxx(uselib_store='Box2D', header_name='Box2D/Box2D.h', lib=['Box2D'])
     ctx.check_cxx(uselib_store='pthread', header_name='pthread.h', lib=['pthread'])
+    ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h', lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
 
     if 'MY_BUILD_TESTS' in ctx.env:
         ctx.check_cxx(uselib_store='gtest', header_name='gtest/gtest.h', lib=['gtest_main', 'gtest'], use=['pthread'])
@@ -196,6 +196,7 @@ def check_required_windows_libs(ctx):
     ctx.check_cxx(lib=['SDL'], uselib_store='SDL', header_name='SDL/SDL.h')
     ctx.check_cxx(lib=['Box2D'], uselib_store='Box2D', header_name='Box2D/Box2D.h')
     ctx.check_cxx(lib=['libpng16'], uselib_store='png', header_name='png.h')
+    ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h', lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
 
 
 #------------------------------------------------------------------------------
