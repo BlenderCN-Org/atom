@@ -146,9 +146,8 @@ def get_windows_params(type, ctx):
 
     ctx.env.append_unique('CXXFLAGS', ['/EHsc', '/MD', '/FS'])
     ctx.env.append_value('CXXFLAGS', ['/I', thirdparty + '/include'])
-    # podla mna build/src nastavi waf sam, treba odskusat
-    #ctx.env.append_value('CXXFLAGS', ['/I', 'build/src'])
-    ctx.env.append_value('LINKFLAGS', ['/NODEFAULTLIB:libcmt.lib', '/ignore:4204', '/LIBPATH:' + thirdparty + '/lib'])
+    ctx.env.append_value('LINKFLAGS', ['/NODEFAULTLIB:libcmt.lib', '/ignore:4204'])
+    ctx.env.append_value('LIBPATH', [thirdparty + '/lib'])
 
 
     if type == BuildType.DEBUG:

@@ -63,11 +63,23 @@ inline float radians_to_degrees(float radians)
   return radians * 180 / PI;
 }
 
+template<typename T>
+const T& min(const T& a, const T &b)
+{
+    return b > a ? b : a;
+}
+
+template<typename T>
+const T& max(const T& a, const T& b)
+{
+    return b < a ? a : b;
+}
+
 //QQQ najst lepsi nazov
 template<typename T>
-T range(T min, T max, T value)
+T range(T from, T to, T value)
 {
-  return std::max(min, std::min(max, value));
+  return max(from, min(to, value));
 }
 
 #define to_size(value) (static_cast<std::size_t>(value))
