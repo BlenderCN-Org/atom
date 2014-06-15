@@ -1,10 +1,10 @@
 bl_info = {
-    "name": "MM Engine Plugin",
-    "description": "Utilities for MM Engine",
+    "name": "Atom Engine Plugin",
+    "description": "Utilities for Atom Engine",
     "author": "majo33@gmail.com",
     "version": (0, 20),
     "blender": (2, 6, 3),
-    "location": "View3D > UI panel > MM Engine",
+    "location": "View3D > UI panel > Atom Engine",
     "category": "Plugins",
     "warning": "Beta"
 }
@@ -13,30 +13,30 @@ bl_info = {
 # if it's there, reload everything
 if "bpy" in locals():
     import imp
-    if "mm_export_object" in locals():
-        imp.reload(mm_export_object)
-    print("Reloaded MMPlugin")
+    if "export" in locals():
+        imp.reload(export)
+    print("Reloaded Atom Plugin")
 else:
-    from . import mm_export_object
-    print("Imported MMPlugin")
+    from . import export
+    print("Imported Atom Plugin")
 
 import os
 import bpy
 import bpy.utils
 import bpy.props
-from . import mm_export_object
+from . import export
 from bpy.props import BoolProperty, StringProperty
 
 
-default_base_dir = "~/dev/mm/data/"
+default_base_dir = "~/dev/atom/data/"
 
 
-class MMSceneSettings(bpy.types.PropertyGroup):
+class AtomSceneSettings(bpy.types.PropertyGroup):
     base_dir = bpy.props.StringProperty(name="Data directory",
                                         default=default_base_dir)
 
 
-class MMObjectSettings(bpy.types.PropertyGroup):
+class AtomObjectSettings(bpy.types.PropertyGroup):
     export_uv = bpy.props.BoolProperty(name="Export UV",
         description="True or False?", default=True)
     export_normals = bpy.props.BoolProperty(name="Export normals",
@@ -51,9 +51,9 @@ class MMObjectSettings(bpy.types.PropertyGroup):
         description="Object type", items=type_items)
 
 
-class MMPluginPanel(bpy.types.Panel):
-    bl_label = "MM Engine Panel"
-    bl_idname = "OBJECT_OT_mm_plugin_panel"
+class AtomPluginPanel(bpy.types.Panel):
+    bl_label = "Atom Engine Panel"
+    bl_idname = "OBJECT_OT_atom_plugin_panel"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
 
@@ -66,21 +66,21 @@ class MMPluginPanel(bpy.types.Panel):
         if (context.object is not None):
             layout = self.layout
             layout.prop(context.object, "name")
-            layout.prop(context.scene.mm, "base_dir")
-            layout.prop(context.object.mm, "object_type")
-            layout.prop(context.object.mm, "export_normals")
+            layout.prop(context.scene.atom, "base_dir")
+            layout.prop(context.object.atom, "object_type")
+            layout.prop(context.object.atom, "export_normals")
 
-            if mm_export_object.has_texcoords(context.object.data.uv_layers):
-                layout.prop(context.object.mm, "export_uv")
-            if mm_export_object.has_bones(context.object):
-                layout.prop(context.object.mm, "export_bones")
-            layout.operator("mm.export_object")
+            if export.has_texcoords(context.object.data.uv_layers):
+                layout.prop(context.object.atom, "export_uv")
+            if export.has_bones(context.object):
+                layout.prop(context.object.atom, "export_bones")
+            layout.operator("atom.export_object")
 
 
 def register():
     bpy.utils.register_module(__name__)
-    bpy.types.Object.mm = bpy.props.PointerProperty(type=MMObjectSettings)
-    bpy.types.Scene.mm = bpy.props.PointerProperty(type=MMSceneSettings)
+    bpy.types.Object.atom = bpy.props.PointerProperty(type=AtomObjectSettings)
+    bpy.types.Scene.atom = bpy.props.PointerProperty(type=AtomSceneSettings)
 
 
 def unregister():

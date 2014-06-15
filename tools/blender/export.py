@@ -70,7 +70,7 @@ def export_mesh(me):
 #                duplicates[key] = next_index
 #                next_index = next_index + 1
 
-def export_object_to_mmm_file(ob, filename):
+def export_object_to_file(ob, filename):
     """Export object data (vertices/normals/uv/vertex bones/skeleton to file.
 
     This function duplicate active object, convert it to triangles, then export
@@ -134,14 +134,14 @@ def export_object_to_mmm_file(ob, filename):
     return export_status
 
 
-class MMExportObject(bpy.types.Operator):
-    bl_idname = "mm.export_object"
+class AtomExportObject(bpy.types.Operator):
+    bl_idname = "atom.export_object"
     bl_label = "Export selected object"
 
     def execute(self, context):
         ob = context.active_object
         print('Object name ', ob.name)
-        filename = os.path.expanduser(context.scene.mm.base_dir + "/mesh/"
+        filename = os.path.expanduser(context.scene.atom.base_dir + "/mesh/"
                  + ob.name + filename_ext)
         print('Filename name ', filename)
         print(filename)
@@ -149,7 +149,7 @@ class MMExportObject(bpy.types.Operator):
             self.report({'ERROR'}, 'Mesh directory doesn\'t exists')
             return {'CANCELLED'}
 
-        status = export_object_to_mmm_file(ob, filename)
+        status = export_object_to_file(ob, filename)
 
         self.report(status[0], status[1])
         return {'FINISHED'}
