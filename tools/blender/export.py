@@ -46,9 +46,26 @@ def export_mesh(me):
             indices.append(idx)
             idx = idx + 1
 
-    vertex_stream = { 'type' : 1, 'data' : vertices }
-    index_stream  = { 'type' : 100, 'data' : indices }
-    mesh = { 'streams' : [ vertex_stream , index_stream ] }
+    normals = []
+    idx = 0
+    for poly in me.polygons:
+        for i in range(poly.loop_start, poly.loop_start + poly.loop_total):
+            index = me.loops[i].vertex_index
+            v = me.vertices[index].normal
+            normals.append(v.x)
+            normals.append(v.y)
+            normals.append(v.z)
+
+    vertex_stream = { 'type' : 'f32', 'data' : vertices }
+    normal_stream = { 'type' : 'f32', 'data' : normals }
+    index_stream  = { 'type' : 'u32', 'data' : indices }
+    mesh = {
+      'arrays' : {
+        "vertices" : vertex_stream,
+        "normals" : normal_stream,
+        "indices" : index_stream
+      }
+    }
     return mesh
 #            vi = me.loops[i].vertex_index
 #            v = me.vertices[vi].co
@@ -96,7 +113,6 @@ def export_object_to_file(ob, filename):
         ob = bpy.types.Object
         ob = bpy.context.active_object
         me = ob.data
-        # tieto premenne ovplyvnuju co sa bude exportovat
 
         matrix = ob.matrix_world
 
@@ -104,16 +120,17 @@ def export_object_to_file(ob, filename):
             raise Exception("The mesh contains non triangles")
 
         export_status = [{'INFO'}, 'Exported ']
-
         status = 'OK'
 
-        # aplikuj transformacie a znovu vypocitaj normaly
+        # aplikuj transformacie a prepocitaj normaly
         me.transform(matrix)
         me.calc_normals()
 
         mesh = export_mesh(me)
 
         with open(filename, "w+") as output:
+            # compact format
+            #data = json.dumps({ 'mesh' : mesh }, separators=(',', ':'))
             data = json.dumps({ 'mesh' : mesh }, indent=2)
             output.write(data)
 

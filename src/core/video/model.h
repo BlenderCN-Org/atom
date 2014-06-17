@@ -6,18 +6,23 @@
 
 namespace atom {
 
-struct Stream {
-  StreamId  type;
-  ByteArray data;
+struct ElementArray {
+  String   name;
+  Type     type;
+  uptr<u8> data;
+  u32      size;
 };
 
+class Model {
+private:
+  std::vector<uptr<ElementArray>> my_arrays;
+  ElementArray *my_vertices;
+  ElementArray *my_normals;
+  ElementArray *my_indices;
 
-struct Model {
 public:
-
-  void add_stream(StreamId id, ByteArray &&data);
-
-  std::vector<uptr<Stream>> streams;
+  bool add_array(const String &name, Type type, uptr<u8> &&data, u32 size);
+  const ElementArray* find_array(const String &name) const;
 };
 
 }

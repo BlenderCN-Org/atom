@@ -48,13 +48,4 @@ bool has_texcoords(const Mesh &mesh_buffer);
 
 bool has_indices(const Mesh &mesh_buffer);
 
-
-//QQQ
-//struct RawStream {
-//  Type     type;
-//  u32      id;
-//  u32      count;
-//  uptr<u8> data;
-//};
-
 }

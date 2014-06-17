@@ -132,11 +132,7 @@ AudioService::AudioTrack* AudioService::find_track(u32 id)
   auto found = std::find_if(my_sounds.begin(), my_sounds.end(),
     [id](const AudioTrack &stream) { return stream.id == id; });
 
-  if (found != my_sounds.end()) {
-    return &(*found);
-  }
-
-  return nullptr;
+  return found != my_sounds.end() ? &(*found) : nullptr;
 }
 
 u32 AudioService::play(const SoundResourcePtr &sound, bool repeat)

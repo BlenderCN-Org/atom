@@ -2,12 +2,25 @@
 
 namespace atom {
 
-void Model::add_stream(StreamId id, ByteArray &&data)
+bool Model::add_array(const String &name, Type type, uptr<u8> &&data, u32 size)
 {
-  uptr<Stream> stream(new Stream());
-  stream->type = id;
-  stream->data = std::move(data);
-  streams.push_back(std::move(stream));
+  uptr<ElementArray> array(new ElementArray());
+  array->name = name;
+  array->type = type;
+  array->data = std::move(data);
+  array->size = size;
+
+  my_arrays.push_back(std::move(array));
+  return true;
 }
+
+const ElementArray* Model::find_array(const String &name) const
+{
+  auto found = std::find_if(my_arrays.begin(), my_arrays.end(),
+    [&name](const uptr<ElementArray> &array) { return array->name == name; });
+
+  return found != my_arrays.end() ? found->get() : nullptr;
+}
+
 
 }

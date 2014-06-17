@@ -313,6 +313,13 @@ ByteArray load_stream_data(const rapidjson::Value &node)
   return std::move(items);
 }
 
+bool load_element_stream(const rapidjson::Value &node, ElementArray &array)
+{
+
+
+  return true;
+}
+
 bool load_model(const String &filename, Model &model)
 {
   std::ifstream input(filename);
@@ -339,53 +346,32 @@ bool load_model(const String &filename, Model &model)
     return false;
   }
 
-  if (!mesh_node.HasMember("streams")) {
+  if (!mesh_node.HasMember("arrays")) {
     return false;
   }
 
-  const rapidjson::Value &streams_node = mesh_node["streams"];
+  const rapidjson::Value &arrays_node = mesh_node["arrays"];
 
-  if (!streams_node.IsArray()) {
+  if (!arrays_node.IsObject()) {
     return false;
   }
 
-  std::vector<Stream> mesh_streams;
+  auto i = arrays_node.MemberBegin();
+  auto end = arrays_node.MemberEnd();
 
-  uint count = streams_node.Size();
+  for (; i != end; ++i) {
+    const rapidjson::Value &name = i->name;
+    const rapidjson::Value &value = i->value;
 
-  for (uint i = 0; i < count; ++i) {
-    const rapidjson::Value &stream_node = streams_node[i];
+    ElementArray array;
 
-    if (!stream_node.IsObject() || !stream_node.HasMember("type") || !stream_node.HasMember("data")) {
+    if (!name.IsString() || !value.IsObject() || load_element_stream(value, array)) {
+      error("Invalid array in model \"%s\"", filename.c_str());
       return false;
-    }
-
-    const rapidjson::Value &type_node = stream_node["type"];
-    const rapidjson::Value &data_node = stream_node["data"];
-
-    if (!type_node.IsNumber() || !data_node.IsArray()) {
-      return false;
-    }
-
-    StreamId type = static_cast<StreamId>(type_node.GetInt());
-
-    switch (type) {
-      case StreamId::VERTEX:
-        model.add_stream(type, std::move(load_stream_data<f32>(data_node)));
-        break;
-
-      case StreamId::INDEX:
-        model.add_stream(type, load_stream_data<u32>(data_node));
-        break;
-
-      case StreamId::UV:
-        model.add_stream(type, load_stream_data<f32>(data_node));
-        break;
-
-      default:
-        log::warning("Unknown stream %i", static_cast<int>(type));
     }
   }
+
+//    model.a
 
   return true;
 }
@@ -480,9 +466,9 @@ void MeshLoader::reload_resource(ResourceService &rs, Resource &resource)
 
 void MeshLoader::load_mesh_from_model(ResourceService &rs, const Model &model, Mesh &mesh)
 {
-  for (const uptr<Stream> &stream : model.streams) {
-    VideoBuffer buffer(rs.video_service());
-    buffer.set_data(stream->data.data(), stream->data.size());
+  const ElementArray *vertices = model.find_array("vertices");
+  VideoBuffer buffer(rs.video_service());
+  buffer.set_data(stream->data.data(), stream->data.size());
     mesh.add_stream(stream->type, std::move(buffer));
   }
 }
