@@ -26,7 +26,7 @@ size_t Music::read_func(void *ptr, size_t size, size_t nmemb, void *datasource)
     return 0;
 
   int start = music->my_data_position;
-  int end = std::min(music->my_data_size, (int)(start + size * nmemb));
+  int end = min(music->my_data_size, (int)(start + size * nmemb));
   int bytes_total = end - start;
 
   memcpy(ptr, (u8 *)&music->my_data[0] + start, bytes_total);

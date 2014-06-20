@@ -7,7 +7,7 @@
 #include "core/string.h"
 #include "core/system/resources.h"
 #include "core/utils/json_utils.h"
-#include "core/video/model.h"
+#include "core/video/raw_mesh.h"
 #include "core/log.h"
 
 namespace atom {
@@ -107,27 +107,6 @@ public:
 
 //-----------------------------------------------------------------------------
 //
-// Model Loader
-//
-//-----------------------------------------------------------------------------
-
-bool load_model(const String &filename, Model &model);
-
-uptr<Model> load_model(const String &filename);
-
-class ModelLoader : public Loader {
-public:
-  ResourcePtr create_resource(ResourceService &rs, const String &name) override;
-
-  void reload_resource(ResourceService &rs, Resource &resource) override;
-
-private:
-  static String get_model_filename(const String &name);
-
-};
-
-//-----------------------------------------------------------------------------
-//
 // Mesh Loader
 //
 //-----------------------------------------------------------------------------
@@ -139,7 +118,7 @@ public:
   void reload_resource(ResourceService &rs, Resource &resource) override;
 
 private:
-  static void load_mesh_from_model(ResourceService &rs, const Model &model, Mesh &mesh);
+  static void load_mesh_from_model(ResourceService &rs, const RawMesh &model, Mesh &mesh);
 };
 
 

@@ -1,5 +1,7 @@
 #include "shader.h"
+#include "core/utils/utils.h"
 #include "core/utils/gl_utils.h"
+#include "core/log.h"
 
 namespace atom {
 

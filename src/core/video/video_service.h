@@ -117,7 +117,7 @@ public:
 
   void draw_arrays(GLenum mode, GLint first, GLsizei count);
 
-//  void draw_index_array(GLenum gl_mode, const IndexBuffer &buffer);
+  void draw_index_array(GLenum gl_mode, const VideoBuffer &buffer, u32 count);
 
   Uniforms& get_uniforms();
 

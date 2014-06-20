@@ -1,7 +1,7 @@
 #include "loaders.h"
 #include "core/video/material.h"
 #include "core/video/bitmap_font.h"
-#include "core/video/model.h"
+#include "core/video/raw_mesh.h"
 #include "core/video/mesh.h"
 #include "core/audio/sound.h"
 #include "core/audio/music.h"
@@ -294,150 +294,20 @@ MaterialLoader::~MaterialLoader()
 
 //-----------------------------------------------------------------------------
 //
-// Model Loader
-//
-//-----------------------------------------------------------------------------
-
-template <typename T>
-ByteArray load_stream_data(const rapidjson::Value &node)
-{
-  uint count = node.Size();
-  ByteArray items;
-  items.resize(count * sizeof(T));
-  T *ptr = reinterpret_cast<T *>(items.data());
-
-  for (uint i = 0; i < count; ++i) {
-    ptr[i] = utils::get_number_from_json<T>(node[i]);
-  }
-
-  return std::move(items);
-}
-
-bool load_element_stream(const rapidjson::Value &node, ElementArray &array)
-{
-
-
-  return true;
-}
-
-bool load_model(const String &filename, Model &model)
-{
-  std::ifstream input(filename);
-
-  if (!input.is_open()) {
-    return false;
-  }
-
-  utils::JsonInputStream stream(input);
-  rapidjson::Document doc;
-  doc.ParseStream<0>(stream);
-
-  if (!doc.IsObject()) {
-    return false;
-  }
-
-  if (!doc.HasMember("mesh")) {
-    return false;
-  }
-
-  const rapidjson::Value &mesh_node = doc["mesh"];
-
-  if (!mesh_node.IsObject()) {
-    return false;
-  }
-
-  if (!mesh_node.HasMember("arrays")) {
-    return false;
-  }
-
-  const rapidjson::Value &arrays_node = mesh_node["arrays"];
-
-  if (!arrays_node.IsObject()) {
-    return false;
-  }
-
-  auto i = arrays_node.MemberBegin();
-  auto end = arrays_node.MemberEnd();
-
-  for (; i != end; ++i) {
-    const rapidjson::Value &name = i->name;
-    const rapidjson::Value &value = i->value;
-
-    ElementArray array;
-
-    if (!name.IsString() || !value.IsObject() || load_element_stream(value, array)) {
-      error("Invalid array in model \"%s\"", filename.c_str());
-      return false;
-    }
-  }
-
-//    model.a
-
-  return true;
-}
-
-ResourcePtr ModelLoader::create_resource(ResourceService &rs, const String &name)
-{
-  String filename = get_model_filename(name);
-  uptr<Model> model(new Model());
-
-  if (!load_model(filename, *model)) {
-    return nullptr;
-  }
-
-  sptr<ModelResource> resource = std::make_shared<ModelResource>();
-  resource->set_name(String(RESOURCE_MODEL_TAG) + ":" + name);
-  resource->depend_on_file(filename);
-  resource->set_loader(this);
-  resource->set_data(std::move(model));
-  return resource;
-}
-
-void ModelLoader::reload_resource(ResourceService &rs, Resource &resource)
-{
-  StringArray tokens = split_resource_name(resource.name());
-
-  if (tokens.size() > 1) {
-    auto model = load_model(get_model_filename(tokens[1]));
-
-    if (model != nullptr) {
-      dynamic_cast<ModelResource &>(resource).set_data(std::move(model));
-    }
-  }
-}
-
-String ModelLoader::get_model_filename(const String &name)
-{
-  return String(MESH_RESOURCE_DIR) + "/" + name + "." + MESH_EXT;
-}
-
-uptr<Model> load_model(const String &filename)
-{
-  uptr<Model> mesh(new Model());
-
-  if (load_model(filename, *mesh)) {
-    return std::move(mesh);
-  }
-
-  return nullptr;
-}
-
-//-----------------------------------------------------------------------------
-//
 // Mesh Loader
 //
 //-----------------------------------------------------------------------------
 
 ResourcePtr MeshLoader::create_resource(ResourceService &rs, const String &name)
 {
-  ModelResourcePtr model_resource = rs.get_model_resource(name);
+  RawMeshResourcePtr model_resource = rs.get_raw_mesh_resource(name);
 
   if (model_resource == nullptr) {
     return nullptr;
   }
 
   uptr<Mesh> mesh(new Mesh());
-  load_mesh_from_model(rs, model_resource->model(), *mesh);
+  load_mesh_from_model(rs, model_resource->raw_mesh(), *mesh);
 
   sptr<MeshResource> resource = std::make_shared<MeshResource>();
   resource->set_name(make_resource_name(RESOURCE_MESH_TAG, name));
@@ -452,25 +322,36 @@ void MeshLoader::reload_resource(ResourceService &rs, Resource &resource)
   StringArray tokens = split_resource_name(resource.name());
 
   if (tokens.size() > 1) {
-    ModelResourcePtr model_resource = rs.get_model_resource(tokens[1]);
+    RawMeshResourcePtr model_resource = rs.get_raw_mesh_resource(tokens[1]);
 
     if (model_resource == nullptr) {
       return;
     }
 
     uptr<Mesh> mesh(new Mesh());
-    load_mesh_from_model(rs, model_resource->model(), *mesh);
+    load_mesh_from_model(rs, model_resource->raw_mesh(), *mesh);
     dynamic_cast<MeshResource &>(resource).set_data(std::move(mesh));
   }
 }
 
-void MeshLoader::load_mesh_from_model(ResourceService &rs, const Model &model, Mesh &mesh)
+void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model, Mesh &mesh)
 {
   const ElementArray *vertices = model.find_array("vertices");
-  VideoBuffer buffer(rs.video_service());
-  buffer.set_data(stream->data.data(), stream->data.size());
-    mesh.add_stream(stream->type, std::move(buffer));
+  const ElementArray *indices = model.find_array("indices");
+
+  if (vertices == nullptr || indices == nullptr) {
+    log::warning("No vertices or indices in model");
+    return;
   }
+
+  VideoBuffer vertex_buffer(rs.video_service());
+  VideoBuffer index_buffer(rs.video_service());
+
+  vertex_buffer.set_data(vertices->data.get(), vertices->size);
+  index_buffer.set_data(indices->data.get(), indices->size);
+
+  mesh.add_stream(StreamId::VERTEX, std::move(vertex_buffer));
+  mesh.add_stream(StreamId::INDEX, std::move(index_buffer));
 }
 
 //-----------------------------------------------------------------------------

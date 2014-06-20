@@ -52,9 +52,15 @@ void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   assert(shader != nullptr);
 
   const VideoBuffer *vertices = mesh.find_stream(StreamId::VERTEX);
+  const VideoBuffer *indices = mesh.find_stream(StreamId::INDEX);
 
   if (vertices == nullptr) {
     log::warning("This mesh doesn't have vertex stream");
+    return;
+  }
+
+  if (indices == nullptr) {
+    log::warning("This mesh doesn't have index stream");
     return;
   }
 
@@ -65,6 +71,7 @@ void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   program.set_param("color", color);
 
   vs.bind_attribute(0, *vertices, Type::VEC3F);
+  vs.draw_index_array(GL_TRIANGLES, *indices, indices->size() / sizeof(u32));
   vs.draw_arrays(GL_TRIANGLES, 0, vertices->size() / sizeof(Vec3f));
   vs.unbind_vertex_attribute(0);
 }

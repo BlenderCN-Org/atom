@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include "core/noncopyable.h"
 #include "core/corefwd.h"
+#include "core/string.h"
 
 namespace atom {
 

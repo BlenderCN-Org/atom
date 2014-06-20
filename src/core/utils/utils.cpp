@@ -43,6 +43,44 @@ i64 milli_time()
   return std::chrono::duration_cast<std::chrono::milliseconds>(now).count();
 }
 
+Type str_to_type(const String &str)
+{
+  if (str == "string") {
+    return Type::STRING;
+  } else if (str == "bool") {
+    return Type::BOOL;
+  } else if (str == "i8") {
+    return Type::I8;
+  } else if (str == "u8") {
+    return Type::U8;
+  } else if (str == "i16") {
+    return Type::I16;
+  } else if (str == "u16") {
+    return Type::U16;
+  } else if (str == "u32") {
+    return Type::U32;
+  } else if (str == "i32") {
+    return Type::I32;
+  } else if (str == "i64") {
+    return Type::I64;
+  } else if (str == "u64") {
+    return Type::U64;
+  } else if (str == "f32") {
+    return Type::F32;
+  } else if (str == "f64") {
+    return Type::F64;
+  } else if (str == "vec2f") {
+    return Type::VEC2F;
+  } else if (str == "vec3f") {
+    return Type::VEC3F;
+  } else if (str == "vec4f") {
+    return Type::VEC4F;
+  } else {
+    return Type::UNKNOWN;
+  }
+}
+
+
 u64 get_file_size(std::ifstream &file_stream)
 {
   assert(file_stream.is_open());

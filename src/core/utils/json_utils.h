@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <vector>
 #include <rapidjson/document.h>
 #include "core/corefwd.h"
 #include "core/meta.h"
@@ -46,6 +47,9 @@ u32 get_number_from_json(const rapidjson::Value &value);
 
 template<>
 float get_number_from_json(const rapidjson::Value &value);
+
+template<typename T>
+bool read_array(const rapidjson::Value &node, std::vector<T> &value);
 
 class JsonInputStream {
 public:

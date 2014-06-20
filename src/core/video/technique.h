@@ -4,6 +4,7 @@
 #include "core/noncopyable.h"
 #include "core/corefwd.h"
 #include "core/stdvec.h"
+#include "core/math/mat.h"
 
 namespace atom {
 

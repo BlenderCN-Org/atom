@@ -1,5 +1,8 @@
 #include "technique.h"
+#include "core/utils/utils.h"
 #include "core/utils/gl_utils.h"
+#include "core/video/shader.h"
+#include "core/constants.h"
 
 namespace atom {
 

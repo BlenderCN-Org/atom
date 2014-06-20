@@ -94,7 +94,7 @@ int Sound::read_old(void *buffer, int start, int size)
     return 0;
   }
 
-  int end = std::min(start + size, my_samples_size);
+  int end = min(start + size, my_samples_size);
   int bytes = end - start;
 
   memcpy(buffer, &my_samples[start], bytes);

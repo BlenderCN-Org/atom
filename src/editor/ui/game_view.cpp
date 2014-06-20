@@ -244,7 +244,6 @@ void GameView::paintGL()
 
   render_scene(core.video_service(), core.draw_service(),
     *my_world->processors().video.mesh_tree(), my_world->camera());
-  my_world->debug_draw();
 
   core.video_service().unbind_write_framebuffer();
   my_world->processors().video.get_gbuffer().blit();

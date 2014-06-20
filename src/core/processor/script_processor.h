@@ -16,7 +16,6 @@ public:
   void start() override;
 
 private:
-  std::vector<SensorComponent *> my_scripts;
 };
 
 }

@@ -175,7 +175,6 @@ def check_required_linux_libs(ctx):
     ctx.check_cxx(uselib_store='GLEW', header_name='GL/glew.h', lib=['GLEW', 'GL'])
     ctx.check_cxx(uselib_store='png', header_name='libpng/png.h', lib=['png'])
     ctx.check_cxx(uselib_store='SDL', header_name='SDL/SDL.h', lib=['SDL'])
-    ctx.check_cxx(uselib_store='Box2D', header_name='Box2D/Box2D.h', lib=['Box2D'])
     ctx.check_cxx(uselib_store='pthread', header_name='pthread.h', lib=['pthread'])
     ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h', lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
 
@@ -193,7 +192,6 @@ def check_required_windows_libs(ctx):
     ctx.check_cxx(lib=['libvorbisfile', 'libvorbis'], uselib_store='vorbisfile', header_name='vorbis/vorbisfile.h')
     ctx.check_cxx(lib=['glew32', 'OpenGL32'], uselib_store='GLEW', header_name='GL/glew.h')
     ctx.check_cxx(lib=['SDL'], uselib_store='SDL', header_name='SDL/SDL.h')
-    ctx.check_cxx(lib=['Box2D'], uselib_store='Box2D', header_name='Box2D/Box2D.h')
     ctx.check_cxx(lib=['libpng16'], uselib_store='png', header_name='png.h')
     ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h', lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
 
@@ -215,7 +213,7 @@ def build_core_lib(ctx):
       #source=ctx.path.ant_glob('src/core/**/*.cpp', excl=filter),
       includes=['src'],
       export_includes=['src'],
-      use=['ogg', 'vorbisfile', 'GLEW', 'png', 'SDL', 'Box2D']
+      use=['ogg', 'vorbisfile', 'GLEW', 'png', 'SDL']
     )
 
 

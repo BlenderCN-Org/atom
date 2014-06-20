@@ -7,7 +7,7 @@
 #include "core/audio/sound.h"
 #include "core/audio/music.h"
 #include "core/video/mesh.h"
-#include "core/video/model.h"
+#include "core/video/raw_mesh.h"
 
 namespace atom {
 
@@ -94,7 +94,7 @@ MusicResource::~MusicResource()
 {
 }
 
-ModelResource::~ModelResource()
+RawMeshResource::~RawMeshResource()
 {
 }
 

@@ -155,9 +155,7 @@ void World::set_camera(const Camera &camera)
 
 void World::debug_draw()
 {
-  if (my_processors.physics->is_debug_enabled()) {
-    my_processors.physics->debug_draw(my_camera);
-  }
+  log::warning("No debug draw");
 }
 
 void World::init_processors()

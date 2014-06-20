@@ -2,6 +2,7 @@
 
 #include "core/corefwd.h"
 #include "core/types.h"
+#include "core/string.h"
 #include "core/log.h"
 #include "core/stdvec.h"
 #include "core/math/vec.h"
@@ -50,6 +51,13 @@ i64 nano_time();
 i64 micro_time();
 
 i64 milli_time();
+
+/**
+ * Convert string to TYPE (see implementation for concrete type names).
+ * @return proper type or Type::UNKNOWN on error (or unsupported type)
+ */
+Type str_to_type(const String &str);
+
 
 /**
  * Zisti velkost suboru.

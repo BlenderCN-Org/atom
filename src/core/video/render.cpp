@@ -30,9 +30,11 @@ void render_scene(VideoService &vs, DrawService &ds, const MeshTree &mesh_tree, 
 
   // render OPAQUE material
   for (const sptr<MeshTreeNode> &node : mesh_tree.all_nodes()) {
-    if (node->material != nullptr && node->mesh != nullptr) {
+    if (node->material != nullptr && (node->mesh != nullptr || node->mesh_resource != nullptr)) {
       if (!node->visible)
         continue;
+
+      const Mesh &me = node->mesh != nullptr ? *node->mesh : node->mesh_resource->mesh();
 
       const Material &m = node->material->material();
       u.transformations.model = node->transformations;

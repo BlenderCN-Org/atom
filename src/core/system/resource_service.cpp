@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <functional>
 #include "core/system/loaders.h"
+#include "core/system/raw_mesh_loader.h"
 #include "core/constants.h"
 #include "core/system/config.h"
 #include "core/log.h"
@@ -18,7 +19,7 @@ struct ResourceLoaders {
   TextureLoader    texture;
   MaterialLoader   material;
   ShaderLoader     shader;
-  ModelLoader      model;
+  RawMeshLoader    raw_mesh;
   MeshLoader       mesh;
   BitmapFontLoader bitmap_font;
   SoundLoader      sound;
@@ -185,9 +186,9 @@ MaterialResourcePtr ResourceService::get_material_resource(const String &name)
   return find_or_load_resource<MaterialResource>(*this, name, RESOURCE_MATERIAL_TAG, my_loaders->material);
 }
 
-ModelResourcePtr ResourceService::get_model_resource(const String &name)
+RawMeshResourcePtr ResourceService::get_raw_mesh_resource(const String &name)
 {
-  return find_or_load_resource<ModelResource>(*this, name, RESOURCE_MODEL_TAG, my_loaders->model);
+  return find_or_load_resource<RawMeshResource>(*this, name, RESOURCE_MODEL_TAG, my_loaders->raw_mesh);
 }
 
 MeshResourcePtr ResourceService::get_mesh_resource(const String &name)

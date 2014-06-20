@@ -441,14 +441,14 @@ void VideoService::draw_arrays(GLenum mode, GLint first, GLsizei count)
   glDrawArrays(mode, first, count);
 }
 
-//void VideoService::draw_index_array(GLenum gl_mode, const IndexBuffer &buffer)
-//{
-//  GL_ERROR_GUARD;
+void VideoService::draw_index_array(GLenum gl_mode, const VideoBuffer &buffer, u32 count)
+{
+  GL_ERROR_GUARD;
 
-//  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.gl_buffer());
-//  glDrawElements(gl_mode, buffer.get_count(), GL_UNSIGNED_INT, nullptr);
-//  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-//}
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.gl_buffer());
+  glDrawElements(gl_mode, count, GL_UNSIGNED_INT, nullptr);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
 
 Uniforms& VideoService::get_uniforms()
 {

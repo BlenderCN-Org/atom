@@ -27,6 +27,56 @@ float get_number_from_json(const rapidjson::Value &value)
   return value.GetDouble();
 }
 
+template<typename T>
+bool read_element(const rapidjson::Value &node, T &value);
+
+template<>
+bool read_element(const rapidjson::Value &node, u32 &value)
+{
+  if (node.IsNumber()) {
+    value = node.GetUint();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+template<>
+bool read_element(const rapidjson::Value &node, f32 &value)
+{
+  if (node.IsNumber()) {
+    value = node.GetDouble();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+template<typename T>
+bool read_array(const rapidjson::Value &node, std::vector<T> &array)
+{
+  if (!node.IsArray()) {
+    return false;
+  }
+
+  std::vector<T> tmp;
+
+  for (uint i = 0; i < node.Size(); ++i) {
+    T element;
+    if (read_element(node[i], element)) {
+      tmp.push_back(element);
+    } else {
+      return false;
+    }
+  }
+
+  array.swap(tmp);
+  return true;
+}
+
+// force generate read_array for u32
+template bool read_array<u32>(const rapidjson::Value &node, std::vector<u32> &value);
+template bool read_array<f32>(const rapidjson::Value &node, std::vector<f32> &value);
 
 namespace {
 
@@ -43,6 +93,7 @@ bool read_number(const rapidjson::Value &node, T &value)
   return true;
 }
 
+// pouziva sa pre nacitanie vec3f,... pole s pevnym poctom prvkov
 template<typename T>
 bool read_vector(const rapidjson::Value &node, T &value)
 {

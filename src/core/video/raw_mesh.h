@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/corefwd.h"
 #include "core/stdvec.h"
 #include "core/video/stream_type.h"
 #include "core/noncopyable.h"
@@ -13,7 +14,7 @@ struct ElementArray {
   u32      size;
 };
 
-class Model {
+class RawMesh {
 private:
   std::vector<uptr<ElementArray>> my_arrays;
   ElementArray *my_vertices;
