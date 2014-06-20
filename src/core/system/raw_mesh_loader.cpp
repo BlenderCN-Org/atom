@@ -64,8 +64,10 @@ bool load_raw_mesh_element_array_from_json(const rapidjson::Value &node, Element
       break;
 
     default:
-      return false;
+      break;
   }
+
+  return false;
 }
 
 bool load_raw_mesh_arrays_from_json(const rapidjson::Value &arrays_node, RawMesh &model)

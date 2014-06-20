@@ -74,7 +74,7 @@ inline float radians_to_degrees(float radians)
 template<typename T>
 const T& min(const T& a, const T &b)
 {
-    return b > a ? b : a;
+    return b > a ? a : b;
 }
 
 template<typename T>
