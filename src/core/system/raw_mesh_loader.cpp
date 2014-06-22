@@ -10,7 +10,8 @@ namespace atom {
 //
 //-----------------------------------------------------------------------------
 
-bool load_raw_mesh_element_array_from_json(const rapidjson::Value &node, ElementArray &array)
+bool load_raw_mesh_element_array_from_json(const rapidjson::Value &node,
+  ElementArray &array)
 {
   if (!node.IsObject()) {
     return false;

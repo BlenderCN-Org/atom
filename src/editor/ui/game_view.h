@@ -15,10 +15,6 @@ const f32 CAMERA_VIEW_XMAX  =  CAMERA_VIEW_WIDTH / 2.0f;
 class GameView : public QGLWidget {
   Q_OBJECT
 public:
-
-  static const f32 ZOOM_FACTORS[];// = { 400, 200, 100, 50, 25, 10, 5, 2 };
-  static const int ZOOM_FACTORS_SIZE;// = sizeof(ZOOM_FACTORS) / sizeof(ZOOM_FACTORS[0]);
-
   GameView(const QGLFormat &format, QWidget *parent = nullptr);
   ~GameView();
 
@@ -57,7 +53,6 @@ private:
   void update_camera_viewport();
 
   Vec2f widget_to_world(const QPoint &pos) const;
-
 private:
   bool               my_navigation;
   Camera             my_camera;

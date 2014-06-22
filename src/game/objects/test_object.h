@@ -1,7 +1,7 @@
 #pragma once
 
-#include "core/world/entity.h"
-#include "core/video/mesh_tree_node.h"
+#include <core/world/entity.h>
+#include <core/video/mesh_tree_node.h>
 
 namespace atom {
 

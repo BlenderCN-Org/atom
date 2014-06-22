@@ -20,9 +20,6 @@
 namespace atom {
 namespace editor {
 
-const f32 GameView::ZOOM_FACTORS[] = { 400, 200, 100, 50, 25, 10, 5, 2 };
-const int GameView::ZOOM_FACTORS_SIZE = sizeof(ZOOM_FACTORS) / sizeof(ZOOM_FACTORS[0]);
-
 GameView::GameView(const QGLFormat &format, QWidget *parent)
   : QGLWidget(format, parent)
   , my_navigation(true)
@@ -144,30 +141,8 @@ void GameView::mouseMoveEvent(QMouseEvent *event)
   my_last_mouse_pos = event->pos();
 
   if (event->buttons() & Qt::MidButton) {
-    QPoint d = last_pos - event->pos();
-    f32 zoom = ZOOM_FACTORS[my_zoom];
-    f32 w = width() / zoom;
-    f32 h = height() / zoom;
-    f32 dx = (static_cast<f32>(d.x()) /  width()) * w;
-    f32 dy = (static_cast<f32>(d.y()) / height()) * h;
-
-    my_camera.translate(dx, -dy, 0);
 
   } else if (event->buttons() & Qt::LeftButton) {
-    if (my_current_object == nullptr) {
-      return;
-    }
-
-    QPoint d = event->pos() - last_pos;
-
-    f32 zoom = ZOOM_FACTORS[my_zoom];
-    f32 w = width() / zoom;
-    f32 h = height() / zoom;
-    f32 dx = (static_cast<f32>(d.x()) /  width()) * w;
-    f32 dy = (static_cast<f32>(d.y()) / height()) * h;
-
-    Vec2f position = my_current_object->position() + Vec2f(dx, -dy);
-    my_current_object->set_position(position);
   }
 }
 
@@ -178,47 +153,20 @@ void GameView::mousePressEvent(QMouseEvent *event)
   my_last_mouse_pos = event->pos();
 
   if (event->buttons() & Qt::LeftButton) {
-    Vec2f pos = widget_to_world(my_last_mouse_pos);
-    my_current_object = application().world()->find_entity(pos);
-
-    std::vector<sptr<Entity>> selection;
-
-    if (my_current_object != nullptr) {
-      my_drag_start_pos = my_current_object->position();
-      selection.push_back(my_current_object);
-    }
-
-    log::info("Object at %s is %s", to_cstr(pos), my_current_object != nullptr ? "found" : "null");
-
-    emit selection_changed(selection);
+//    emit selection_changed(selection);
   }
-
-//  QGLWidget::mousePressEvent(event);
 }
 
 void GameView::mouseReleaseEvent(QMouseEvent *event)
 {
   if (event->button() & Qt::LeftButton) {
-    if (my_current_object != nullptr && my_drag_start_pos != my_current_object->position()) {
-      //create move command
-      EntityMove *command = new EntityMove(my_current_object, my_drag_start_pos,
-        my_current_object->position());
-      undo_stack().push(command);
-      log::info("Creating move command");
-    }
-    my_current_object.reset();  //QQQ pridat metodu na uvolnenie vsetkych engine zdrojov, potrebne pri reloade aj vypinani
   }
-
-  QGLWidget::mouseReleaseEvent(event);
+//  QGLWidget::mouseReleaseEvent(event);
 }
 
 void GameView::wheelEvent(QWheelEvent *event)
 {
   event->accept();
-
-  my_zoom += event->delta() < 0 ? 1 : -1;
-  my_zoom = range(0, ZOOM_FACTORS_SIZE - 1, my_zoom);
-
   update_camera_viewport();
 }
 
@@ -281,30 +229,14 @@ Core &GameView::core()
 
 void GameView::update_camera_viewport()
 {
-  f32 zoom = ZOOM_FACTORS[my_zoom];
-  f32 w = width() / zoom;
-  f32 h = height() / zoom;
-
   //  float aspect = static_cast<f32>(width()) / height();
-  my_camera.set_orthographic(-w/2, w/2, -h/2, h/2, -5, 5);
+//  my_camera.set_orthographic(-w/2, w/2, -h/2, h/2, -5, 5);
 }
 
 Vec2f GameView::widget_to_world(const QPoint &pos) const
 {
-  f32 zoom = ZOOM_FACTORS[my_zoom];
-
-  // 0..1
-  f32 wx = static_cast<f32>(pos.x()) / width();
-  f32 wy = static_cast<f32>(height() - pos.y() - 1) / height();
-  // calculate camera view width/height
-  f32 w = width() / zoom;
-  f32 h = height() / zoom;
-  // -camera_w..camera_w, -camera_h..camera_h
-  f32 sx = lerp(wx, -w/2, w/2);
-  f32 sy = lerp(wy, -h/2, h/2);
-  // transform point with camera view
-  Vec4f p = my_camera.view_matrix().inverted() * Vec4f(sx, sy, 0, 1);
-  return Vec2f(p.x, p.y);
+  not_implemented();
+  return Vec2f(0, 0);
 }
 
 }

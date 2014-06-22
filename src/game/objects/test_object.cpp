@@ -1,8 +1,8 @@
 #include "test_object.h"
-#include "core/system/core.h"
-#include "core/system/resource_service.h"
-#include "core/world/world.h"
-#include "core/processor/video_processor.h"
+#include <core/system/core.h>
+#include <core/system/resource_service.h>
+#include <core/world/world.h>
+#include <core/processor/video_processor.h>
 
 namespace atom {
 
