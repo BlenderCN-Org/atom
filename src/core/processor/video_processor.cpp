@@ -98,7 +98,7 @@ void VideoProcessor::poll()
     Vec2f size = component->size();
 //    log::info("Size is %s", to_string(size).c_str());
     if (component->is_auto_transform()) {
-      Vec2f pos = component->entity().position();
+      Vec3f pos = component->entity().position();
 
       Mat4f t = Mat4f::translation(pos.x, pos.y, 0.0f) * Mat4f::scale(size.x, size.y, 1);
 

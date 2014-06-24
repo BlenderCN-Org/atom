@@ -1,0 +1,14 @@
+{
+    "entities": [
+        {
+            "id": "",
+            "class": "TestObject",
+            "position": [
+                0,
+                0,
+                0
+            ],
+            "rotation": 0
+        }
+    ]
+}

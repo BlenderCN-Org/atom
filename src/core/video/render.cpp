@@ -22,9 +22,9 @@ void render_scene(VideoService &vs, DrawService &ds, const MeshTree &mesh_tree, 
 
 //  u.transformations.view = scene.camera->
 
-  u.eye_direction = camera.forward();
-  u.transformations.view = camera.view_matrix();
-  u.transformations.projection = camera.projection_matrix();
+//  u.eye_direction = camera.forward();
+  u.transformations.view = camera.view;
+  u.transformations.projection = camera.projection;
 
   vs.set_blending(BlendOperation::SRC_ALPHA, BlendOperation::ONE_MINUS_SRC_ALPHA);
 

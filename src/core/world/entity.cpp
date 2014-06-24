@@ -76,12 +76,12 @@ void Entity::set_id(const String &id)
   my_id = id;
 }
 
-Vec2f Entity::position() const
+Vec3f Entity::position() const
 {
   return my_position;
 }
 
-void Entity::set_position(const Vec2f position)
+void Entity::set_position(const Vec3f &position)
 {
   my_position = position;
 }
@@ -94,7 +94,7 @@ void Entity::set_size(f32 width, f32 height)
 
 void Entity::update_bounding_box()
 {
-  my_bounding_box = BoundingBox::from_params(my_position, my_width, my_height);
+//  my_bounding_box = BoundingBox::from_params(my_position, my_width, my_height);
 }
 
 const String &Entity::class_name() const
@@ -133,7 +133,7 @@ void Entity::register_component(Component *component)
   my_components.push_back(component);
 }
 
-void Entity::init(f32 width, f32 height, const Vec2f &position, f32 rotation)
+void Entity::init(f32 width, f32 height, const Vec3f &position, f32 rotation)
 {
   my_state = State::NEW;
   my_width = width;

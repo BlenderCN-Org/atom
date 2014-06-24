@@ -5,8 +5,8 @@
 namespace atom {
 namespace editor {
 
-EntityMove::EntityMove(const sptr<Entity> &entity, const Vec2f &start,
-  const Vec2f &end)
+EntityMove::EntityMove(const sptr<Entity> &entity, const Vec3f &start,
+  const Vec3f &end)
   : EditorCommand("entity move")
   , my_entity(entity)
   , my_start(start)

@@ -22,8 +22,11 @@ namespace editor {
 
 GameView::GameView(const QGLFormat &format, QWidget *parent)
   : QGLWidget(format, parent)
+  , my_state(State::NORMAL)
   , my_navigation(true)
-  , my_zoom(4)
+  , my_camera_pos(0, 0, 0)
+  , my_camera_yaw(0)
+  , my_camera_pitch(0)
 {
   makeCurrent();
   setAcceptDrops(true);
@@ -106,7 +109,7 @@ void GameView::dropEvent(QDropEvent *event)
       if (entity != nullptr) {
         entity->set_class_name(application().core().entity_creators()[index].name);
         log::info("Adding entity to the world");
-        entity->set_position(widget_to_world(event->pos()));
+//        entity->set_position(widget_to_world(event->pos()));
 //        QQQentity->init();
 
         EntityAdd *command = new EntityAdd(entity, application().world());
@@ -124,9 +127,9 @@ void GameView::dropEvent(QDropEvent *event)
 void GameView::keyReleaseEvent(QKeyEvent *event)
 {
   if (my_current_object != nullptr && QApplication::mouseButtons() & Qt::LeftButton) {
-    my_current_object->set_position(my_drag_start_pos);
+//    my_current_object->set_position(my_drag_start_pos);
 //    QQQmy_current_object->reboot();
-    my_current_object.reset();
+//    my_current_object.reset();
     event->accept();
     return;
   }
@@ -137,12 +140,15 @@ void GameView::keyReleaseEvent(QKeyEvent *event)
 void GameView::mouseMoveEvent(QMouseEvent *event)
 {
   event->accept();
-  QPoint last_pos = my_last_mouse_pos;
+  Vec2f a(my_last_mouse_pos.x(), my_last_mouse_pos.y());
   my_last_mouse_pos = event->pos();
+  Vec2f b(my_last_mouse_pos.x(), my_last_mouse_pos.y());
+  Vec2f delta = b - a;
 
-  if (event->buttons() & Qt::MidButton) {
-
-  } else if (event->buttons() & Qt::LeftButton) {
+  if (my_state == State::LOOKING) {
+    log::info("Delta %f, %f", delta.x, delta.y);
+    my_camera_yaw += delta.x / 400;
+    my_camera_pitch += delta.y / 400;
   }
 }
 
@@ -152,14 +158,17 @@ void GameView::mousePressEvent(QMouseEvent *event)
 
   my_last_mouse_pos = event->pos();
 
-  if (event->buttons() & Qt::LeftButton) {
-//    emit selection_changed(selection);
+  if (event->button() == Qt::RightButton) {
+    if (my_state == State::NORMAL) {
+      switch_to(State::LOOKING);
+    }
   }
 }
 
 void GameView::mouseReleaseEvent(QMouseEvent *event)
 {
-  if (event->button() & Qt::LeftButton) {
+  if (event->button() == Qt::RightButton) {
+    switch_to(State::NORMAL);
   }
 //  QGLWidget::mouseReleaseEvent(event);
 }
@@ -187,6 +196,12 @@ void GameView::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (my_navigation) {
+    my_camera_pos = Vec3f(0, -10, 0);
+    my_camera.view = calculate_basic_view(my_camera_pos, my_camera_yaw, my_camera_pitch);
+//    my_camera.view = calculate_basic_view(my_camera_pos, my_camera_yaw, my_camera_pitch);
+//    my_camera.set_position(my_camera_pos.x, my_camera_pos.y, my_camera_pos.z);
+//  QQQ  my_camera.set_position(0, 0, 10);
+//    my_camera.set_rotation(my_camera_yaw, my_camera_pitch, 0);
     my_world->set_camera(my_camera);
   }
 
@@ -229,14 +244,19 @@ Core &GameView::core()
 
 void GameView::update_camera_viewport()
 {
-  //  float aspect = static_cast<f32>(width()) / height();
-//  my_camera.set_orthographic(-w/2, w/2, -h/2, h/2, -5, 5);
+  float aspect = static_cast<f32>(width()) / height();
+  my_camera.projection = Mat4f::perspective(1.57, aspect, 0.1f, 1000.0f);
 }
 
 Vec2f GameView::widget_to_world(const QPoint &pos) const
 {
   not_implemented();
   return Vec2f(0, 0);
+}
+
+void GameView::switch_to(GameView::State state)
+{
+  my_state = state;
 }
 
 }

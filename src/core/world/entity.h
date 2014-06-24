@@ -50,9 +50,9 @@ public:
 
   void set_id(const String &id);
 
-  Vec2f position() const;
+  Vec3f position() const;
 
-  void set_position(const Vec2f position);
+  void set_position(const Vec3f &position);
 
   void set_size(f32 width, f32 height);
 
@@ -85,18 +85,18 @@ public:
 private:
   typedef std::vector<Component *> ComponentArray;
 
-  void init(f32 width, f32 height, const Vec2f &position = Vec2f(0, 0), f32 rotation = 0);
+  void init(f32 width, f32 height, const Vec3f &position = Vec3f(0, 0, 0), f32 rotation = 0);
 
 private:
   World         &my_world;
-  Core        &my_core;
+  Core          &my_core;
   State          my_state;
   f32            my_width;
   f32            my_height;
   BoundingBox    my_bounding_box;
   String         my_id;
   String         my_class;
-  Vec2f          my_position;
+  Vec3f          my_position;
   f32            my_rotation;
   ComponentArray my_components;
 };

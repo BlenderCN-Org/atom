@@ -10,7 +10,7 @@ namespace editor {
 
 class EntityMove : public EditorCommand {
 public:
-  EntityMove(const sptr<Entity> &entity, const Vec2f &start, const Vec2f &end);
+  EntityMove(const sptr<Entity> &entity, const Vec3f &start, const Vec3f &end);
 
   void redo() override;
 
@@ -18,8 +18,8 @@ public:
 
 private:
   sptr<Entity> my_entity;
-  Vec2f        my_start;
-  Vec2f        my_end;
+  Vec3f        my_start;
+  Vec3f        my_end;
 };
 
 }
