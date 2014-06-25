@@ -6,12 +6,20 @@
 
 namespace atom {
 
+const Vec3f CAMERA_UP = Vec3f::axis_z();
+const Vec3f CAMERA_RIGHT = Vec3f::axis_x();
+const Vec3f CAMERA_FRONT = Vec3f::axis_y();
+
 struct Camera {
   Mat4f view;
   Mat4f projection;
 };
 
 Mat4f calculate_basic_view(const Vec3f &pos, f32 yaw, f32 pitch);
+
+Vec3f get_view_up(const Mat4f &view);
+Vec3f get_view_right(const Mat4f &view);
+Vec3f get_view_front(const Mat4f &view);
 
 //class Camera {
 //public:

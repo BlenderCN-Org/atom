@@ -2,18 +2,29 @@
 #include "core/utils/utils.h"
 
 namespace atom {
-namespace {
 
-const Vec3f our_up = Vec3f::axis_z();
-const Vec3f our_right = Vec3f::axis_x();
-const Vec3f our_forward = Vec3f::axis_y();
-
-}
+const Mat4f CAMERA_NORMALIZE = Mat4f::rotation_x(M_PI / 2);
+const Mat4f CAMERA_DENORMALIZE = CAMERA_NORMALIZE.inverted();
 
 Mat4f calculate_basic_view(const Vec3f &pos, f32 yaw, f32 pitch)
 {
   Mat4f rotation = Mat4f::rotation_z(yaw) * Mat4f::rotation_x(-pitch);
-  return Mat4f::rotation_x(M_PI / 2) * rotation * Mat4f::translation(pos);
+  return CAMERA_NORMALIZE * rotation * Mat4f::translation(pos);
+}
+
+Vec3f get_view_up(const Mat4f &view)
+{
+  return view * CAMERA_UP;
+}
+
+Vec3f get_view_right(const Mat4f &view)
+{
+  return view * CAMERA_RIGHT;
+}
+
+Vec3f get_view_front(const Mat4f &view)
+{
+  return view * CAMERA_FRONT;
 }
 
 //Camera Camera::perspective(

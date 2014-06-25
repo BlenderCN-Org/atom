@@ -24,7 +24,7 @@ GameView::GameView(const QGLFormat &format, QWidget *parent)
   : QGLWidget(format, parent)
   , my_state(State::NORMAL)
   , my_navigation(true)
-  , my_camera_pos(0, 0, 0)
+  , my_camera_pos(0, -10, 0)
   , my_camera_yaw(0)
   , my_camera_pitch(0)
 {
@@ -146,9 +146,14 @@ void GameView::mouseMoveEvent(QMouseEvent *event)
   Vec2f delta = b - a;
 
   if (my_state == State::LOOKING) {
-    log::info("Delta %f, %f", delta.x, delta.y);
     my_camera_yaw += delta.x / 400;
     my_camera_pitch += delta.y / 400;
+
+    Vec3f up = get_view_up(my_camera.view);
+    Vec3f right = get_view_right(my_camera.view);
+    Vec3f front = get_view_front(my_camera.view);
+
+    log::info("front %s, up %s, right %s", to_cstr(front), to_cstr(up), to_cstr(right));
   }
 }
 
@@ -196,7 +201,6 @@ void GameView::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (my_navigation) {
-    my_camera_pos = Vec3f(0, -10, 0);
     my_camera.view = calculate_basic_view(my_camera_pos, my_camera_yaw, my_camera_pitch);
 //    my_camera.view = calculate_basic_view(my_camera_pos, my_camera_yaw, my_camera_pitch);
 //    my_camera.set_position(my_camera_pos.x, my_camera_pos.y, my_camera_pos.z);

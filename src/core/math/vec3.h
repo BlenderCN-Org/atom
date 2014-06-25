@@ -114,6 +114,12 @@ Vec3<T> operator*(T x, const Vec3<T> &v)
 }
 
 template<typename T>
+Vec3<T> operator/(const Vec3<T> &v, T x)
+{
+  return Vec3<T>(v.x / x, v.y / x, v.z / x);
+}
+
+template<typename T>
 inline bool operator==(const Vec3<T> &a, const Vec3<T> &b)
 {
   return a.x == b.x && a.y == b.y && a.z == b.z;

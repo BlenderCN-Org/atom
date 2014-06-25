@@ -352,20 +352,21 @@ Mat4<T> operator*(const Mat4<T> &a, const Mat4<T> &b)
 template<typename T>
 Vec4<T> operator*(const Mat4<T> &m, const Vec4<T> &v)
 {
-  return Vec4<T>(
-    m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2] + m(0, 3) * v[3],
-    m(1, 0) * v[0] + m(1, 1) * v[1] + m(1, 2) * v[2] + m(1, 3) * v[3],
-    m(2, 0) * v[0] + m(2, 1) * v[1] + m(2, 2) * v[2] + m(2, 3) * v[3],
-    m(3, 0) * v[0] + m(3, 1) * v[1] + m(3, 2) * v[2] + m(3, 3) * v[3]);
+  T x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2] + m(0, 3) * v[3];
+  T y = m(1, 0) * v[0] + m(1, 1) * v[1] + m(1, 2) * v[2] + m(1, 3) * v[3];
+  T z = m(2, 0) * v[0] + m(2, 1) * v[1] + m(2, 2) * v[2] + m(2, 3) * v[3];
+  T w = m(3, 0) * v[0] + m(3, 1) * v[1] + m(3, 2) * v[2] + m(3, 3) * v[3];
+  return Vec4<T>(x, y, z, w);
 }
 
 template<typename T>
 Vec3<T> operator*(const Mat4<T> &m, const Vec3<T> &v)
 {
-  return Vec3<T>(
-    m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2],
-    m(1, 0) * v[0] + m(1, 1) * v[1] + m(1, 2) * v[2],
-    m(2, 0) * v[0] + m(2, 1) * v[1] + m(2, 2) * v[2]);
+  T x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2];
+  T y = m(1, 0) * v[0] + m(1, 1) * v[1] + m(1, 2) * v[2];
+  T z = m(2, 0) * v[0] + m(2, 1) * v[1] + m(2, 2) * v[2];
+  T w = m(3, 0) * v[0] + m(3, 1) * v[1] + m(3, 2) * v[2] + m(3, 3);
+  return Vec3<T>(x / w, y / w, z / w);
 }
 
 }
