@@ -24,7 +24,7 @@ EditorApplication::~EditorApplication()
   emit unload();
 
   my_undo_stack.clear();
-  my_world.reset();
+  my_world = nullptr;
   Core::quit();
 }
 

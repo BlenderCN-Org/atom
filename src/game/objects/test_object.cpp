@@ -17,6 +17,10 @@ TestObject::TestObject(World &world, Core &core)
   my_node = std::make_shared<MeshTreeNode>();
 }
 
+TestObject::~TestObject()
+{
+}
+
 uptr<Entity> TestObject::clone(World &world) const
 {
   return uptr<Entity>(new TestObject(world, core()));
@@ -30,7 +34,6 @@ void TestObject::on_welcome()
 
 void TestObject::on_goodbye()
 {
-
 }
 
 void TestObject::on_init()
@@ -39,7 +42,7 @@ void TestObject::on_init()
   my_node->material = rs.get_material_resource("test2");
   my_node->transformations = Mat4f::translation(position().x, position().y, 0);
   my_node->visible = true;
-  my_node->mesh_resource = rs.get_mesh_resource("icosphere");
+  my_node->mesh_resource = rs.get_mesh_resource("compound");
 }
 
 void TestObject::on_update()

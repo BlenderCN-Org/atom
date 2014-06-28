@@ -104,13 +104,6 @@ class Service;
 
 // components
 class MeshComponent;
-class PhysicsComponent;
-class RigidBodyComponent;
-class FixtureComponent;
-class JointComponent;
-class SensorComponent;
-class PixmapComponent;
-class SpriteComponent;
 
 // component utils
 class AbstractLink;

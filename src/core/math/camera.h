@@ -15,126 +15,59 @@ struct Camera {
   Mat4f projection;
 };
 
-Mat4f calculate_basic_view(const Vec3f &pos, f32 yaw, f32 pitch);
 
-Vec3f get_view_up(const Mat4f &view);
-Vec3f get_view_right(const Mat4f &view);
-Vec3f get_view_front(const Mat4f &view);
+class BasicCamera {
+  Vec3f my_position;
+  f32   my_yaw;
+  f32   my_pitch;
 
-//class Camera {
-//public:
-//  enum class Type {
-//    ORTHOGRAPHIC,
-//    PERSPECTIVE
-//  };
+public:
+  BasicCamera();
 
-////  static Camera orhtographic(float width, float height, float near, float far);
+  Vec3f get_position() const
+  {
+    return my_position;
+  }
 
-//  static Camera perspective(float fov, float aspect, float near, float far);
+  void set_position(const Vec3f &pos)
+  {
+    my_position = pos;
+  }
 
-//  /**
-//   * Vytvor perspektivne projekcnu kameru.
-//   */
-//  Camera();
+  void set_yaw(f32 yaw)
+  {
+    my_yaw = yaw;
+  }
 
-//  void set_orthographic(
-//    float xmin,
-//    float xmax,
-//    float ymin,
-//    float ymax,
-//    float near,
-//    float far);
+  void set_pitch(f32 pitch)
+  {
+    my_pitch = pitch;
+  }
 
-//  /**
-//   *
-//   * @param fov sirka rozhladu v radianoch (1.57 je 90stupnov)
-//   */
-//  void set_perspective(float fov, float aspect, float near, float far);
+  f32 get_yaw() const
+  {
+    return my_yaw;
+  }
 
-//  /**
-//   * Nastav poziciu kamery.
-//   *
-//   * @param x pozicia x
-//   * @param y pozicia y
-//   * @param z pozicia z
-//   */
-//  void set_position(float x, float y, float z)
-//  {
-//    my_position = Vec3f(x, y, z);
-//  }
+  f32 get_pitch() const
+  {
+    return my_pitch;
+  }
 
-//  void set_rotation(float yaw, float pitch, float roll);
+  Mat4f get_view_matrix() const;
 
-//  /**
-//   * Zmena pohladoveho ulhu. K aktualne nastavenemu uhlu pripocitaj hodnoty.
-//   *
-//   * @param rx rotacia kamery podla x-ovej osi
-//   * @param ry rotacia kamery podla y-ovej osi
-//   * @param rz rotacia kamery podla z-ovej osi
-//   */
-//  void rotate_camera(float yaw, float pitch, float roll);
+  Vec3f get_front() const;
 
-//  /**
-//   * Presun kameru (v globalnych suradniciach).
-//   *
-//   * @param tx posnun po x-ovej osi
-//   * @param ty posnun po y-ovej osi
-//   * @param tz posnun po z-ovej osi
-//   */
-//  void translate(float tx, float ty, float tz)
-//  {
-//    my_position += Vec3f(tx, ty, tz);
-//  }
+  Vec3f get_up() const;
 
-//  /**
-//   * Vypocitaj maticu kamery (vhodnu pre pouzite do TransformationStack).
-//   * @note nezabudnut invertovat hodnotu tejto pohladovej matice
-//   *
-//   * @return transformacna matica kamery
-//   */
-//  Mat4f view_matrix() const;
+  Vec3f get_right() const;
 
-//  Mat4f projection_matrix() const;
+private:
+  Quatf get_rotation() const;
 
-//  Mat4f infinite_perspective_projection_matrix() const;
-
-//  Mat4f rotation_matrix() const;
-
-//  Vec3f up() const;
-//  Vec3f forward() const;
-//  Vec3f right() const;
-
-//  Vec3f position() const
-//  {
-//    return my_position;
-//  }
-
-//  float fov() const
-//  {
-//    return my_fov;
-//  }
-
-//private:
-//  Quatf calculate_rotation() const;
-
-//public:
-//  Type     my_type;
-//  float    my_near;
-//  float    my_far;
-//  float    my_fov;         ///< field of view used for perspective camera
-//  float    my_aspect;      ///< aspect ration used for perspective camera
-//  float    my_xmin;
-//  float    my_xmax;
-//  float    my_ymin;
-//  float    my_ymax;
-//  float    my_yaw;
-//  float    my_pitch;
-//  float    my_roll;
-//  Vec3f my_position;
-//  Mat4f my_projection;  ///< predpocitana projekcna matica
-//};
+  Mat4f get_rotationm() const;
+};
 
 typedef sptr<Camera> CameraPtr;
-
 
 }

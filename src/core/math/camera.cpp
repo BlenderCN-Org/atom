@@ -6,144 +6,54 @@ namespace atom {
 const Mat4f CAMERA_NORMALIZE = Mat4f::rotation_x(M_PI / 2);
 const Mat4f CAMERA_DENORMALIZE = CAMERA_NORMALIZE.inverted();
 
-Mat4f calculate_basic_view(const Vec3f &pos, f32 yaw, f32 pitch)
+// kamera je v bode [0, 0, 0] a pozera sa smerom [0, 1, 0]
+//Mat4f calculate_basic_view(const Vec3f &pos, f32 yaw, f32 pitch)
+//{
+//  Quatf rot = Quatf::from_axis_angle(Vec3f::axis_x(), pitch) * Quatf::from_axis_angle(Vec3f::axis_z(), -yaw);
+//  Mat4f m = Mat4f::translation(pos) * rot.rotation_matrix() * CAMERA_NORMALIZE;
+//  return m.inverted();
+//}
+
+BasicCamera::BasicCamera()
+  : my_position(0, 0, 0)
+  , my_yaw(0)
+  , my_pitch(0)
 {
-  Mat4f rotation = Mat4f::rotation_z(yaw) * Mat4f::rotation_x(-pitch);
-  return CAMERA_NORMALIZE * rotation * Mat4f::translation(pos);
 }
 
-Vec3f get_view_up(const Mat4f &view)
+Mat4f BasicCamera::get_view_matrix() const
 {
-  return view * CAMERA_UP;
+  Quatf r = get_rotation() * Quatf::from_axis_angle(Vec3f::axis_x(), M_PI / 2);
+  Mat4f m = Mat4f::translation(my_position)
+          * r.rotation_matrix();
+  return m.inverted();
 }
 
-Vec3f get_view_right(const Mat4f &view)
+Vec3f BasicCamera::get_front() const
 {
-  return view * CAMERA_RIGHT;
+  return rotate(get_rotation(), Vec3f(0, 1, 0));
 }
 
-Vec3f get_view_front(const Mat4f &view)
+Vec3f BasicCamera::get_up() const
 {
-  return view * CAMERA_FRONT;
+  return rotate(get_rotation(), Vec3f(0, 0, 1));
 }
 
-//Camera Camera::perspective(
-//  float fov,
-//  float aspect,
-//  float near,
-//  float far)
-//{
-//  Camera camera;
-//  camera.set_perspective(fov, aspect, near, far);
-//  return camera;
-//}
+Vec3f BasicCamera::get_right() const
+{
+  return rotate(get_rotation(), Vec3f(1, 0, 0));
+}
 
-//Camera::Camera()
-//  : my_type(Type::PERSPECTIVE)
-//  , my_near(0.1)
-//  , my_far(100)
-//  , my_fov(1.57)
-//  , my_aspect(16.0 / 9.0)
-//  , my_yaw(0)
-//  , my_pitch(0)
-//  , my_roll(0)
-//  , my_position(Vec3f(0, 0, 0))
-//{
-//}
+Quatf BasicCamera::get_rotation() const
+{
+  Quatf yaw = Quatf::from_axis_angle(Vec3f::axis_z(), -my_yaw);
+  Quatf pitch = Quatf::from_axis_angle(rotate(yaw, Vec3f::axis_x()), my_pitch);
+  return pitch * yaw;
+}
 
-//void Camera::set_orthographic(
-//  float xmin,
-//  float xmax,
-//  float ymin,
-//  float ymax,
-//  float near,
-//  float far)
-//{
-//  assert(far > near);
-
-//  my_type       = Type::ORTHOGRAPHIC;
-//  my_xmin       = xmin;
-//  my_xmax       = xmax;
-//  my_ymin       = ymin;
-//  my_ymax       = ymax;
-//  my_near       = near;
-//  my_far        = far;
-//  my_projection = Mat4f::orthographic(xmin, xmax, ymin, ymax, near, far);
-//}
-
-//void Camera::set_perspective(float fov, float aspect, float near, float far)
-//{
-//  assert(fov > 0.0);
-//  assert(far > near);
-//  assert(aspect > 0.0);
-
-//  my_type       = Type::PERSPECTIVE;
-//  my_fov        = fov;
-//  my_aspect     = aspect;
-//  my_near       = near;
-//  my_far        = far;
-//  my_projection = Mat4f::perspective(fov, aspect, near, far);
-//}
-
-//void Camera::set_rotation(float yaw, float pitch, float roll)
-//{
-//  my_yaw = roll;
-//  my_pitch = pitch;
-//  my_roll = yaw;
-//}
-
-//void Camera::rotate_camera(float yaw, float pitch, float roll)
-//{
-//  my_yaw += yaw;
-//  my_pitch += pitch;
-//  my_roll += roll;
-//}
-
-//Mat4f Camera::view_matrix() const
-//{
-////  Quatf full_rotation = calculate_rotation() * Quatf::from_axis_angle(Vec3f::axis_x(), PI / 2);
-////  return Mat4f::translation(my_position) * full_rotation.rotation_matrix();
-//  return (Mat4f::translation(my_position) * calculate_rotation().rotation_matrix()).inverted();
-//}
-
-//Mat4f Camera::projection_matrix() const
-//{
-//  return my_projection;
-//}
-
-//Mat4f Camera::infinite_perspective_projection_matrix() const
-//{
-//  assert(my_type == Type::PERSPECTIVE);
-//  return Mat4f::infinite_perspective(my_fov, my_aspect, my_near);
-//}
-
-//Mat4f Camera::rotation_matrix() const
-//{
-//  return calculate_rotation().rotation_matrix();
-//}
-
-//Vec3f Camera::up() const
-//{
-//  return rotate(calculate_rotation(), our_up);
-//}
-
-//Vec3f Camera::forward() const
-//{
-//  return rotate(calculate_rotation(), our_forward);
-//}
-
-//Vec3f Camera::right() const
-//{
-//  return rotate(calculate_rotation(), our_right);
-//}
-
-//Quatf Camera::calculate_rotation() const
-//{
-//  Quatf yaw = Quatf::from_axis_angle(our_up, my_yaw);
-//  Quatf pitch = Quatf::from_axis_angle(rotate(yaw, our_right), my_pitch);
-//  Quatf roll = Quatf::from_axis_angle(rotate(yaw, our_forward), my_roll);
-
-//  return roll * pitch * yaw;
-//}
+Mat4f BasicCamera::get_rotationm() const
+{
+ return Mat4f::rotation_z(-my_yaw) * Mat4f::rotation_x(my_pitch);
+}
 
 }

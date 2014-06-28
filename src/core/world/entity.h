@@ -23,7 +23,7 @@ public:
 
   Entity(World &world, Core &core, f32 width = 1, f32 height = 1);
 
-  ~Entity();
+  virtual ~Entity();
 
   virtual uptr<Entity> clone(World &world) const = 0;
 

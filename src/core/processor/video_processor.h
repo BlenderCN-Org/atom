@@ -14,10 +14,6 @@ public:
 
   void set_resolution(int width, int height);
 
-  void add_pixmap(PixmapComponent *component);
-
-  void remove_pixmap(PixmapComponent *component);
-
   MeshTree* mesh_tree();
 
   MeshTree* gui_tree();
@@ -31,7 +27,6 @@ private:
   ResourceService &my_rs;
   GBuffer          my_gbuffer;
   MeshTree         my_mesh_tree;
-  std::vector<PixmapComponent *> my_pixmap_components;
 };
 
 }

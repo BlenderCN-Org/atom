@@ -97,7 +97,7 @@ ResourceService::~ResourceService()
   } while (!resources.empty() && !cycle);
 
   if (cycle) {
-    log::error("Resource cycle dependency detected, fix resources");
+    log::info("Resource cycle dependency detected, fix resources");
     log::info("Resources ----------------");
     print_resources(resources);
     log::info("Used ----------------");

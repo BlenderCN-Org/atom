@@ -24,13 +24,12 @@ GameView::GameView(const QGLFormat &format, QWidget *parent)
   : QGLWidget(format, parent)
   , my_state(State::NORMAL)
   , my_navigation(true)
-  , my_camera_pos(0, -10, 0)
-  , my_camera_yaw(0)
-  , my_camera_pitch(0)
 {
   makeCurrent();
   setAcceptDrops(true);
   setFocusPolicy(Qt::ClickFocus);
+
+  my_camera.set_position(Vec3f(0, 0, 0));
 
   connect(qApp, SIGNAL(load()), SLOT(load()));
   connect(qApp, SIGNAL(unload()), SLOT(unload()));
@@ -42,7 +41,10 @@ GameView::GameView(const QGLFormat &format, QWidget *parent)
 
 GameView::~GameView()
 {
-
+  switch_state_to_normal();
+  my_world = nullptr;
+  my_current_object = nullptr;
+  my_origin_node = nullptr;
 }
 
 void GameView::set_world(sptr<World> world)
@@ -54,7 +56,6 @@ void GameView::set_world(sptr<World> world)
   my_world = world;
 
   if (my_world != nullptr) {
-    update_camera_viewport();
     my_world->processors().video.set_resolution(width(), height());
   }
 }
@@ -140,20 +141,18 @@ void GameView::keyReleaseEvent(QKeyEvent *event)
 void GameView::mouseMoveEvent(QMouseEvent *event)
 {
   event->accept();
-  Vec2f a(my_last_mouse_pos.x(), my_last_mouse_pos.y());
-  my_last_mouse_pos = event->pos();
-  Vec2f b(my_last_mouse_pos.x(), my_last_mouse_pos.y());
-  Vec2f delta = b - a;
+  QPoint delta = event->pos() - my_last_mouse_pos;
 
   if (my_state == State::LOOKING) {
-    my_camera_yaw += delta.x / 400;
-    my_camera_pitch += delta.y / 400;
+    if (delta == my_ignore_mouse_move) {
+      return;
+    }
 
-    Vec3f up = get_view_up(my_camera.view);
-    Vec3f right = get_view_right(my_camera.view);
-    Vec3f front = get_view_front(my_camera.view);
+    my_camera.set_yaw(my_camera.get_yaw() + delta.x() / 400.0f);
+    my_camera.set_pitch(my_camera.get_pitch() - delta.y() / 400.0f);
 
-    log::info("front %s, up %s, right %s", to_cstr(front), to_cstr(up), to_cstr(right));
+    my_ignore_mouse_move = event->pos() - mapFromGlobal(my_cursor_pos);
+    QCursor::setPos(my_cursor_pos);
   }
 }
 
@@ -165,7 +164,7 @@ void GameView::mousePressEvent(QMouseEvent *event)
 
   if (event->button() == Qt::RightButton) {
     if (my_state == State::NORMAL) {
-      switch_to(State::LOOKING);
+      switch_state_to_looking();
     }
   }
 }
@@ -173,7 +172,7 @@ void GameView::mousePressEvent(QMouseEvent *event)
 void GameView::mouseReleaseEvent(QMouseEvent *event)
 {
   if (event->button() == Qt::RightButton) {
-    switch_to(State::NORMAL);
+    switch_state_to_normal();
   }
 //  QGLWidget::mouseReleaseEvent(event);
 }
@@ -181,7 +180,10 @@ void GameView::mouseReleaseEvent(QMouseEvent *event)
 void GameView::wheelEvent(QWheelEvent *event)
 {
   event->accept();
-  update_camera_viewport();
+
+  float degrees = event->delta() / 8.0f;
+  Vec3f pos = my_camera.get_position() + my_camera.get_front() * degrees / 10.0f;
+  my_camera.set_position(pos);
 }
 
 void GameView::paintGL()
@@ -201,12 +203,10 @@ void GameView::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (my_navigation) {
-    my_camera.view = calculate_basic_view(my_camera_pos, my_camera_yaw, my_camera_pitch);
-//    my_camera.view = calculate_basic_view(my_camera_pos, my_camera_yaw, my_camera_pitch);
-//    my_camera.set_position(my_camera_pos.x, my_camera_pos.y, my_camera_pos.z);
-//  QQQ  my_camera.set_position(0, 0, 10);
-//    my_camera.set_rotation(my_camera_yaw, my_camera_pitch, 0);
-    my_world->set_camera(my_camera);
+    Camera camera;
+    camera.view = my_camera.get_view_matrix();
+    camera.projection = my_projection;
+    my_world->set_camera(camera);
   }
 
   render_scene(core.video_service(), core.draw_service(),
@@ -225,12 +225,15 @@ void GameView::resizeGL(int w, int h)
   }
 
   glViewport(0, 0, w, h);
-  update_camera_viewport();
+  float aspect = static_cast<f32>(width()) / height();
+  my_projection = Mat4f::perspective(1.57, aspect, 0.1f, 1000.0f);
 }
 
 void GameView::load()
 {
   log::debug(DEBUG_EDITOR, "Loading game view");
+  core().resource_service().get_mesh_resource("compound");
+  core().resource_service().get_material_resource("test2");
 }
 
 void GameView::unload()
@@ -246,21 +249,33 @@ Core &GameView::core()
   return application().core();
 }
 
-void GameView::update_camera_viewport()
-{
-  float aspect = static_cast<f32>(width()) / height();
-  my_camera.projection = Mat4f::perspective(1.57, aspect, 0.1f, 1000.0f);
-}
-
 Vec2f GameView::widget_to_world(const QPoint &pos) const
 {
   not_implemented();
   return Vec2f(0, 0);
 }
 
-void GameView::switch_to(GameView::State state)
+void GameView::switch_state_to_normal()
 {
-  my_state = state;
+  if (my_state == State::NORMAL) {
+    return;
+  }
+
+  releaseMouse();
+  QCursor::setPos(my_cursor_pos);
+  my_state = State::NORMAL;
+
+}
+
+void GameView::switch_state_to_looking()
+{
+  if (my_state == State::LOOKING) {
+    return;
+  }
+
+  my_cursor_pos = QCursor::pos();
+  grabMouse(QCursor(Qt::BlankCursor));
+  my_state = State::LOOKING;
 }
 
 }

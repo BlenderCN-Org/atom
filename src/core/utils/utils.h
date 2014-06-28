@@ -116,12 +116,6 @@ String to_string(const Quatf &q);
 
 String to_string(const Mat4f &m);
 
-template<typename T>
-const char* to_cstr(const T &value)
-{
-  return to_string(value).c_str();
-}
-
 /**
  * Konvertuj texturu na obrazok.
  */

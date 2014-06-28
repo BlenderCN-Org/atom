@@ -55,24 +55,24 @@ private:
 
   Core& core();
 
-  void update_camera_viewport();
-
   Vec2f widget_to_world(const QPoint &pos) const;
 
-  void switch_to(State state);
+  void switch_state_to_normal();
+
+  void switch_state_to_looking();
 
 private:
   State              my_state;
   bool               my_navigation;
-  Camera             my_camera;
-  Vec3f              my_camera_pos;
-  f32                my_camera_yaw;
-  f32                my_camera_pitch;
+  Mat4f              my_projection;
+  BasicCamera        my_camera;
   QPoint             my_last_mouse_pos;
   sptr<World>        my_world;
   sptr<Entity>       my_current_object;
   sptr<MeshTreeNode> my_origin_node;
   Vec2f              my_drag_start_pos;
+  QPoint             my_cursor_pos;
+  QPoint             my_ignore_mouse_move;
 };
 
 }

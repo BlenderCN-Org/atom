@@ -13,6 +13,7 @@ public:
   static uptr<Entity> create(World &world, Core &core);
 
   TestObject(World &world, Core &core);
+  ~TestObject();
 
   virtual uptr<Entity> clone(World &world) const override;
 

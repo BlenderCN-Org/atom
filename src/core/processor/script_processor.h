@@ -8,8 +8,8 @@ namespace atom {
 
 class ScriptProcessor : public Processor {
 public:
-  void register_script(SensorComponent *component);
-  void unregister_script(SensorComponent *component);
+//  void register_script(SensorComponent *component);
+//  void unregister_script(SensorComponent *component);
 
   void poll() override;
 
