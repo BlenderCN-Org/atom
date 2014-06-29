@@ -10,6 +10,10 @@ typedef Mat2<float> Mat2f;
 typedef Mat3<float> Mat3f;
 typedef Mat4<float> Mat4f;
 
+MAP_TYPE(Mat2f, MAT2F)
+MAP_TYPE(Mat3f, MAT3F)
+MAP_TYPE(Mat4f, MAT4F)
+
 /**
  * Multiply Mat4 (using only submatrix 3x3) and Vec3.
  * It is equivalent of m * Vec4(v, 0).

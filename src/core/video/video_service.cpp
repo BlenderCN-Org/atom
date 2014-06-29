@@ -108,12 +108,6 @@ GLfloat SQUARE_VERTICES[] = {
     -0.5, 0.5, 0.0
 };
 
-Uniforms::Uniforms()
-  : color(0.5, 0.5, 0.5)
-  , ambient_color(1, 1, 1)
-{
-}
-
 VideoService::VideoService()
   : my_uniforms(new Uniforms())
 {

@@ -29,11 +29,17 @@ const void* ptr_with_offset(const void *ptr, T offset)
 {
   return reinterpret_cast<const char *>(ptr) + offset;
 }
-
+// get reference to specific field with specific type
 template<typename T>
 inline T& field_ref(const MetaField &p, void *data)
 {
   return *reinterpret_cast<T *>(ptr_with_offset(data, p.offset));
+}
+// const version of field_ref
+template<typename T>
+inline const T& field_ref(const MetaField &p, const void *data)
+{
+  return *reinterpret_cast<const T *>(ptr_with_offset(data, p.offset));
 }
 
 struct MetaClass {

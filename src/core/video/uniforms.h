@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/corefwd.h"
+#include "core/meta.h"
 #include "core/math/transformations.h"
 #include "core/math/mat_array.h"
 
@@ -7,6 +9,9 @@ namespace atom {
 
 class Uniforms {
 public:
+  META_DECLARE_CLASS_PTR;
+  META_DECLARE_CLASS;
+
   Uniforms();
 
   Vec3f color;
@@ -18,6 +23,7 @@ public:
   float alpha;
   Vec3f light_position;
   Vec3f eye_direction;
+  Mat4f mvp;
   Transformations transformations;
 };
 

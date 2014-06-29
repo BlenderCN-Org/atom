@@ -16,3 +16,4 @@
 #include "raw_mesh.cpp"
 #include "shader.cpp"
 #include "technique.cpp"
+#include "uniforms.cpp"

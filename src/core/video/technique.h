@@ -8,11 +8,13 @@
 
 namespace atom {
 
-struct VideoUniform {
-  String name;
+struct ShaderUniform {
   Type   type;
-  GLint  location;
+  String name;
+  GLint  gl_location;
 };
+
+typedef std::vector<ShaderUniform> ShaderUniforms;
 
 class Technique : NonCopyable {
 public:
@@ -35,15 +37,19 @@ public:
 
   void locate_uniforms();
 
+  void pull(const MetaClass &meta, const void *values);
+
   static Type get_type_from_gl_type(GLenum type);
 
-private:
-  const VideoUniform* find_param(const char *name) const;
+  static bool get_shader_uniform_info(GLuint gl_program, GLuint index, ShaderUniform &uniform);
 
 private:
-  VideoService              &my_vs;
-  GLuint                     my_gl_program;
-  std::vector<VideoUniform>  my_uniforms;
+  const ShaderUniform* find_param(const char *name) const;
+
+private:
+  VideoService  &my_vs;
+  GLuint         my_gl_program;
+  ShaderUniforms my_uniforms;
 };
 
 }

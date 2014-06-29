@@ -131,15 +131,6 @@ inline Vec3f rgb_to_vec3f(u8 r, u8 g, u8 b)
   return Vec3f(r / 255.0f, g / 255.0f, b / 255.0f);
 }
 
-/**
- * Get vector components of quaterion.
- */
-template<typename T>
-Vec3<T> to_point3(const Quaternion<T> &q)
-{
-  return Vec3<T>(q.x, q.y, q.z);
-}
-
 StringArray split_string(const String &str, char delim);
 
 /**

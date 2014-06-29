@@ -40,6 +40,7 @@ class Sound;
 class Music;
 
 // system
+class MetaClass;
 struct GameAPI;
 class Core;
 class ResourceService;

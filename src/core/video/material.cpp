@@ -68,7 +68,10 @@ void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   VideoService &vs = context.video_processor;
   vs.bind_program(program);
   program.set_param("model_view_projection", context.uniforms.transformations.model_view_projection());
-  program.set_param("color", color);
+  context.uniforms.color = color;
+//  program.set_param("color", color);
+
+  program.pull(context.uniforms.meta_class, &context.uniforms);
 
   vs.bind_attribute(0, *vertices, Type::VEC3F);
   vs.draw_index_array(GL_TRIANGLES, *indices, indices->size() / sizeof(u32));

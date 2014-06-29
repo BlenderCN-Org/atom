@@ -90,28 +90,20 @@ Type type_of()
   return T::type;
 }
 
-template<>
-inline Type type_of<bool>()
-{
-  return Type::BOOL;
-}
-
-template<>
-inline Type type_of<float>()
-{
-  return Type::FLOAT;
-}
-
-template<>
-inline Type type_of<int>()
-{
-  return Type::INT;
-}
-
 template<typename T>
 inline Type type_of(const T &)
 {
   return type_of<T>();
 }
+
+// toto makro nadefinuje mapovaciu sablonu type_of pre dany typ
+#define MAP_TYPE(type, mapped)  \
+  template<>                    \
+  inline Type type_of<type>()   \
+  { return Type::mapped; }
+
+MAP_TYPE(bool, BOOL)
+MAP_TYPE(float, FLOAT)
+MAP_TYPE(int, INT)
 
 }
