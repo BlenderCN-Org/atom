@@ -73,7 +73,7 @@ String ImageLoader::get_image_filename(const String &name)
 
 ResourcePtr TextureLoader::create_resource(ResourceService &rs, const String &name)
 {
-  ImageResourcePtr image = rs.get_image_resource(name);
+  ImageResourcePtr image = rs.get_image(name);
 
   if (image == nullptr) {
     log::error("Can't find image \"%s\"", name.c_str());
@@ -97,7 +97,7 @@ void TextureLoader::reload_resource(ResourceService &rs, Resource &resource)
 
   if (tokens.size() > 1) {
     uptr<Texture> texture(new Texture(rs.video_service()));
-    texture->init_from_image(rs.get_image_resource(tokens[1])->image());
+    texture->init_from_image(rs.get_image(tokens[1])->image());
     dynamic_cast<TextureResource &>(resource).set_data(std::move(texture));
   }
 //  if (!my_texture_name.empty()) {
@@ -285,7 +285,7 @@ String MaterialLoader::get_material_filename(const String &name)
 MaterialLoader::MaterialLoader()
 {
   material_creators.push_back(MaterialCreator("flat"  , FlatMaterial::create));
-  material_creators.push_back(MaterialCreator("pixmap" , PixmapMaterial::create));
+  material_creators.push_back(MaterialCreator("phong" , PhongMaterial::create));
 }
 
 MaterialLoader::~MaterialLoader()
@@ -300,7 +300,7 @@ MaterialLoader::~MaterialLoader()
 
 ResourcePtr MeshLoader::create_resource(ResourceService &rs, const String &name)
 {
-  RawMeshResourcePtr model_resource = rs.get_raw_mesh_resource(name);
+  RawMeshResourcePtr model_resource = rs.get_raw_mesh(name);
 
   if (model_resource == nullptr) {
     return nullptr;
@@ -322,7 +322,7 @@ void MeshLoader::reload_resource(ResourceService &rs, Resource &resource)
   StringArray tokens = split_resource_name(resource.name());
 
   if (tokens.size() > 1) {
-    RawMeshResourcePtr model_resource = rs.get_raw_mesh_resource(tokens[1]);
+    RawMeshResourcePtr model_resource = rs.get_raw_mesh(tokens[1]);
 
     if (model_resource == nullptr) {
       return;
@@ -337,6 +337,7 @@ void MeshLoader::reload_resource(ResourceService &rs, Resource &resource)
 void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model, Mesh &mesh)
 {
   const ElementArray *vertices = model.find_array("vertices");
+  const ElementArray *normals = model.find_array("normals");
   const ElementArray *indices = model.find_array("indices");
 
   if (vertices == nullptr || indices == nullptr) {
@@ -345,10 +346,16 @@ void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model,
   }
 
   VideoBuffer vertex_buffer(rs.video_service());
+  VideoBuffer normal_buffer(rs.video_service());
   VideoBuffer index_buffer(rs.video_service());
 
   vertex_buffer.set_data(vertices->data.get(), vertices->size);
   index_buffer.set_data(indices->data.get(), indices->size);
+
+  if (normals != nullptr) {
+    normal_buffer.set_data(normals->data.get(), normals->size);
+    mesh.add_stream(StreamId::NORMAL, std::move(normal_buffer));
+  }
 
   mesh.add_stream(StreamId::VERTEX, std::move(vertex_buffer));
   mesh.add_stream(StreamId::INDEX, std::move(index_buffer));
@@ -362,7 +369,7 @@ void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model,
 
 ResourcePtr BitmapFontLoader::create_resource(ResourceService &rs, const String &name)
 {
-  auto texture = rs.get_texture_resource(name);
+  auto texture = rs.get_texture(name);
 
   if (texture == nullptr) {
     log::error("Can't find texture \"%s\"", name.c_str());

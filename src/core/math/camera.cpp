@@ -1,4 +1,4 @@
-#include "core/math/camera.h"
+#include "camera.h"
 #include "core/utils/utils.h"
 
 namespace atom {

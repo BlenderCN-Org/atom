@@ -156,7 +156,7 @@ bool read_texture(const rapidjson::Value &node, TextureResourcePtr &texture, Res
     return false;
   }
 
-  auto texture_resource = rs.get_texture_resource(String(node.GetString()));
+  auto texture_resource = rs.get_texture(String(node.GetString()));
 
   if (texture_resource == nullptr)
     return false;
@@ -171,7 +171,7 @@ bool read_shader(const rapidjson::Value &node, TechniqueResourcePtr &shader, Res
     return false;
   }
 
-  auto shader_resource = rs.get_shader_resource(String(node.GetString()));
+  auto shader_resource = rs.get_technique(String(node.GetString()));
 
   if (shader_resource == nullptr)
     return false;

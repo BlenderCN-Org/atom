@@ -10,3 +10,4 @@ Zavislosti:
 
 TODO:
  - odstranit gl_get_uniform_location, nikde sa nepouziva
+ - rs.get_shader_resource -> get_technique_resource

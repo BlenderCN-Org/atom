@@ -37,7 +37,7 @@ struct Vec3 {
     return data[i];
   }
 
-  T operator[](unsigned i) const
+  const T& operator[](unsigned i) const
   {
     assert(i < SIZE);
     return data[i];

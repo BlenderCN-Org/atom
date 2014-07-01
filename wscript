@@ -144,6 +144,8 @@ def get_windows_params(type, ctx):
     if thirdparty == None:
         ctx.fatal("Missing environment variable THIRDPARTY")
 
+    # potrebne kvoli M_PI a dalsim konstantam z matth.h
+    ctx.env.append_unique('DEFINES', ['_USE_MATH_DEFINES'])
     ctx.env.append_unique('CXXFLAGS', ['/EHsc', '/MD', '/FS'])
     ctx.env.append_value('CXXFLAGS', ['/I', thirdparty + '/include'])
     ctx.env.append_value('LINKFLAGS', ['/NODEFAULTLIB:libcmt.lib', '/ignore:4204'])

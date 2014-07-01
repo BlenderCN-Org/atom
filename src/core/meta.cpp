@@ -110,4 +110,11 @@ void copy_field_values(const MetaClass &src_meta, const MetaClass &dst_meta, con
   }
 }
 
+MetaObject::MetaObject(MetaClass &meta, void *ptr)
+  : meta_class(meta)
+  , data(ptr)
+{
+  assert(data != nullptr);
+}
+
 }

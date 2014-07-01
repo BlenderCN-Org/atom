@@ -12,7 +12,7 @@ struct Mat2 {
 
   Vec2<T> data[SIZE];
 
-  Mat2() {};
+  Mat2() = default;
 
   Mat2(
     T v00, T v01,
@@ -31,7 +31,7 @@ struct Mat2 {
     return data[column][row];
   }
 
-  T value(unsigned row, unsigned column) const
+  const T& value(unsigned row, unsigned column) const
   {
     assert(row < SIZE);
     assert(column < SIZE);
@@ -45,7 +45,7 @@ struct Mat2 {
     return data[column][row];
   }
 
-  T operator()(unsigned row, unsigned column) const
+  const T& operator()(unsigned row, unsigned column) const
   {
     assert(row < SIZE);
     assert(column < SIZE);

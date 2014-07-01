@@ -97,7 +97,7 @@ uptr<BitmapFont> BitmapFont::create(ResourceService &rs, const std::string &name
 
   // nacitaj a spracuj kerning
 
-  return uptr<BitmapFont>(new BitmapFont(rs.get_texture_resource(name), chars,
+  return uptr<BitmapFont>(new BitmapFont(rs.get_texture(name), chars,
     static_cast<float>(line_height) / base_height, 1));
 }
 

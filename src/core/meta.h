@@ -118,4 +118,18 @@ void copy_field_values(const S &src, D &dst)
   copy_field_values(*src.meta, *dst.meta, &src, &dst);
 }
 
+
+struct MetaObject {
+  const MetaClass &meta_class;
+  void            *data;
+
+  MetaObject(MetaClass &meta, void *ptr);
+};
+
+template<typename T>
+MetaObject meta_object(T& obj)
+{
+  return MetaObject(obj.meta_class, &obj);
+}
+
 }

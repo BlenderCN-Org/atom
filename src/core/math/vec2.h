@@ -13,7 +13,7 @@ struct Vec2 {
 
   typedef T value_type;
 
-  Vec2() {}
+  Vec2() = default;
 
   Vec2(T x, T y)
   {
@@ -27,7 +27,7 @@ struct Vec2 {
     return data[i];
   }
 
-  T operator[](unsigned i) const
+  const T& operator[](unsigned i) const
   {
     assert(i < SIZE);
     return data[i];

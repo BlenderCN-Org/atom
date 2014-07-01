@@ -232,8 +232,8 @@ void GameView::resizeGL(int w, int h)
 void GameView::load()
 {
   log::debug(DEBUG_EDITOR, "Loading game view");
-  core().resource_service().get_mesh_resource("compound");
-  core().resource_service().get_material_resource("test2");
+  core().resource_service().get_mesh("compound");
+  core().resource_service().get_material("test2");
 }
 
 void GameView::unload()

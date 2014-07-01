@@ -1,6 +1,6 @@
 {
-  "type" : "flat",
-  "shader" : "flat",
+  "type" : "phong",
+  "shader" : "phong",
   "color" : [ 1, 0, 0 ],
-  "face" : "both"
+  "face" : "front"
 }

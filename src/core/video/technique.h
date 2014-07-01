@@ -37,7 +37,7 @@ public:
 
   void locate_uniforms();
 
-  void pull(const MetaClass &meta, const void *values);
+  void pull(const MetaObject &properties);
 
   static Type get_type_from_gl_type(GLenum type);
 

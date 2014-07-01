@@ -100,11 +100,9 @@ struct KeyEvent;
 
 class Frame;
 
-class Component;
-class Service;
-
 // components
-class MeshComponent;
+class Component;
+class RenderComponent;
 
 // component utils
 class AbstractLink;

@@ -2,12 +2,13 @@
 
 #include <core/world/entity.h>
 #include <core/video/mesh_tree_node.h>
+#include <core/component/render_component.h>
 
 namespace atom {
 
 class TestObject : public Entity {
 private:
-  sptr<MeshTreeNode> my_node;
+  RenderComponent my_render;
 
 public:
   static uptr<Entity> create(World &world, Core &core);

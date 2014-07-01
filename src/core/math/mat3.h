@@ -20,7 +20,7 @@ struct Mat3 {
     return data[column][row];
   }
 
-  T value(unsigned row, unsigned column) const
+  const T& value(unsigned row, unsigned column) const
   {
     assert(row < SIZE);
     assert(column < SIZE);
@@ -34,7 +34,7 @@ struct Mat3 {
     return data[column][row];
   }
 
-  T operator()(unsigned row, unsigned column) const
+  const T& operator()(unsigned row, unsigned column) const
   {
     assert(row < SIZE);
     assert(column < SIZE);
@@ -53,7 +53,7 @@ struct Mat3 {
     return data[column];
   }
 
-  Mat3() {};
+  Mat3() = default;
 
   Mat3(
     T v00, T v01, T v02,

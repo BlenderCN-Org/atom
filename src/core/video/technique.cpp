@@ -147,17 +147,33 @@ void Technique::locate_uniforms()
 void set_uniform(const MetaField &meta_field, const void *data, GLint gl_location)
 {
   switch (meta_field.type) {
-    case Type::MAT4F: {
-      const Mat4f &m = field_ref<Mat4f>(meta_field, data);
-      glUniformMatrix4fv(gl_location, 1, false, m.data[0].data);
+// need implementation
+//    case Type::F32: {
+//    }
+//    case Type::F32: {
+//    }
+
+    case Type::VEC2F: {
+      const Vec2f &v = field_ref<Vec2f>(meta_field, data);
+      glUniform2fv(gl_location, 1, &v[0]);
       break;
     }
 
     case Type::VEC3F: {
       const Vec3f &v = field_ref<Vec3f>(meta_field, data);
-      glUniform3fv(gl_location, 1, v.data);
-//      glUniform3f(gl_location, v.x, v.y, v.z);
-//      log::info("Setting color %f,%f,%f", v.x, v.y, v.z);
+      glUniform3fv(gl_location, 1, &v[0]);
+      break;
+    }
+
+    case Type::VEC4F: {
+      const Vec4f &v = field_ref<Vec4f>(meta_field, data);
+      glUniform4fv(gl_location, 1, &v[0]);
+      break;
+    }
+
+    case Type::MAT4F: {
+      const Mat4f &m = field_ref<Mat4f>(meta_field, data);
+      glUniformMatrix4fv(gl_location, 1, false, &m[0][0]);
       break;
     }
 
@@ -166,15 +182,13 @@ void set_uniform(const MetaField &meta_field, const void *data, GLint gl_locatio
   }
 }
 
-void Technique::pull(const MetaClass &meta, const void *values)
+void Technique::pull(const MetaObject &properties)
 {
-  assert(values != nullptr);
-
   for (const ShaderUniform &u : my_uniforms) {
-    const MetaField *meta_field = meta.find_field(u.name.c_str());
+    const MetaField *meta_field = properties.meta_class.find_field(u.name.c_str());
     if (meta_field != nullptr) {
       log::info("Pulling uniform %s", u.name.c_str());
-      set_uniform(*meta_field, values, u.gl_location);
+      set_uniform(*meta_field, properties.data, u.gl_location);
     }
   }
 }

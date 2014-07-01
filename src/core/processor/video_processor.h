@@ -7,7 +7,15 @@
 
 namespace atom {
 
+typedef std::vector<RenderComponent *> RenderComponentArray;
+
 class VideoProcessor : private NonCopyable {
+  VideoService        &my_vs;
+  ResourceService     &my_rs;
+  GBuffer              my_gbuffer;
+  MeshTree             my_mesh_tree;
+  RenderComponentArray my_components;
+
 public:
   VideoProcessor(VideoService &vs, ResourceService &rs);
   ~VideoProcessor();
@@ -22,11 +30,8 @@ public:
 
   GBuffer& get_gbuffer();
 
-private:
-  VideoService    &my_vs;
-  ResourceService &my_rs;
-  GBuffer          my_gbuffer;
-  MeshTree         my_mesh_tree;
+  void register_component(RenderComponent *component);
+  void unregister_component(RenderComponent *component);
 };
 
 }

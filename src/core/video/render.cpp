@@ -38,6 +38,8 @@ void render_scene(VideoService &vs, DrawService &ds, const MeshTree &mesh_tree, 
 
       const Material &m = node->material->material();
       u.transformations.model = node->transformations;
+      u.model = u.transformations.model;
+      u.mvp = u.transformations.model_view_projection();
       vs.set_draw_face(DrawFace::BOTH);
       vs.set_draw_face(m.face);
       node->material->material().draw_mesh(context,

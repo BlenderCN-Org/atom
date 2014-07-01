@@ -13,12 +13,8 @@ public:
   explicit Component(Entity &entity);
   virtual ~Component();
 
-  void attach();
-  void detach();
-
-  virtual void on_attach() = 0;
-
-  virtual void on_detach() = 0;
+  virtual void attach() = 0;
+  virtual void detach() = 0;
 
   // volat len po welcome a pred goodbye
   Entity& entity() const;
@@ -28,9 +24,6 @@ public:
   Core& core() const;
 
   WorldProcessorsRef processors() const;
-
-//  virtual void welcome();
-//  virtual void goodbye();
 
 public:
   u32        my_priority;

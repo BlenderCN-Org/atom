@@ -57,28 +57,26 @@ public:
 
 //-----------------------------------------------------------------------------
 //
-// Flat Material
+// Phong Material
 //
 //-----------------------------------------------------------------------------
 
-class PixmapMaterial : public Material {
+class PhongMaterial : public Material {
 public:
   static uptr<Material> create(ResourceService &rs);
 
-  PixmapMaterial(VideoService &vs, const TechniqueResourcePtr &pixmap_shader);
+  PhongMaterial(const TechniqueResourcePtr &shader);
 
-  ~PixmapMaterial();
+  ~PhongMaterial();
 
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
 
-  TechniqueResourcePtr  my_shader;
-  TextureResourcePtr my_texture;
-  TextureSampler     my_sampler;
-  Vec3f              my_color;
+  TechniqueResourcePtr my_shader;
+  Vec3f                my_color;
 
   META_DECLARE_CLASS;
 private:
-  Technique my_program;
+  TechniqueResourcePtr my_program;
 };
 
 }

@@ -184,7 +184,7 @@ struct Mat4 {
     return data[column][row];
   }
 
-  T value(unsigned row, unsigned column) const
+  const T& value(unsigned row, unsigned column) const
   {
     assert(row < SIZE);
     assert(column < SIZE);
@@ -198,7 +198,7 @@ struct Mat4 {
     return data[column][row];
   }
 
-  T operator()(unsigned row, unsigned column) const
+  const T& operator()(unsigned row, unsigned column) const
   {
     assert(row < SIZE);
     assert(column < SIZE);
@@ -217,7 +217,7 @@ struct Mat4 {
     return data[column];
   }
 
-  Mat4() {}
+  Mat4() = default;
 
   Mat4(
     T v00, T v01, T v02, T v03,

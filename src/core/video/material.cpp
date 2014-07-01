@@ -33,11 +33,10 @@ META_DEFINE_CLASS(FlatMaterial, Material, "FlatMaterial");
 
 uptr<Material> FlatMaterial::create(ResourceService &rs)
 {
-  return uptr<Material>(new FlatMaterial(rs.get_shader_resource("flat")));
+  return uptr<Material>(new FlatMaterial(rs.get_technique("flat")));
 }
 
-FlatMaterial::FlatMaterial(
-  const TechniqueResourcePtr &xshader)
+FlatMaterial::FlatMaterial(const TechniqueResourcePtr &xshader)
   : shader(xshader)
 {
   META_INIT();
@@ -71,7 +70,8 @@ void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   context.uniforms.color = color;
 //  program.set_param("color", color);
 
-  program.pull(context.uniforms.meta_class, &context.uniforms);
+  MetaObject properties = meta_object(context.uniforms);
+  program.pull(properties);
 
   vs.bind_attribute(0, *vertices, Type::VEC3F);
   vs.draw_index_array(GL_TRIANGLES, *indices, indices->size() / sizeof(u32));
@@ -81,82 +81,59 @@ void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 
 //-----------------------------------------------------------------------------
 //
-// Pixmap Material
+// Phong Material
 //
 //-----------------------------------------------------------------------------
 
-META_DEFINE_FIELDS(PixmapMaterial) {
-  FIELD(PixmapMaterial, my_shader, "shader"),
-  FIELD(PixmapMaterial, my_texture, "texture"),
-  FIELD(PixmapMaterial, my_color, "color"),
+META_DEFINE_FIELDS(PhongMaterial) {
+  FIELD(PhongMaterial, my_shader, "shader"),
+  FIELD(PhongMaterial, my_color, "color"),
 };
 
-META_DEFINE_CLASS(PixmapMaterial, Material, "PixmapMaterial");
+META_DEFINE_CLASS(PhongMaterial, Material, "PhongMaterial");
 
 
-uptr<Material> PixmapMaterial::create(ResourceService &rs)
+uptr<Material> PhongMaterial::create(ResourceService &rs)
 {
-  return uptr<Material>(new PixmapMaterial(rs.video_service(), rs.get_shader_resource("pixmap")));
+  return uptr<Material>(new PhongMaterial(rs.get_technique("phong")));
 }
 
-PixmapMaterial::PixmapMaterial(VideoService &vs, const TechniqueResourcePtr &pixmap_shader)
-  : my_sampler(TextureFilter::NEAREST, TextureWrap::REPEAT)
-  , my_program(vs)
+PhongMaterial::PhongMaterial(const TechniqueResourcePtr &shader)
+  : my_program(shader)
 {
   META_INIT();
-
-  Shader vertex_shader(vs, VideoShaderType::VERTEX);
-  Shader pixel_shader(vs, VideoShaderType::PIXEL);
-  String vertex_src, pixel_src;
-
-  utils::load_file_into_string("data/shader/pixmap.vs", vertex_src);
-  utils::load_file_into_string("data/shader/pixmap.ps", pixel_src);
-
-
-  if (!vertex_shader.compile(vertex_src)) {
-    error("Error while compiling vertex shader");
-  }
-
-  if (!pixel_shader.compile(pixel_src)) {
-    error("Error while compiling pixel shader");
-  }
-
-  if (!my_program.link(pixel_shader, vertex_shader)) {
-    error("Error while linking program");
-  }
-  my_program.locate_uniforms();
 }
 
-PixmapMaterial::~PixmapMaterial()
+PhongMaterial::~PhongMaterial()
 {
 }
 
-void PixmapMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
+void PhongMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
   assert(my_shader != nullptr);
   const VideoBuffer *vb = mesh.find_stream(StreamId::VERTEX);
-  const VideoBuffer *ub = mesh.find_stream(StreamId::UV);
+  const VideoBuffer *nb = mesh.find_stream(StreamId::NORMAL);
 
-  if (vb == nullptr || ub == nullptr) {
+  if (vb == nullptr || nb == nullptr) {
     log::warning("This mesh doesn't contain vertex or uv stream");
     return;
   }
 
 
   VideoService &vs = context.video_processor;
+  vs.enable_depth_test();
 
-  vs.bind_program(my_program);
-  my_program.set_param("model_view_projection", context.uniforms.transformations.model_view_projection());
-  my_program.set_param("factor", my_color);
+  Technique &program = my_program->program();
+  vs.bind_program(program);
+  context.uniforms.color = Vec3f(1, 1, 1);
+  context.uniforms.sun_dir = Vec3f(0, 0, -1);
+//  program.set_param("model_view_projection", context.uniforms.transformations.model_view_projection());
+  program.pull(meta_object(context.uniforms));
 
   vs.bind_attribute(0, *vb, Type::VEC3F);
-  vs.bind_attribute(1, *ub, Type::VEC2F);
-  vs.bind_texture(0, my_texture->texture());//, shader.uniform_pixmap_texture());
-  vs.bind_sampler(0, my_sampler);
+  vs.bind_attribute(1, *nb, Type::VEC3F);
 
   vs.draw_arrays(GL_TRIANGLES, 0, vb->size() / sizeof(Vec3f));
-  vs.unbind_sampler(0);
-  vs.unbind_texture(0);
   vs.unbind_vertex_attribute(0);
   vs.unbind_vertex_attribute(1);
 }

@@ -16,16 +16,6 @@ Component::~Component()
 
 }
 
-void Component::attach()
-{
-  on_attach();
-}
-
-void Component::detach()
-{
-  on_detach();
-}
-
 Entity& Component::entity() const
 {
   return my_entity;

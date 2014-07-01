@@ -34,23 +34,23 @@ public:
 
   void print();
 
-  ImageResourcePtr get_image_resource(const String &name);
+  ImageResourcePtr get_image(const String &name);
 
-  TextureResourcePtr get_texture_resource(const String &name);
+  TextureResourcePtr get_texture(const String &name);
 
-  TechniqueResourcePtr get_shader_resource(const String &name);
+  TechniqueResourcePtr get_technique(const String &name);
 
-  MaterialResourcePtr get_material_resource(const String &name);
+  MaterialResourcePtr get_material(const String &name);
 
-  RawMeshResourcePtr get_raw_mesh_resource(const String &name);
+  RawMeshResourcePtr get_raw_mesh(const String &name);
 
-  MeshResourcePtr get_mesh_resource(const String &name);
+  MeshResourcePtr get_mesh(const String &name);
 
-  BitmapFontResourcePtr get_bitmap_font_resource(const String &name);
+  BitmapFontResourcePtr get_bitmap_font(const String &name);
 
-  SoundResourcePtr get_sound_resource(const String &name);
+  SoundResourcePtr get_sound(const String &name);
 
-  MusicResourcePtr get_music_resource(const String &name);
+  MusicResourcePtr get_music(const String &name);
 
   ResourcePtr find_resource(const String &resource_name);
 

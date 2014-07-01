@@ -29,7 +29,7 @@ FrameProcessor::FrameProcessor(Core &core)
   : my_core(core)
   , my_post_frame_callback(nullptr)
 {
-  my_font = core.resource_service().get_bitmap_font_resource("font");
+  my_font = core.resource_service().get_bitmap_font("font");
 }
 
 FrameProcessor::~FrameProcessor()

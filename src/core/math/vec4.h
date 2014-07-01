@@ -12,7 +12,7 @@ struct Vec4 {
 
   typedef T value_type;
 
-  Vec4() {}
+  Vec4() = default;
 
   Vec4(T vx, T vy, T vz, T vw)
     : x(vx)
@@ -35,7 +35,7 @@ struct Vec4 {
     return data[i];
   }
 
-  T operator[](unsigned i) const
+  const T& operator[](unsigned i) const
   {
     assert(i < SIZE);
     return data[i];

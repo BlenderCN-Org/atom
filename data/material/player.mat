@@ -1,7 +1,0 @@
-{
-  "type" : "pixmap",
-  "shader" : "pixmap",
-  "color" : [ 1.0, 1.0, 1.0 ],
-  "texture" : "girl",
-  "face" : "both"
-}

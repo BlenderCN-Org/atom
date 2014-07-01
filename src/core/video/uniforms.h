@@ -24,6 +24,8 @@ public:
   Vec3f light_position;
   Vec3f eye_direction;
   Mat4f mvp;
+  Mat4f model;
+  Vec3f sun_dir;
   Transformations transformations;
 };
 

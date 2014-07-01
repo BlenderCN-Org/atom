@@ -166,47 +166,47 @@ void ResourceService::print()
     log::info("%s (%i)", resource->name().c_str(), resource.use_count() - 1);
 }
 
-ImageResourcePtr ResourceService::get_image_resource(const String &name)
+ImageResourcePtr ResourceService::get_image(const String &name)
 {
   return find_or_load_resource<ImageResource>(*this, name, RESOURCE_IMAGE_TAG, my_loaders->image);
 }
 
-TextureResourcePtr ResourceService::get_texture_resource(const String &name)
+TextureResourcePtr ResourceService::get_texture(const String &name)
 {
   return find_or_load_resource<TextureResource>(*this, name, RESOURCE_TEXTURE_TAG, my_loaders->texture);
 }
 
-TechniqueResourcePtr ResourceService::get_shader_resource(const String &name)
+TechniqueResourcePtr ResourceService::get_technique(const String &name)
 {
   return find_or_load_resource<TechniqueResource>(*this, name, RESOURCE_SHADER_TAG, my_loaders->shader);
 }
 
-MaterialResourcePtr ResourceService::get_material_resource(const String &name)
+MaterialResourcePtr ResourceService::get_material(const String &name)
 {
   return find_or_load_resource<MaterialResource>(*this, name, RESOURCE_MATERIAL_TAG, my_loaders->material);
 }
 
-RawMeshResourcePtr ResourceService::get_raw_mesh_resource(const String &name)
+RawMeshResourcePtr ResourceService::get_raw_mesh(const String &name)
 {
   return find_or_load_resource<RawMeshResource>(*this, name, RESOURCE_MODEL_TAG, my_loaders->raw_mesh);
 }
 
-MeshResourcePtr ResourceService::get_mesh_resource(const String &name)
+MeshResourcePtr ResourceService::get_mesh(const String &name)
 {
   return find_or_load_resource<MeshResource>(*this, name, RESOURCE_MESH_TAG, my_loaders->mesh);
 }
 
-BitmapFontResourcePtr ResourceService::get_bitmap_font_resource(const String &name)
+BitmapFontResourcePtr ResourceService::get_bitmap_font(const String &name)
 {
   return find_or_load_resource<BitmapFontResource>(*this, name, RESOURCE_BITMAP_FONT_TAG, my_loaders->bitmap_font);
 }
 
-SoundResourcePtr ResourceService::get_sound_resource(const String &name)
+SoundResourcePtr ResourceService::get_sound(const String &name)
 {
   return find_or_load_resource<SoundResource>(*this, name, RESOURCE_SOUND_TAG, my_loaders->sound);
 }
 
-MusicResourcePtr ResourceService::get_music_resource(const String &name)
+MusicResourcePtr ResourceService::get_music(const String &name)
 {
   return find_or_load_resource<MusicResource>(*this, name, RESOURCE_MUSIC_TAG, my_loaders->music);
 }

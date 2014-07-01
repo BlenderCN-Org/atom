@@ -345,7 +345,7 @@ void EditorWindow::switch_mode(EditorWindow::Mode mode)
       center_cursor(*my_game_view);
 
 
-      SoundResourcePtr test_sound = application().core().resource_service().get_sound_resource("level1_music");
+      SoundResourcePtr test_sound = application().core().resource_service().get_sound("level1_music");
       application().core().audio_service().play(test_sound, true);
 
 
