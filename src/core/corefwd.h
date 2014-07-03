@@ -102,6 +102,7 @@ class Frame;
 
 // components
 class Component;
+class MeshComponent;
 class RenderComponent;
 
 // component utils
@@ -114,6 +115,6 @@ class ScriptProcessor;
 // math
 class TransformationStack;
 struct Transformations;
-class Camera;
+struct Camera;
 
 }

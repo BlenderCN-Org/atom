@@ -3,11 +3,13 @@
 #include <core/world/entity.h>
 #include <core/video/mesh_tree_node.h>
 #include <core/component/render_component.h>
+#include <core/component/mesh_component.h>
 
 namespace atom {
 
 class TestObject : public Entity {
 private:
+  MeshComponent my_mesh;
   RenderComponent my_render;
 
 public:

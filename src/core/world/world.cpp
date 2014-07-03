@@ -93,7 +93,6 @@ void World::step()
 
   my_processors.physics->poll();
   my_processors.script->poll();
-  my_processors.video->poll();
 
   if (my_is_live) {
     ++my_tick;

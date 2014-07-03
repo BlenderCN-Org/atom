@@ -9,5 +9,8 @@ Zavislosti:
  - Bullet
 
 TODO:
- - odstranit gl_get_uniform_location, nikde sa nepouziva
- - rs.get_shader_resource -> get_technique_resource
+ - attachable components
+ - premenovat MAP_COMPONENT_TYPE na napr. DECLARE_COMPONENT, DEFINE_COMPONENT,
+   "INSTALL_COMPONENT", "REGISTER_COMPONENT"
+ - debug per entity, per component?
+ - prekopat MoveCommand, aby pouzivat transform a nie position/rotation

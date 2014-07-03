@@ -3,35 +3,36 @@
 #include "core/video/mesh_tree_node.h"
 #include "core/world/world.h"
 #include "core/processor/video_processor.h"
+#include "core/component/mesh_component.h"
 
 namespace atom {
 
-RenderComponent::RenderComponent(Entity &entity, const MeshResourcePtr &mesh,
+RenderComponent::RenderComponent(Entity &entity, MeshComponent &mesh,
   const MaterialResourcePtr &material)
-  : Component(entity)
-  , my_mesh(mesh)
+  : Component(ComponentType::RENDER, entity)
+  , my_mesh_component(mesh)
   , my_material(material)
-  , my_node(std::make_shared<MeshTreeNode>())
 {
-  my_node->material = my_material;
-  my_node->mesh_resource = my_mesh;
 }
 
 void RenderComponent::attach()
 {
-  MeshTree *mesh_tree = processors().video.mesh_tree();
-  mesh_tree->add_node(my_node);
+  processors().video.register_component(this);
 }
 
 void RenderComponent::detach()
 {
-  MeshTree *mesh_tree = processors().video.mesh_tree();
-  mesh_tree->remove_node(my_node);
+  processors().video.unregister_component(this);
 }
 
-void RenderComponent::update_transform()
+const MaterialResourcePtr &RenderComponent::material() const
 {
-  my_node->transformations = Mat4f::translation(entity().position());
+  return my_material;
+}
+
+const MeshResourcePtr& RenderComponent::mesh() const
+{
+  return my_mesh_component.mesh();
 }
 
 }

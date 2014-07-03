@@ -8,9 +8,18 @@
 
 namespace atom {
 
+enum class ComponentType {
+  UNKNOWN,
+  RENDER,
+  MESH,
+  RAW_MESH,
+  SCRIPT,
+  SKELETON
+};
+
 class Component : NonCopyable {
 public:
-  explicit Component(Entity &entity);
+  Component(ComponentType type, Entity &entity);
   virtual ~Component();
 
   virtual void attach() = 0;
@@ -24,10 +33,29 @@ public:
   Core& core() const;
 
   WorldProcessorsRef processors() const;
+  
+  ComponentType type() const;
+  
+  const String& name() const;
+  
+  void set_name(const String &name);
 
 public:
-  u32        my_priority;
-  Entity    &my_entity;
+  ComponentType my_type;
+  u32           my_priority;
+  Entity       &my_entity;
+  String        my_name;
 };
+
+template<typename T>
+ComponentType component_type_of()
+{
+  return ComponentType::UNKNOWN;
+}
+
+#define MAP_COMPONENT_TYPE(type, mapped)  \
+  template<>                    \
+  inline ComponentType component_type_of<type>()   \
+  { return ComponentType::mapped; }
 
 }

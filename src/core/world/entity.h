@@ -8,6 +8,7 @@
 #include "core/math/mat.h"
 #include "core/math/bounding_box.h"
 #include "core/math/transformations.h"
+#include "core/component/component.h"
 
 namespace atom {
 
@@ -50,11 +51,11 @@ public:
 
   void set_id(const String &id);
 
-  Vec3f position() const;
-
-  void set_position(const Vec3f &position);
-
   void set_size(f32 width, f32 height);
+  
+  const Mat4f& transform() const;
+  
+  void set_transform(const Mat4f &transform);
 
   void update_bounding_box();
 
@@ -70,6 +71,29 @@ public:
   bool is_live() const;
 
   Core& core() const;
+  
+  Component* find_component(const String &name);
+  
+  Component* find_component(ComponentType type);
+  
+  template<typename T>
+  T* find_component()
+  {
+    Component *component = find_component(component_type_of<T>());
+    return component != nullptr ? static_cast<T *>(component) : nullptr;
+  }
+  
+  template<typename T>
+  T* find_component(const String &name)
+  {
+    Component *component = find_component(name);
+    return component != nullptr ? static_cast<T *>(component) : nullptr;
+  }
+  
+  std::vector<Component *> find_components(ComponentType type);
+  
+  
+  
 
   enum class State {
     NEW,
@@ -93,11 +117,10 @@ private:
   State          my_state;
   f32            my_width;
   f32            my_height;
+  Mat4f          my_transform;
   BoundingBox    my_bounding_box;
   String         my_id;
   String         my_class;
-  Vec3f          my_position;
-  f32            my_rotation;
   ComponentArray my_components;
 };
 

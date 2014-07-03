@@ -1,23 +1,26 @@
 #pragma once
 
-#include "core/component/component.h"
+#include "component.h"
 #include "core/video/material.h"
 
 namespace atom {
 
 class RenderComponent : public Component {
-  MeshResourcePtr my_mesh;
+  MeshComponent &my_mesh_component;
   MaterialResourcePtr my_material;
-  sptr<MeshTreeNode> my_node;
 
 public:
-  explicit RenderComponent(Entity &entity, const MeshResourcePtr &mesh,
+  explicit RenderComponent(Entity &entity, MeshComponent &mesh,
     const MaterialResourcePtr &material);
 
   void attach() override;
   void detach() override;
-
-  void update_transform();
+  
+  const MaterialResourcePtr& material() const;
+  
+  const MeshResourcePtr& mesh() const;
 };
+
+MAP_COMPONENT_TYPE(RenderComponent, RENDER)
 
 }

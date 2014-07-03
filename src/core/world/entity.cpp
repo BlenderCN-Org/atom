@@ -1,5 +1,5 @@
 #include "entity.h"
-
+#include <algorithm>
 #include "core/video/mesh.h"
 #include "core/video/uniforms.h"
 #include "core/component/component.h"
@@ -9,8 +9,7 @@ namespace atom {
 META_DEFINE_FIELDS(Entity) {
   FIELD(Entity, my_id, "id"),
   FIELD(Entity, my_class, "class"),
-  FIELD(Entity, my_position, "position"),
-  FIELD(Entity, my_rotation, "rotation")
+  FIELD(Entity, my_transform, "transform")
 };
 
 META_DEFINE_ROOT_CLASS(Entity, "Entity");
@@ -76,20 +75,20 @@ void Entity::set_id(const String &id)
   my_id = id;
 }
 
-Vec3f Entity::position() const
-{
-  return my_position;
-}
-
-void Entity::set_position(const Vec3f &position)
-{
-  my_position = position;
-}
-
 void Entity::set_size(f32 width, f32 height)
 {
   my_width = width;
   my_height = height;
+}
+
+const Mat4f& Entity::transform() const
+{
+  return my_transform;
+}
+
+void Entity::set_transform(const Mat4f &transform)
+{
+  my_transform = transform;
 }
 
 void Entity::update_bounding_box()
@@ -127,6 +126,20 @@ Core& Entity::core() const
   return my_core;
 }
 
+Component* Entity::find_component(const String &name)
+{
+  auto found = std::find_if(my_components.begin(), my_components.end(),
+    [name](const Component *component) { return component->name() == name; });
+  return found != my_components.end() ? *found : nullptr;
+}
+
+Component* Entity::find_component(ComponentType type)
+{
+  auto found = std::find_if(my_components.begin(), my_components.end(),
+    [type](const Component *component) { return component->type() == type; });
+  return found != my_components.end() ? *found : nullptr;
+}
+
 void Entity::register_component(Component *component)
 {
   assert(component != nullptr);
@@ -139,8 +152,7 @@ void Entity::init(f32 width, f32 height, const Vec3f &position, f32 rotation)
   my_width = width;
   my_height = height;
   my_class = "Base class";
-  my_position = position;
-  my_rotation = rotation;
+  my_transform = Mat4f::identity();
   META_INIT();
 }
 

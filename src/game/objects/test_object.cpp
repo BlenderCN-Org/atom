@@ -13,8 +13,8 @@ uptr<Entity> TestObject::create(World &world, Core &core)
 
 TestObject::TestObject(World &world, Core &core)
   : Entity(world, core)
-  , my_render(*this, core.resource_service().get_mesh("compound"),
-      core.resource_service().get_material("test2"))
+  , my_mesh(*this, "compound")
+  , my_render(*this, my_mesh, core.resource_service().get_material("test2"))
 {
 }
 

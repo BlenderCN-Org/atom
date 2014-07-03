@@ -43,28 +43,6 @@ private:
 #endif // NDEBUG
 void gl_check_error_with_message(const char *first, const char *second);
 
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
-#define gl_get_uniform_location(program, name) gl_get_uniform_location_with_message(program, name,  __FILE__ ":" TOSTRING(__LINE__))
-#ifndef NDEBUG
-/**
- * Bezpecnejsia verzia glGetUniformLocation - testuje vstupne parametre
- * a navratovu hodnotu funkcie glGetUniformLocation (pri chybe skonci
- * program asser-cnou chybou.
- * Pri nenajdeni danej hodnoty skonci chybou - plati pre Debug rezim.
- * Pri Release rezime sa chova presne rovnako ako glGetUniformLocation.
- */
-
-GLint gl_get_uniform_location_with_message(GLuint program, const GLchar *name,
-    const char *message);
-#else // Release verzia - nema ziadne bezpecnostne opatrenia
-inline GLint gl_get_uniform_location_with_message(GLuint program, const GLchar *name, const char *message)
-{
-  return glGetUniformLocation(program, name);
-}
-
-#endif
-
 bool is_read_framebuffer_complete();
 
 bool is_draw_framebuffer_complete();

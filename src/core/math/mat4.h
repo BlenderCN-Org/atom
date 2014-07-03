@@ -13,6 +13,8 @@ struct Mat4 {
   enum {
     SIZE = 4
   };
+  
+  typedef T ValueType;
 
   Vec4<T> data[SIZE];
 

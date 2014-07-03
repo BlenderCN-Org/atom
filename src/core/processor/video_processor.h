@@ -26,7 +26,7 @@ public:
 
   MeshTree* gui_tree();
 
-  void poll();
+  void render(const Camera &camera);
 
   GBuffer& get_gbuffer();
 

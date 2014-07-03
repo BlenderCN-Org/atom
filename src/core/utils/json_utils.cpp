@@ -117,6 +117,31 @@ bool read_vector(const rapidjson::Value &node, T &value)
   return true;
 }
 
+template<typename T>
+bool read_matrix(const rapidjson::Value &node, T &value)
+{
+  if (!node.IsArray() || node.Size() != T::SIZE * T::SIZE) {
+    return false;
+  }
+
+  T tmp;
+  
+  for (uint col = 0; col < T::SIZE; ++col) {
+    for (uint row = 0; row < T::SIZE; ++row) {
+      const rapidjson::Value &element = node[col * T::SIZE + row];
+  
+      if (!element.IsNumber()) {
+        return false;
+      }
+  
+      tmp[col][row] = get_number_from_json<typename T::ValueType>(element);  
+    }
+  }
+
+  value = tmp;
+  return true;
+}
+
 bool read_bool(const rapidjson::Value &node, bool &value)
 {
   if (node.IsTrue()) {
@@ -185,21 +210,26 @@ void write_float(float value, rapidjson::Value &node)
   node.SetDouble(value);
 }
 
-template<typename Allocator>
-void write_vec2f(const Vec2f &value, rapidjson::Value &node, Allocator &allocator)
+template<typename T, typename Allocator>
+void write_vector(const T &v, rapidjson::Value &node, Allocator &allocator)
 {
   node.SetArray();
-  node.PushBack(value.x, allocator);
-  node.PushBack(value.y, allocator);
+  
+  for (uint i = 0; i < T::SIZE; ++i) {
+    node.PushBack(v[i], allocator);  
+  }
 }
 
-template<typename Allocator>
-void write_vec3f(const Vec3f &value, rapidjson::Value &node, Allocator &allocator)
+template<typename T, typename Allocator>
+void write_matrix(const T &m, rapidjson::Value &node, Allocator &allocator)
 {
   node.SetArray();
-  node.PushBack(value.x, allocator);
-  node.PushBack(value.y, allocator);
-  node.PushBack(value.z, allocator);
+  
+  for (uint col = 0; col < T::SIZE; ++col) {
+    for (uint row = 0; row < T::SIZE; ++row) {
+      node.PushBack(m[col][row], allocator);
+    }
+  }
 }
 
 bool read_draw_face(const rapidjson::Value &node, DrawFace &face)
@@ -262,6 +292,10 @@ ReadResult read_basic_property_from_json(const rapidjson::Value &obj, const Meta
     case Type::VEC3F:
       parsed = read_vector<Vec3f>(node, field_ref<Vec3f>(p, data));
       break;
+      
+    case Type::MAT4F:
+      parsed = read_matrix<Mat4f>(node, field_ref<Mat4f>(p, data));
+      break;
 
     default:
       log::error("This type is not handled");
@@ -316,27 +350,32 @@ bool write_basic_property_to_json(rapidjson::Document &doc, rapidjson::Value &ob
       write_bool(field_ref<bool>(field, data), node);
       obj.AddMember(field.name, node, doc.GetAllocator());
       return true;
+      
+    case Type::FLOAT:
+      write_float(field_ref<float>(field, data), node);
+      obj.AddMember(field.name, node, doc.GetAllocator());
+      return true;
+  
+    case Type::STRING:
+      write_string(field_ref<String>(field, data), node);
+      obj.AddMember(field.name, node, doc.GetAllocator());
+      return true;
 
 //      //  case Type::INT:
 //      //  case Type::UINT:
 
     case Type::VEC2F:
-      write_vec2f(field_ref<Vec2f>(field, data), node, doc.GetAllocator());
+      write_vector<Vec2f>(field_ref<Vec2f>(field, data), node, doc.GetAllocator());
       obj.AddMember(field.name, node, doc.GetAllocator());
       return true;
 
     case Type::VEC3F:
-      write_vec3f(field_ref<Vec3f>(field, data), node, doc.GetAllocator());
+      write_vector<Vec3f>(field_ref<Vec3f>(field, data), node, doc.GetAllocator());
       obj.AddMember(field.name, node, doc.GetAllocator());
       return true;
-
-    case Type::FLOAT:
-      write_float(field_ref<float>(field, data), node);
-      obj.AddMember(field.name, node, doc.GetAllocator());
-      return true;
-
-    case Type::STRING:
-      write_string(field_ref<String>(field, data), node);
+      
+    case Type::MAT4F:
+      write_matrix<Mat4f>(field_ref<Mat4f>(field, data), node, doc.GetAllocator());
       obj.AddMember(field.name, node, doc.GetAllocator());
       return true;
 

@@ -67,23 +67,6 @@ GLErrorGuard::~GLErrorGuard()
 
 #endif
 
-#ifndef NDEBUG
-GLint gl_get_uniform_location_with_message(GLuint program, const GLchar *name,
-    const char *message)
-{
-  assert(program != 0);
-  assert(name != nullptr);
-
-  GLint location = glGetUniformLocation(program, name);
-
-  if (location == -1)
-    log::error("Can't find uniform \"%s\" from %s", name, message);
-
-  return location;
-}
-
-#endif
-
 bool is_read_framebuffer_complete()
 {
   return glCheckFramebufferStatus(GL_READ_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
