@@ -20,6 +20,24 @@ typedef sptr<World> WorldPtr;
  * Notes:
  */
 class Entity : NonCopyable {
+  enum class State {
+    NEW,
+    RUNNING
+  };
+
+  typedef std::vector<Component *> ComponentArray;
+
+  // members
+  World         &my_world;
+  Core          &my_core;
+  State          my_state;
+  f32            my_width;
+  f32            my_height;
+  Mat4f          my_transform;
+  BoundingBox    my_bounding_box;
+  String         my_id;
+  String         my_class;
+  ComponentArray my_components;
 public:
 
   Entity(World &world, Core &core, f32 width = 1, f32 height = 1);
@@ -92,14 +110,6 @@ public:
   
   std::vector<Component *> find_components(ComponentType type);
   
-  
-  
-
-  enum class State {
-    NEW,
-    RUNNING
-  };
-
   void register_component(Component *component);
 
 public:
@@ -107,21 +117,8 @@ public:
   META_DECLARE_CLASS;     // static instance of MetaClass for Material
 
 private:
-  typedef std::vector<Component *> ComponentArray;
-
   void init(f32 width, f32 height, const Vec3f &position = Vec3f(0, 0, 0), f32 rotation = 0);
 
-private:
-  World         &my_world;
-  Core          &my_core;
-  State          my_state;
-  f32            my_width;
-  f32            my_height;
-  Mat4f          my_transform;
-  BoundingBox    my_bounding_box;
-  String         my_id;
-  String         my_class;
-  ComponentArray my_components;
 };
 
 }
