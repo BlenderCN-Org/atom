@@ -60,11 +60,11 @@ public:
 //
 //-----------------------------------------------------------------------------
 
-class ShaderLoader : public Loader {
+class TechniqueLoader : public Loader {
 public:
   typedef uptr<Technique>(*ShaderCreator)();
 
-  ~ShaderLoader();
+  ~TechniqueLoader();
 
   ResourcePtr create_resource(ResourceService &rs, const String &name) override;
 

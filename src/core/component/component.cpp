@@ -5,11 +5,10 @@
 
 namespace atom {
 
-Component::Component(ComponentType type, Entity &entity)
+Component::Component(ComponentType type)
   : my_type(type)
-  , my_entity(entity)
+  , my_entity(nullptr)
 {
-  my_entity.register_component(this);
 }
 
 Component::~Component()
@@ -17,9 +16,15 @@ Component::~Component()
   
 }
 
+void Component::set_entity(Entity *entity)
+{
+  my_entity = entity;
+}
+
 Entity& Component::entity() const
 {
-  return my_entity;
+  assert(my_entity != nullptr && "Called before attach()");
+  return *my_entity;
 }
 
 World& Component::world() const

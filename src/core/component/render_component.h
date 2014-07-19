@@ -10,15 +10,17 @@ class RenderComponent : public Component {
   MaterialResourcePtr my_material;
 
 public:
-  explicit RenderComponent(Entity &entity, MeshComponent &mesh,
+  explicit RenderComponent(MeshComponent &mesh,
     const MaterialResourcePtr &material);
 
   void attach() override;
   void detach() override;
+
+  uptr<Component> clone() const override;
   
   const MaterialResourcePtr& material() const;
   
-  const MeshResourcePtr& mesh() const;
+  MeshResourcePtr mesh() const;
 };
 
 MAP_COMPONENT_TYPE(RenderComponent, RENDER)

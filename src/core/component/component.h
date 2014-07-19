@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <vector>
 #include "core/corefwd.h"
 #include "core/noncopyable.h"
@@ -18,12 +19,21 @@ enum class ComponentType {
 };
 
 class Component : NonCopyable {
+  ComponentType my_type;
+  u32           my_priority;
+  Entity       *my_entity;
+  String        my_name;
+
 public:
-  Component(ComponentType type, Entity &entity);
+  Component(ComponentType type);
   virtual ~Component();
+
+  void set_entity(Entity *entity);
 
   virtual void attach() = 0;
   virtual void detach() = 0;
+
+  virtual uptr<Component> clone() const = 0;
 
   // volat len po welcome a pred goodbye
   Entity& entity() const;
@@ -33,18 +43,12 @@ public:
   Core& core() const;
 
   WorldProcessorsRef processors() const;
-  
-  ComponentType type() const;
-  
-  const String& name() const;
-  
-  void set_name(const String &name);
 
-public:
-  ComponentType my_type;
-  u32           my_priority;
-  Entity       &my_entity;
-  String        my_name;
+  ComponentType type() const;
+
+  const String& name() const;
+
+  void set_name(const String &name);
 };
 
 template<typename T>
@@ -57,5 +61,30 @@ ComponentType component_type_of()
   template<>                    \
   inline ComponentType component_type_of<type>()   \
   { return ComponentType::mapped; }
+
+
+
+class GenericSlot : NonCopyable {
+  Component    *my_parent;
+  ComponentType my_type;
+  String        my_name;  ///< component name
+
+public:
+  explicit GenericSlot(Component *component, ComponentType type,
+    const String &name = String())
+    : my_parent(component)
+    , my_type(type)
+    , my_name(name)
+  {
+    assert(component != nullptr && "Slot can't have nullptr parent component");
+  }
+};
+
+
+
+
+
+
+
 
 }

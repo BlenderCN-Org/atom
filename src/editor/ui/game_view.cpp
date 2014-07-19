@@ -28,7 +28,7 @@ GameView::GameView(const QGLFormat &format, QWidget *parent)
   setAcceptDrops(true);
   setFocusPolicy(Qt::ClickFocus);
 
-  my_camera.set_position(Vec3f(0, 0, 0));
+  my_camera.set_position(Vec3f(0, -5, 0));
 
   connect(qApp, SIGNAL(load()), SLOT(load()));
   connect(qApp, SIGNAL(unload()), SLOT(unload()));

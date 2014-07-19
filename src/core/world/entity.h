@@ -25,7 +25,7 @@ class Entity : NonCopyable {
     RUNNING
   };
 
-  typedef std::vector<Component *> ComponentArray;
+  typedef std::vector<uptr<Component>> ComponentArray;
 
   // members
   World         &my_world;
@@ -44,7 +44,7 @@ public:
 
   virtual ~Entity();
 
-  virtual uptr<Entity> clone(World &world) const = 0;
+  virtual uptr<Entity> clone(World &world) const;
 
   /**
    * Entity was added to the world. Create graphic, physic objects... here.
@@ -59,6 +59,8 @@ public:
   void init();
 
   void update();
+
+  void add_component(uptr<Component> &&component);
 
   virtual void on_welcome();
   virtual void on_goodbye();
@@ -110,8 +112,6 @@ public:
   
   std::vector<Component *> find_components(ComponentType type);
   
-  void register_component(Component *component);
-
 public:
   META_DECLARE_CLASS_PTR; // each instance contains pointer to the MetaClass
   META_DECLARE_CLASS;     // static instance of MetaClass for Material

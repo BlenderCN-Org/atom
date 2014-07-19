@@ -22,36 +22,30 @@ uptr<Technique> Technique::create(VideoService &vs, const String &name)
 {
   Shader pixel_shader(vs, VideoShaderType::PIXEL);
   Shader vertex_shader(vs, VideoShaderType::VERTEX);
-//  VideoShader geometry_shader(vs, VideoShaderType::GEOMETRY);
+  Shader geometry_shader(vs, VideoShaderType::GEOMETRY);
 
   String pixel_src, vertex_src, geometry_src;
-  String pixel_src_filename = String(SHADER_RESOURCE_DIR) + "/" + name + ".ps";
-  String vertex_src_filename = String(SHADER_RESOURCE_DIR) + "/" + name + ".vs";
-//  String geometry_src_filename = String(SHADER_RESOURCE_DIR) + "/" + name + ".gs";
-
-  if (!utils::load_file_into_string(vertex_src_filename, vertex_src)) {
-    log::error("Can't load source file \"%s\"", vertex_src_filename.c_str());
+  const String prefix = String(SHADER_RESOURCE_DIR) + "/" + name;
+  const String pixel_src_filename = prefix + ".ps";
+  const String vertex_src_filename = prefix + ".vs";
+  const String geometry_src_filename = prefix + ".gs";
+  // load vertex shader
+  if (!load_and_compile(vertex_src_filename, vertex_shader)) {
+    log::warning("Can't load shader \"%s\"", vertex_src_filename.c_str());
     return nullptr;
   }
-
-  if (!utils::load_file_into_string(pixel_src_filename, pixel_src)) {
-    log::error("Can't load source file \"%s\"", pixel_src_filename.c_str());
+  // load pixel shader
+  if (!load_and_compile(pixel_src_filename, pixel_shader)) {
+    log::warning("Can't load shader \"%s\"", pixel_src_filename.c_str());
     return nullptr;
   }
+  load_and_compile(geometry_src_filename, geometry_shader);
 
-  if (!vertex_shader.compile(vertex_src)) {
-    log::error("Can't compile vertex shader \"%s\"", vertex_src_filename.c_str());
-    return nullptr;
-  }
-
-  if (!pixel_shader.compile(pixel_src)) {
-    log::error("Can't compile pixel shader \"%s\"", pixel_src_filename.c_str());
-    return nullptr;
-  }
+  const Shader *shaders[3] = { &vertex_shader, &pixel_shader, &geometry_shader };
 
   uptr<Technique> program(new Technique(vs));
-  if (!program->link(pixel_shader, vertex_shader)) {
-    log::error("Can't link program \"%s\"", name.c_str());
+  if (!program->link(shaders, geometry_shader.is_compiled() ? 3 : 2)) {
+    log::warning("Can't link program \"%s\"", name.c_str());
     return nullptr;
   }
 
@@ -73,14 +67,23 @@ bool Technique::link(const Shader &a, const Shader &b, const Shader &c)
 
 bool Technique::link(const Shader *shaders[], int count)
 {
+  // check that all shaders are compiled
   for (int i = 0; i < count; ++i) {
     if (!shaders[i]->is_compiled()) {
       return false;
     }
+  }
+
+  for (int i = 0; i < count; ++i) {
     glAttachShader(my_gl_program, shaders[i]->gl_shader());
   }
 
   glLinkProgram(my_gl_program);
+
+  for (int i = 0; i < count; ++i) {
+    glDetachShader(my_gl_program, shaders[i]->gl_shader());
+  }
+
   GLint status;
   glGetProgramiv(my_gl_program, GL_LINK_STATUS, &status);
 
@@ -88,7 +91,7 @@ bool Technique::link(const Shader *shaders[], int count)
     const int INFO_LENGTH = 2048;
     char link_info[INFO_LENGTH];
     glGetProgramInfoLog(my_gl_program, INFO_LENGTH, nullptr, link_info);
-    log::error("Can't link shader program. Link info:\n%s\n", link_info);
+    log::warning("Can't link shader program. Link info:\n%s\n", link_info);
     return false;
   }
 
@@ -187,7 +190,7 @@ void Technique::pull(const MetaObject &properties)
   for (const ShaderUniform &u : my_uniforms) {
     const MetaField *meta_field = properties.meta_class.find_field(u.name.c_str());
     if (meta_field != nullptr) {
-      log::info("Pulling uniform %s", u.name.c_str());
+//      log::info("Pulling uniform %s", u.name.c_str());
       set_uniform(*meta_field, properties.data, u.gl_location);
     }
   }
@@ -272,6 +275,12 @@ const ShaderUniform *Technique::find_param(const char *name) const
   }
 
   return nullptr;
+}
+
+bool Technique::load_and_compile(const String &filename, Shader &shader)
+{
+  String src;
+  return utils::load_file_into_string(filename, src) && shader.compile(src);
 }
 
 }

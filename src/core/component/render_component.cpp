@@ -7,12 +7,13 @@
 
 namespace atom {
 
-RenderComponent::RenderComponent(Entity &entity, MeshComponent &mesh,
+RenderComponent::RenderComponent(MeshComponent &mesh,
   const MaterialResourcePtr &material)
-  : Component(ComponentType::RENDER, entity)
+  : Component(ComponentType::RENDER)
   , my_mesh_component(mesh)
   , my_material(material)
 {
+  assert(my_material != nullptr && "Material can't be nullptr");
 }
 
 void RenderComponent::attach()
@@ -25,13 +26,20 @@ void RenderComponent::detach()
   processors().video.unregister_component(this);
 }
 
-const MaterialResourcePtr &RenderComponent::material() const
+uptr<Component> RenderComponent::clone() const
+{
+  uptr<RenderComponent> component(new RenderComponent(my_mesh_component, my_material));
+  return std::move(component);
+}
+
+const MaterialResourcePtr& RenderComponent::material() const
 {
   return my_material;
 }
 
-const MeshResourcePtr& RenderComponent::mesh() const
+MeshResourcePtr RenderComponent::mesh() const
 {
+  assert(my_mesh_component.mesh() != nullptr);
   return my_mesh_component.mesh();
 }
 

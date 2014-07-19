@@ -3,8 +3,8 @@
 
 namespace atom {
 
-MeshComponent::MeshComponent(Entity &entity, const String &mesh)
-  : Component(ComponentType::MESH, entity)
+MeshComponent::MeshComponent(const String &mesh)
+  : Component(ComponentType::MESH)
   , my_mesh_name(mesh)
 {
   // empty
@@ -25,7 +25,13 @@ void MeshComponent::detach()
   my_mesh.reset();
 }
 
-const MeshResourcePtr& MeshComponent::mesh() const
+uptr<Component> MeshComponent::clone() const
+{
+  uptr<MeshComponent> component(new MeshComponent(my_mesh_name));
+  return std::move(component);
+}
+
+MeshResourcePtr MeshComponent::mesh() const
 {
   return my_mesh;
 }

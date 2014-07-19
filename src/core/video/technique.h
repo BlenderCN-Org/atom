@@ -46,6 +46,8 @@ public:
 private:
   const ShaderUniform* find_param(const char *name) const;
 
+  static bool load_and_compile(const String &filename, Shader &shader);
+
 private:
   VideoService  &my_vs;
   GLuint         my_gl_program;

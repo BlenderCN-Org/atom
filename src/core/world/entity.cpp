@@ -26,9 +26,22 @@ Entity::~Entity()
 {
 }
 
+uptr<Entity> Entity::clone(World &world) const
+{
+  uptr<Entity> entity(new Entity(world, core()));
+
+  for (const uptr<Component> &component : my_components) {
+    uptr<Component> clone = component->clone();
+    entity->add_component(std::move(clone));
+  }
+
+  return entity;
+}
+
 void Entity::welcome()
 {
-  for (Component *component : my_components) {
+  for (const uptr<Component> &component : my_components) {
+    component->set_entity(this);
     component->attach();
   }
 
@@ -39,7 +52,7 @@ void Entity::goodbye()
 {
   on_goodbye();
 
-  for (Component *component : my_components) {
+  for (const uptr<Component> &component : my_components) {
     component->detach();
   }
 }
@@ -53,6 +66,12 @@ void Entity::init()
 void Entity::update()
 {
   on_update();
+}
+
+void Entity::add_component(uptr<Component> &&component)
+{
+  assert(component != nullptr);
+  my_components.push_back(std::move(component));
 }
 
 //void Entity::wake_up()
@@ -129,21 +148,15 @@ Core& Entity::core() const
 Component* Entity::find_component(const String &name)
 {
   auto found = std::find_if(my_components.begin(), my_components.end(),
-    [name](const Component *component) { return component->name() == name; });
-  return found != my_components.end() ? *found : nullptr;
+    [name](const uptr<Component> &component) { return component->name() == name; });
+  return found != my_components.end() ? found->get() : nullptr;
 }
 
 Component* Entity::find_component(ComponentType type)
 {
   auto found = std::find_if(my_components.begin(), my_components.end(),
-    [type](const Component *component) { return component->type() == type; });
-  return found != my_components.end() ? *found : nullptr;
-}
-
-void Entity::register_component(Component *component)
-{
-  assert(component != nullptr);
-  my_components.push_back(component);
+    [type](const uptr<Component> &component) { return component->type() == type; });
+  return found != my_components.end() ? found->get() : nullptr;
 }
 
 void Entity::init(f32 width, f32 height, const Vec3f &position, f32 rotation)

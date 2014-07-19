@@ -40,7 +40,7 @@ class Sound;
 class Music;
 
 // system
-class MetaClass;
+struct MetaClass;
 struct GameAPI;
 class Core;
 class ResourceService;
@@ -66,7 +66,7 @@ struct ResourceLoaders;
 class Loader;
 class ImageLoader;
 class TextureLoader;
-class ShaderLoader;
+class TechniqueLoader;
 class MaterialLoader;
 class BitmapFontLoader;
 class SoundLoader;

@@ -34,27 +34,22 @@ def has_triangles_only(mesh):
 
 def export_mesh(me):
     vertices = []
-    indices = []
-    idx = 0
-    for poly in me.polygons:
-        for i in range(poly.loop_start, poly.loop_start + poly.loop_total):
-            index = me.loops[i].vertex_index
-            v = me.vertices[index].co
-            vertices.append(v.x)
-            vertices.append(v.y)
-            vertices.append(v.z)
-            indices.append(idx)
-            idx = idx + 1
-
     normals = []
-    idx = 0
+    indices = []
+
+    # zjednoduseny export len vrcholov, normal a indexov
+    # bez zdvojovania vrcholov (netreba, uv sa neexportuje)
+    for v in me.vertices:
+        vertices.append(v.co.x)
+        vertices.append(v.co.y)
+        vertices.append(v.co.z)
+        normals.append(v.normal.x)
+        normals.append(v.normal.y)
+        normals.append(v.normal.z)
+
     for poly in me.polygons:
-        for i in range(poly.loop_start, poly.loop_start + poly.loop_total):
-            index = me.loops[i].vertex_index
-            v = me.vertices[index].normal
-            normals.append(v.x)
-            normals.append(v.y)
-            normals.append(v.z)
+        for i in poly.vertices:
+            indices.append(i)
 
     vertex_stream = { 'type' : 'f32', 'data' : vertices }
     normal_stream = { 'type' : 'f32', 'data' : normals }

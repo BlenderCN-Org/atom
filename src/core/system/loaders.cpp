@@ -112,11 +112,11 @@ void TextureLoader::reload_resource(ResourceService &rs, Resource &resource)
 //
 //-----------------------------------------------------------------------------
 
-ShaderLoader::~ShaderLoader()
+TechniqueLoader::~TechniqueLoader()
 {
 }
 
-ResourcePtr ShaderLoader::create_resource(ResourceService &rs, const String &name)
+ResourcePtr TechniqueLoader::create_resource(ResourceService &rs, const String &name)
 {
   auto program = Technique::create(rs.video_service(), name);
 
@@ -133,7 +133,7 @@ ResourcePtr ShaderLoader::create_resource(ResourceService &rs, const String &nam
   return resource;
 }
 
-StringArray ShaderLoader::get_shader_source_files(const String &name)
+StringArray TechniqueLoader::get_shader_source_files(const String &name)
 {
   assert(!name.empty());
   StringArray sources;
@@ -143,11 +143,17 @@ StringArray ShaderLoader::get_shader_source_files(const String &name)
   return sources;
 }
 
-void ShaderLoader::reload_resource(ResourceService &rs, Resource &resource)
+void TechniqueLoader::reload_resource(ResourceService &rs, Resource &resource)
 {
   StringArray tokens = split_resource_name(resource.name());
-  auto program = Technique::create(rs.video_service(), tokens[1]);
-  dynamic_cast<TechniqueResource &>(resource).set_data(std::move(program));
+  const String &name = tokens[1];
+  auto program = Technique::create(rs.video_service(), name);
+  // replace old technique only when the new one has been succesfully loaded
+  if (program != nullptr) {
+    dynamic_cast<TechniqueResource &>(resource).set_data(std::move(program));
+  } else {
+    log::warning("Can't reload technique \"%s\"", name.c_str());
+  }
 }
 
 //-----------------------------------------------------------------------------

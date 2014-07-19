@@ -18,7 +18,7 @@ struct ResourceLoaders {
   ImageLoader      image;
   TextureLoader    texture;
   MaterialLoader   material;
-  ShaderLoader     shader;
+  TechniqueLoader  technique;
   RawMeshLoader    raw_mesh;
   MeshLoader       mesh;
   BitmapFontLoader bitmap_font;
@@ -178,7 +178,7 @@ TextureResourcePtr ResourceService::get_texture(const String &name)
 
 TechniqueResourcePtr ResourceService::get_technique(const String &name)
 {
-  return find_or_load_resource<TechniqueResource>(*this, name, RESOURCE_SHADER_TAG, my_loaders->shader);
+  return find_or_load_resource<TechniqueResource>(*this, name, RESOURCE_SHADER_TAG, my_loaders->technique);
 }
 
 MaterialResourcePtr ResourceService::get_material(const String &name)

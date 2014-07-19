@@ -9,14 +9,16 @@ class MeshComponent : public Component {
   MeshResourcePtr my_mesh;
   
 public:
-  MeshComponent(Entity &entity, const String &mesh);
+  MeshComponent(const String &mesh);
   ~MeshComponent();
   
   void attach() override;
   
   void detach() override;
+
+  uptr<Component> clone() const override;
   
-  const MeshResourcePtr& mesh() const;
+  MeshResourcePtr mesh() const;
 };
 
 MAP_COMPONENT_TYPE(MeshComponent, MESH)

@@ -55,9 +55,8 @@ void VideoProcessor::render(const Camera &camera)
     u.transformations.model = component->entity().transform();
     u.model = u.transformations.model;
     u.mvp = u.transformations.model_view_projection();
-    my_vs.set_draw_face(DrawFace::BOTH);
+//    my_vs.set_draw_face(DrawFace::BOTH);
     my_vs.set_draw_face(material->material().face);
-    log::info("Rendering obje");
     material->material().draw_mesh(context, mesh->mesh());
   }
   

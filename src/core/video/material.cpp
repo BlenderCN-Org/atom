@@ -113,9 +113,10 @@ void PhongMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   assert(my_shader != nullptr);
   const VideoBuffer *vb = mesh.find_stream(StreamId::VERTEX);
   const VideoBuffer *nb = mesh.find_stream(StreamId::NORMAL);
+  const VideoBuffer *ib = mesh.find_stream(StreamId::INDEX);
 
-  if (vb == nullptr || nb == nullptr) {
-    log::warning("This mesh doesn't contain vertex or uv stream");
+  if (vb == nullptr || nb == nullptr || ib == nullptr) {
+    log::warning("This mesh doesn't contain vertex, normal or index stream");
     return;
   }
 
@@ -125,15 +126,15 @@ void PhongMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 
   Technique &program = my_program->program();
   vs.bind_program(program);
-  context.uniforms.color = Vec3f(1, 1, 1);
+  context.uniforms.color = Vec3f(0.7, 0.7, 0.7);
   context.uniforms.sun_dir = Vec3f(0, 0, -1);
+  context.uniforms.ambient_color = Vec3f(0.13, 0.13, 0.13);
 //  program.set_param("model_view_projection", context.uniforms.transformations.model_view_projection());
   program.pull(meta_object(context.uniforms));
 
   vs.bind_attribute(0, *vb, Type::VEC3F);
   vs.bind_attribute(1, *nb, Type::VEC3F);
-
-  vs.draw_arrays(GL_TRIANGLES, 0, vb->size() / sizeof(Vec3f));
+  vs.draw_index_array(GL_TRIANGLES, *ib, ib->size() / 3);
   vs.unbind_vertex_attribute(0);
   vs.unbind_vertex_attribute(1);
 }
