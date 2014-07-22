@@ -6,19 +6,19 @@
 namespace atom {
 
 class RenderComponent : public Component {
-  MeshComponent &my_mesh_component;
-  MaterialResourcePtr my_material;
-
-public:
-  explicit RenderComponent(MeshComponent &mesh,
-    const MaterialResourcePtr &material);
-
-  void attach() override;
-  void detach() override;
+  Slot<MaterialComponent> my_material;
+  Slot<MeshComponent> my_mesh;
 
   uptr<Component> clone() const override;
   
-  const MaterialResourcePtr& material() const;
+  void activate() override;
+  
+  void deactivate() override;
+
+public:
+  RenderComponent();
+  
+  MaterialResourcePtr material() const;
   
   MeshResourcePtr mesh() const;
 };

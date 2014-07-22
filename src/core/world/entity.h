@@ -14,6 +14,26 @@ namespace atom {
 
 typedef sptr<World> WorldPtr;
 
+/*
+ 
+  Entity
+   * activate
+   * deactivate
+   * clone
+  
+  Component
+   * attach
+   * detach
+   * duplicate
+   * 
+   * (v)activate
+   * (v)deactivate
+   * (v)clone
+  
+  Slot
+   * activate
+*/
+
 /**
  * Entita herneho objektu.
  *
@@ -42,30 +62,21 @@ public:
 
   Entity(World &world, Core &core, f32 width = 1, f32 height = 1);
 
-  virtual ~Entity();
+  ~Entity();
 
-  virtual uptr<Entity> clone(World &world) const;
+  uptr<Entity> clone(World &world) const;
+  
+  /**
+   * Entity was added to the world.
+   */
+  void activate();
 
   /**
-   * Entity was added to the world. Create graphic, physic objects... here.
+   * Entity is going to be removed from the world.
    */
-  void welcome();
-
-  /**
-   * Entity is going to be removed from the world. Delete graphic, physics objects, ... here.
-   */
-  void goodbye();
-
-  void init();
-
-  void update();
+  void deactivate();
 
   void add_component(uptr<Component> &&component);
-
-  virtual void on_welcome();
-  virtual void on_goodbye();
-  virtual void on_init();
-  virtual void on_update();
 
   const String& id() const;
 
@@ -95,6 +106,8 @@ public:
   Component* find_component(const String &name);
   
   Component* find_component(ComponentType type);
+  
+  Component* find_component(ComponentType type, const String &name);
   
   template<typename T>
   T* find_component()

@@ -3,6 +3,22 @@
 
 namespace atom {
 
+void MeshComponent::activate()
+{
+  my_mesh = core().resource_service().get_mesh(my_mesh_name);
+}
+
+void MeshComponent::deactivate()
+{
+  my_mesh.reset();
+}
+
+uptr<Component> MeshComponent::clone() const
+{
+  uptr<MeshComponent> component(new MeshComponent(my_mesh_name));
+  return std::move(component);
+}
+
 MeshComponent::MeshComponent(const String &mesh)
   : Component(ComponentType::MESH)
   , my_mesh_name(mesh)
@@ -15,21 +31,8 @@ MeshComponent::~MeshComponent()
   // empty
 }
 
-void MeshComponent::attach()
-{
-  my_mesh = core().resource_service().get_mesh(my_mesh_name);
-}
 
-void MeshComponent::detach()
-{
-  my_mesh.reset();
-}
 
-uptr<Component> MeshComponent::clone() const
-{
-  uptr<MeshComponent> component(new MeshComponent(my_mesh_name));
-  return std::move(component);
-}
 
 MeshResourcePtr MeshComponent::mesh() const
 {

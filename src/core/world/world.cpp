@@ -31,8 +31,7 @@ void World::add_entity(const sptr<Entity> &entity)
   assert(entity != nullptr);
 
   my_entities.push_back(entity);
-  entity->welcome();
-  entity->init();
+  entity->activate();
 }
 
 void World::remove_entity(const sptr<Entity> &entity)
@@ -46,7 +45,7 @@ void World::remove_entity(const sptr<Entity> &entity)
     return;
   }
 
-  entity->goodbye();
+  entity->deactivate();
   my_entities.erase(found);
 }
 
@@ -77,6 +76,7 @@ void World::wake_up()
 //    entity->wake_up();
 //  }
   my_processors.physics->start();
+  my_processors.script->start();
 }
 
 void World::step()
@@ -85,11 +85,12 @@ void World::step()
     entity->update_bounding_box();
   }
 
-  if (my_is_live)   {
-    for (const sptr<Entity> &entity : my_entities) {
-      entity->update();
-    }
-  }
+  // @todo update entity bounding box
+//  if (my_is_live)   {
+//    for (const sptr<Entity> &entity : my_entities) {
+//      entity->update();
+//    }
+//  }
 
   my_processors.physics->poll();
   my_processors.script->poll();
@@ -107,7 +108,7 @@ const EntityVector& World::objects() const
 void World::clear()
 {
   for (const sptr<Entity> &entity : my_entities) {
-    entity->goodbye();
+    entity->deactivate();
   }
 
   my_entities.clear();

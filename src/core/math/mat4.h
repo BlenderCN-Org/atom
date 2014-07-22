@@ -13,7 +13,7 @@ struct Mat4 {
   enum {
     SIZE = 4
   };
-  
+
   typedef T ValueType;
 
   Vec4<T> data[SIZE];
@@ -335,6 +335,21 @@ struct Mat4 {
 };
 
 /**
+ * Add operation.
+ */
+template<typename T>
+Mat4<T> operator+(const Mat4<T> &a, const Mat4<T> &b)
+{
+  Mat4<T> result;
+
+  for (unsigned i = 0; i < 4; ++i) {
+    result[i] = a[i] + b[i];
+  }
+
+  return result;
+}
+
+/**
  * Multiply two matrices.
  */
 template<typename T>
@@ -342,12 +357,15 @@ Mat4<T> operator*(const Mat4<T> &a, const Mat4<T> &b)
 {
   Mat4<T> result;
 
-  for (unsigned i = 0; i < 4; ++i)
-    for (unsigned j = 0; j < 4; ++j)
+  for (unsigned i = 0; i < 4; ++i) {
+    for (unsigned j = 0; j < 4; ++j) {
       result(i, j) = a(i, 0) * b(0, j)
                    + a(i, 1) * b(1, j)
                    + a(i, 2) * b(2, j)
                    + a(i, 3) * b(3, j);
+    }
+  }
+
   return result;
 }
 

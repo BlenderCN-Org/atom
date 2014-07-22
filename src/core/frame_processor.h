@@ -6,11 +6,14 @@
 
 namespace atom {
 
-//typedef std::function<bool ()> PostFrameCallback;
-
 typedef void (*PostFrameCallback)(void *);
 
 class FrameProcessor : private NonCopyable {
+  Core               &my_core;
+  FramePtr              my_current_frame;
+  BitmapFontResourcePtr my_font;
+  PostFrameCallback     my_post_frame_callback;
+
 public:
   FrameProcessor(Core &core);
   ~FrameProcessor();
@@ -19,18 +22,8 @@ public:
 
   void set_post_frame_callback(PostFrameCallback callback);
 
-//  void set_post_frame_callback(PostFrameCallback callback)
-//  { my_post_frame_callback = callback; }
-
 private:
-  void draw_counters(
-    const String &text);
-
-private:
-  Core               &my_core;
-  FramePtr              my_current_frame;
-  BitmapFontResourcePtr my_font;
-  PostFrameCallback     my_post_frame_callback;
+  void draw_counters(const String &text);
 };
 
 }

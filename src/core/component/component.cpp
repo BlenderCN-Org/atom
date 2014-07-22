@@ -16,9 +16,27 @@ Component::~Component()
   
 }
 
-void Component::set_entity(Entity *entity)
+uptr<Component> Component::duplicate() const
 {
-  my_entity = entity;
+  uptr<Component> component = clone();
+  return component;
+}
+
+void Component::attach(Entity &entity)
+{
+  my_entity = &entity;
+  
+  for (GenericSlot *slot : my_slots) {
+    slot->activate(entity);
+  }
+  
+  activate();
+}
+
+void Component::detach()
+{
+  deactivate();
+  my_entity = nullptr;
 }
 
 Entity& Component::entity() const
@@ -55,6 +73,22 @@ const String& Component::name() const
 void Component::set_name(const String &name)
 {
   my_name = name;
+}
+
+void Component::register_slot(GenericSlot *slot)
+{
+  assert(slot != nullptr);
+  my_slots.push_back(slot);
+}
+
+void GenericSlot::activate(Entity &entity)
+{
+  my_component = entity.find_component(my_type, my_name);
+}
+
+Component* GenericSlot::get() const
+{
+  return my_component;
 }
 
 }

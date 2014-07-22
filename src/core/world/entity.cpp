@@ -31,41 +31,25 @@ uptr<Entity> Entity::clone(World &world) const
   uptr<Entity> entity(new Entity(world, core()));
 
   for (const uptr<Component> &component : my_components) {
-    uptr<Component> clone = component->clone();
-    entity->add_component(std::move(clone));
+    uptr<Component> duplicate = component->duplicate();
+    entity->add_component(std::move(duplicate));
   }
 
   return entity;
 }
 
-void Entity::welcome()
+void Entity::activate()
 {
   for (const uptr<Component> &component : my_components) {
-    component->set_entity(this);
-    component->attach();
+    component->attach(*this);
   }
-
-  on_welcome();
 }
 
-void Entity::goodbye()
+void Entity::deactivate()
 {
-  on_goodbye();
-
   for (const uptr<Component> &component : my_components) {
     component->detach();
   }
-}
-
-void Entity::init()
-{
-  update_bounding_box();
-  on_init();
-}
-
-void Entity::update()
-{
-  on_update();
 }
 
 void Entity::add_component(uptr<Component> &&component)
@@ -73,16 +57,6 @@ void Entity::add_component(uptr<Component> &&component)
   assert(component != nullptr);
   my_components.push_back(std::move(component));
 }
-
-//void Entity::wake_up()
-//{
-//  assert(my_state == State::NEW);
-//  my_state = State::RUNNING;
-
-//  for (const sptr<Component> &component : my_components) {
-//    component->wake_up();
-//  }
-//}
 
 const String& Entity::id() const
 {
@@ -159,6 +133,14 @@ Component* Entity::find_component(ComponentType type)
   return found != my_components.end() ? found->get() : nullptr;
 }
 
+Component* Entity::find_component(ComponentType type, const String &name)
+{
+  auto found = std::find_if(my_components.begin(), my_components.end(),
+    [type, &name](const uptr<Component> &component)
+    { return component->type() == type && (name.empty() ? true : component->name() == name); });
+  return found != my_components.end() ? found->get() : nullptr;
+}
+
 void Entity::init(f32 width, f32 height, const Vec3f &position, f32 rotation)
 {
   my_state = State::NEW;
@@ -167,26 +149,6 @@ void Entity::init(f32 width, f32 height, const Vec3f &position, f32 rotation)
   my_class = "Base class";
   my_transform = Mat4f::identity();
   META_INIT();
-}
-
-void Entity::on_welcome()
-{
-  // empty
-}
-
-void Entity::on_goodbye()
-{
-  // empty
-}
-
-void Entity::on_init()
-{
-  // empty
-}
-
-void Entity::on_update()
-{
-  // empty
 }
 
 }

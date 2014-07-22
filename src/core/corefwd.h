@@ -102,8 +102,11 @@ class Frame;
 
 // components
 class Component;
+class MaterialComponent;
 class MeshComponent;
 class RenderComponent;
+class ScriptComponent;
+class GenericSlot;
 
 // component utils
 class AbstractLink;

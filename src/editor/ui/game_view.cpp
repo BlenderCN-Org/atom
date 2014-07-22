@@ -64,6 +64,14 @@ void GameView::set_navigation(bool enable)
   my_navigation = enable;
 }
 
+Camera GameView::current_camera() const
+{
+  Camera camera;
+  camera.view = my_camera.get_view_matrix();
+  camera.projection = my_projection;
+  return camera;
+}
+
 void GameView::dragEnterEvent(QDragEnterEvent *event)
 {
   log::debug(DEBUG_EDITOR, "Drag action for mime format %s",
@@ -202,12 +210,9 @@ void GameView::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (my_navigation) {
-    Camera camera;
-    camera.view = my_camera.get_view_matrix();
-    camera.projection = my_projection;
-    my_world->set_camera(camera);
+    my_world->set_camera(current_camera());
   }
-  
+
   my_world->processors().video.render(my_world->camera());
 
   core.video_service().unbind_write_framebuffer();

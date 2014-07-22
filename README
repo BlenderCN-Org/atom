@@ -9,6 +9,7 @@ Zavislosti:
  - Bullet
 
 TODO:
+ - proper clone method, Compoennt attriutes aren't copied
  - attachable components
  - premenovat MAP_COMPONENT_TYPE na napr. DECLARE_COMPONENT, DEFINE_COMPONENT,
    "INSTALL_COMPONENT", "REGISTER_COMPONENT"

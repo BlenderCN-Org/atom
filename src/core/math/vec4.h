@@ -41,11 +41,6 @@ struct Vec4 {
     return data[i];
   }
 
-  Vec4<T> operator+(const Vec4&v)
-  {
-    return Vec4<T>(x + v.x, y + v.y, z + v.z, w + v.w);
-  }
-
   union {
     struct {
       T x;
@@ -56,6 +51,18 @@ struct Vec4 {
     T data[SIZE];
   };
 };
+
+template<typename T>
+Vec4<T> operator+(const Vec4<T> &a, const Vec4<T> &b)
+{
+  return Vec4<T>(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
+}
+
+template<typename T>
+Vec4<T> operator-(const Vec4<T> &a, const Vec4<T> &b)
+{
+  return Vec4<T>(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
+}
 
 template<typename T>
 Vec4<T> operator/(const Vec4<T> &v, T a)

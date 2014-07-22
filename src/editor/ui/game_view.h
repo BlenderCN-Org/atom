@@ -24,6 +24,8 @@ public:
 
   void set_navigation(bool enable);
 
+  Camera current_camera() const;
+
 signals:
   void selection_changed(const std::vector<sptr<Entity>> &selection);
 

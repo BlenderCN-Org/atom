@@ -330,8 +330,9 @@ void EditorWindow::switch_mode(EditorWindow::Mode mode)
 
       my_clone = application().world()->clone();
       my_clone->wake_up();
+//      my_clone->set_camera(camera);
       my_game_view->set_world(my_clone);
-      my_game_view->set_navigation(false);
+//      my_game_view->set_navigation(false);
       my_game_view->grabMouse(Qt::BlankCursor);
       application().setDoubleClickInterval(0);
 
