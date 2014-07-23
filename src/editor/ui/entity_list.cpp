@@ -65,7 +65,7 @@ QMimeData* EntityList::mimeData(const QList<QListWidgetItem *> items) const
   }
 
   const EntityListItem *item = static_cast<const EntityListItem *>(items.front());
-  QMimeData *mime_data = new QMimeData(); //QQQ kto je majitel???
+  QMimeData *mime_data = new QMimeData();
   mime_data->setData("mm/object", QString::number(item->get_index()).toLatin1());
 
   return mime_data;

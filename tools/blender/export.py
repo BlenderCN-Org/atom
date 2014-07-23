@@ -7,10 +7,6 @@ import json
 
 filename_ext = ".m3d"
 
-# add google/protobuf lib to the python path
-module_path = os.path.normpath(os.path.dirname(__file__))
-sys.path.append(module_path)
-
 
 def to_point(v):
     return mathutils.Vector((v.x / v.w, v.y / v.w, v.z / v.w)).to_3d()
@@ -32,7 +28,7 @@ def has_triangles_only(mesh):
     return True
 
 
-def export_mesh(me):
+def export_mesh(ob, me, export_bones):
     vertices = []
     normals = []
     indices = []
@@ -51,36 +47,42 @@ def export_mesh(me):
         for i in poly.vertices:
             indices.append(i)
 
+    if export_bones:
+        pose = ob.parent.pose
+
+        bone_list = {}
+        i = 0
+
+        for name, bone in pose.bones.items():
+            print('Exporting bone ' + name)
+            start = bone.bone.head_local
+            b = {}
+            b['start'] = [start.x, start.y, start.z]
+            b['index'] = i
+
+            if bone.parent != None:
+                b['parent'] = bone.parent.name
+
+            bone_list[name] = b
+            i = i + 1
+
+
     vertex_stream = { 'type' : 'f32', 'data' : vertices }
     normal_stream = { 'type' : 'f32', 'data' : normals }
     index_stream  = { 'type' : 'u32', 'data' : indices }
+
     mesh = {
-      'arrays' : {
-        "vertices" : vertex_stream,
-        "normals" : normal_stream,
-        "indices" : index_stream
+      #'arrays' : {
+      #  "vertices" : vertex_stream,
+      #  "normals" : normal_stream,
+      #  "indices" : index_stream
+      #},
+      'skeleton' : {
+        'bones' : bone_list
       }
     }
     return mesh
-#            vi = me.loops[i].vertex_index
-#            v = me.vertices[vi].co
-#            n = me.vertices[vi].normal.normalized()
 
-#            if len(ob.data.uv_layers) > 0:
-#                uv = ob.data.uv_layers[0].data[i].uv
-#                key = (v.x, v.y, v.z, n.x, n.y, n.z, uv.x, uv.y)
-#            else:
-#                key = (v.x, v.y, v.z, n.x, n.y, n.z)
-
-#            if key in duplicates:
-#                unique_index.append(duplicates[key])
-#                unique_list.append(False)
-#            else:
-#                unique_count = unique_count + 1
-#                unique_index.append(next_index)
-#                unique_list.append(True)
-#                duplicates[key] = next_index
-#                next_index = next_index + 1
 
 def export_object_to_file(ob, filename):
     """Export object data (vertices/normals/uv/vertex bones/skeleton to file.
@@ -121,7 +123,7 @@ def export_object_to_file(ob, filename):
         me.transform(matrix)
         me.calc_normals()
 
-        mesh = export_mesh(me)
+        mesh = export_mesh(ob, me, has_bones(ob) and ob.atom.export_bones)
 
         with open(filename, "w+") as output:
             # compact format

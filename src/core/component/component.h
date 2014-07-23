@@ -16,6 +16,7 @@ enum class ComponentType {
   MESH,
   RAW_MESH,
   SCRIPT,
+  RIGID_BODY,
   SKELETON
 };
 

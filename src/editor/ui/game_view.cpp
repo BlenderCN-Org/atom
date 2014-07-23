@@ -117,8 +117,6 @@ void GameView::dropEvent(QDropEvent *event)
       if (entity != nullptr) {
         entity->set_class_name(application().core().entity_creators()[index].name);
         log::info("Adding entity to the world");
-//        entity->set_position(widget_to_world(event->pos()));
-//        QQQentity->init();
 
         EntityAdd *command = new EntityAdd(entity, application().world());
         undo_stack().push(command);
@@ -135,9 +133,6 @@ void GameView::dropEvent(QDropEvent *event)
 void GameView::keyReleaseEvent(QKeyEvent *event)
 {
   if (my_current_object != nullptr && QApplication::mouseButtons() & Qt::LeftButton) {
-//    my_current_object->set_position(my_drag_start_pos);
-//    QQQmy_current_object->reboot();
-//    my_current_object.reset();
     event->accept();
     return;
   }

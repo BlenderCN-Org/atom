@@ -27,20 +27,23 @@ int main(int argc, char *argv[])
     Core &core = Core::init(InitMode::STANDALONE, entry_point());
 
     const EntryPoint *game_api = entry_point();
+    
+    if (game_api == nullptr) {
+      log::error("Can't find game entry point");
+      return EXIT_FAILURE;
+    }
 
-      assert(game_api != nullptr);  //QQQ pridat if
-      FramePtr first_frame(game_api->make_first_frame(core));
-      if (first_frame == nullptr) {
-        log::error("The game library doesn't contain start frame");
-        return EXIT_FAILURE;
-      }
+    FramePtr first_frame(game_api->make_first_frame(core));
+    if (first_frame == nullptr) {
+      log::error("The game library doesn't contain start frame");
+      return EXIT_FAILURE;
+    }
 
-      FrameProcessor fp(core);
-      fp.set_post_frame_callback(update_gl_buffers);
-      //QQQ memory leak
-      fp.run(first_frame);
-      first_frame = nullptr;
-
+    FrameProcessor fp(core);
+    fp.set_post_frame_callback(update_gl_buffers);
+    //QQQ prekopat runnera
+    fp.run(first_frame);
+    first_frame = nullptr;
   } catch (std::exception &e) {
     std::cerr << "Error occured! - " << e.what() << std::endl;
     return -1;

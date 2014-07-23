@@ -33,8 +33,10 @@ ResourcePtr ImageLoader::create_resource(ResourceService &rs, const String &name
 
   uptr<Image> image = Image::create_from_file(filename.c_str());
 
-  if (image == nullptr) //QQQ warning or error
+  if (image == nullptr) {
+    log::warning("Can't load image \"%s\"", filename.c_str());
     return nullptr;
+  }
 
   ImageResourcePtr resource = std::make_shared<ImageResource>();
   resource->set_data(std::move(image));

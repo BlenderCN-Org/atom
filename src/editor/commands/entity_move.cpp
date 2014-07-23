@@ -18,14 +18,14 @@ EntityMove::EntityMove(const sptr<Entity> &entity, const Vec3f &start,
 void EntityMove::redo()
 {
 //  my_entity->set_position(my_end);
-  //QQQmy_entity->init();
+  /// @todo reinicializovat entitu
   application().notify_entity_changed(my_entity);
 }
 
 void EntityMove::undo()
 {
 //  my_entity->set_position(my_start);
-  //QQQmy_entity->init();
+  /// @todo reinicializovat entitu
   application().notify_entity_changed(my_entity);
 }
 

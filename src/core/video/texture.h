@@ -28,54 +28,6 @@ public:
 
   void init_from_image(const Image &image);
 
-//  static uptr<Texture> create_depth_texture(
-//    VideoService &vs,
-//    int width,
-//    int height);
-
-  /**
-   * Create empty 2d texture.
-   *
-   * Vytvorena textura je pripojena vo VideoProcesor-e.
-   * @todo prepisat na konstruktor ???
-   */
-//  static uptr<Texture> create_texture_2d(
-//    VideoService &vs,
-//    PixelFormat format,
-//    int width,
-//    int height,
-//    GLint gl_min_filter = DEFAULT_GL_MIN_FILTER,
-//    GLint gl_mag_filter = DEFAULT_GL_MAG_FILTER,
-//    GLint gl_wrap_s_mode = DEFAULT_GL_WRAP_S,
-//    GLint gl_wrap_t_mode = DEFAULT_GL_WRAP_T);
-
-  /**
-   * @todo prepisat na konstruktor ???
-   */
-  //QQQ
-//  static Texture* create_texture_rectangle(
-//    VideoService &vs,
-//    PixelFormat format,
-//    int width,
-//    int height,
-//    GLint gl_min_filter = DEFAULT_GL_MIN_FILTER,
-//    GLint gl_mag_filter = DEFAULT_GL_MAG_FILTER,
-//    GLint gl_wrap_s_mode = DEFAULT_GL_WRAP_S,
-//    GLint gl_wrap_t_mode = DEFAULT_GL_WRAP_T);
-
-  /**
-   * Create empty texture with associated buffer object.
-   *
-   * This will bind the new texture and the texture buffer into the VideoService.
-   * @todo prepisat na konstruktor ???
-   */
-//  QQQ
-//  static Texture* create_texture_buffer(
-//    VideoService &vs,
-//    PixelFormat format,
-//    int width,
-//    int height);
-
   /**
    * Destruktor, uvolni texturu z pamate OpenGL.
    */

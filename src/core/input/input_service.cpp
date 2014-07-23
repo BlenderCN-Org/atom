@@ -1,6 +1,7 @@
 #include "core/input/input_service.h"
 
 #include "core/system/sdl.h"
+#include "core/math/math.h"
 #include "core/log.h"
 
 namespace atom {
@@ -207,11 +208,8 @@ void InputService::process_sdl_events()
           push_event(make_axis_event(Axis(event.jaxis.axis), event.jaxis.value / 32768.0));
         break;
 
+      /// @todo mouse events
       case SDL_MOUSEMOTION:
-//QQQ make mouse events
-//        my_mouse.position(event.motion.x, event.motion.y);
-//        my_mouse.set_dx(event.motion.xrel);
-//        my_mouse.set_dy(event.motion.yrel);
         break;
 
       case SDL_MOUSEBUTTONDOWN:
@@ -220,6 +218,7 @@ void InputService::process_sdl_events()
       case SDL_MOUSEBUTTONUP:
         break;
 
+      /// @todo joystick events
 //      case SDL_JOYBUTTONUP:
 //      case SDL_JOYBUTTONDOWN:
 //      case SDL_JOYBALLMOTION:
@@ -228,27 +227,6 @@ void InputService::process_sdl_events()
 //        break;
     }
   }
-
-  //
-  // emulacia joystiku
-//  float x = 0;
-//  float y = 0;
-
-//  if (is_key_pressed(Key::KEY_UP))
-//    y -= 1;
-//  if (is_key_pressed(Key::KEY_DOWN))
-//    y += 1;
-
-//  if (is_key_pressed(Key::KEY_LEFT))
-//    x -= 1;
-//  if (is_key_pressed(Key::KEY_RIGHT))
-//    x += 1;
-
-//  if (x != my_controller.axis(Axis::LX))
-//    my_event_queue.push_back(make_axis_event(Axis::LX, x));
-
-//  if (y != my_controller.axis(Axis::LY))
-//    my_event_queue.push_back(make_axis_event(Axis::LY, y));
 }
 
 void InputService::process_event_queue()
@@ -307,8 +285,8 @@ void InputService::process_key_event(const Event &e)
 
 void InputService::process_mouse_event(const MouseEvent &e)
 {
-  my_mouse.position.x = range(-1.0f, 1.0f, my_mouse.position.x + e.x);
-  my_mouse.position.y = range(-1.0f, 1.0f, my_mouse.position.y + e.y);
+  my_mouse.position.x = clamp(my_mouse.position.x + e.x, -1.0f, 1.0f);
+  my_mouse.position.y = clamp(my_mouse.position.y + e.y, -1.0f, 1.0f);
   my_mouse.delta.x = e.x;
   my_mouse.delta.y = e.y;
 }

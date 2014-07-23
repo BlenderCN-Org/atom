@@ -62,7 +62,7 @@ sptr<Entity> World::find_entity(const Vec2f &point) const
 
 sptr<Entity> World::find_entity(const String &id) const
 {
-  //QQQ pouzit binarne vyhladavanie
+  /// @todo pouzit binarne vyhladavanie
   auto found = std::find_if(my_entities.begin(), my_entities.end(),
     [&id](const sptr<Entity> &object) { return object->id() == id; });
 

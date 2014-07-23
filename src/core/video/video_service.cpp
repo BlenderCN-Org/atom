@@ -168,7 +168,6 @@ void VideoService::bind_texture(u32 index, const Texture &texture)
     glBindTexture(GL_TEXTURE_RECTANGLE, texture.gl_texture());
   else
     error("This texture type is not supported %i (%s)", type, __FUNCTION__);
-//  error("This texture type is not supported %i (%s)", type, __func__);
 
   my_textures[index] = &texture;
 }
@@ -238,50 +237,10 @@ void VideoService::bind_attribute(u32 index, const VideoBuffer &buffer, Type typ
   unbind_array_buffer();
 }
 
-
-
-//void VideoService::bind_vertex_attribute(u32 index, const VideoBuffer &buffer)
-//{
-//  assert(my_state.shader != nullptr);
-
-//  glEnableVertexAttribArray(index);
-//  glBindBuffer(GL_ARRAY_BUFFER, buffer.gl_buffer());
-
-//  switch (buffer.gl_data_type()) {
-//    case GL_FLOAT:        // este existuje glVertexAttribLPointer pre double hodnoty
-//      glVertexAttribPointer(index, buffer.elements(), GL_FLOAT, GL_FALSE, 0, 0);
-//      break;
-//    case GL_UNSIGNED_INT: // celociselne hodnoty nechceme konvertovat na float
-//      glVertexAttribIPointer(index, buffer.elements(), GL_UNSIGNED_INT, 0, 0);
-//      break;
-
-//    default:
-//      error("Unsupported vertex attribute GL type");
-//      break;
-//  }
-
-//  glBindBuffer(GL_ARRAY_BUFFER, 0);
-//}
-
 void VideoService::unbind_vertex_attribute(u32 index)
 {
   glDisableVertexAttribArray(index);
 }
-
-//QQQ
-//void VideoService::bind_texture_buffer(TextureBuffer &texture_buffer)
-//{
-//  GL_ERROR_GUARD;
-//  glBindBuffer(GL_TEXTURE_BUFFER, texture_buffer.gl_buffer());
-//  my_texture_buffer = &texture_buffer;
-//}
-
-//void VideoService::unbind_texture_buffer()
-//{
-//  assert(my_texture_buffer != nullptr);
-//  glBindBuffer(GL_TEXTURE_BUFFER, 0);
-//  my_texture_buffer = nullptr;
-//}
 
 void VideoService::bind_array_buffer(const VideoBuffer &buffer)
 {

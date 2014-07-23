@@ -60,7 +60,8 @@ class AtomPluginPanel(bpy.types.Panel):
     @classmethod
     def poll(cls, context):
         ob = context.object
-        return (ob is not None and ob.type == "MESH")
+        return context.mode == 'OBJECT' and ob is not None and ob.type == 'MESH'
+
 
     def draw(self, context):
         if (context.object is not None):

@@ -82,7 +82,6 @@ std::vector<EntityCreator> create_object_creators(Core &)
   return creators;
 }
 
-//QQQ mozno vytiahnut mimo anonymny namespace
 GameAPI game_api = {
   create_first_frame,
   create_object_creators

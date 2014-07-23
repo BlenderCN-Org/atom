@@ -39,10 +39,7 @@ T bezier(const T &p0, const T &p1, const T &p2, const T &p3, typename T::value_t
 }
 
 template<typename T>
-T clamp(
-  T x,
-  T min,
-  T max)
+T clamp(T x, T min, T max)
 {
   return x < min ? min : (x > max ? max : x);
 }

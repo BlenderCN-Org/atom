@@ -38,14 +38,14 @@ void ChangeEntityField::redo()
 
   my_prev_value->load_value_from(ptr_with_offset(my_entity.get(), field.offset));
   my_new_value->set_value_to(ptr_with_offset(my_entity.get(), field.offset));
-//  QQQmy_entity->init();
+  ///  @todo reinicializovat entitu
   application().notify_entity_changed(my_entity);
 }
 
 void ChangeEntityField::undo()
 {
   my_prev_value->set_value_to(ptr_with_offset(my_entity.get(), meta_field().offset));
-// QQQmy_entity->init();
+  /// @todo reinicializovat entitu
   application().notify_entity_changed(my_entity);
 }
 
