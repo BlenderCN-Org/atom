@@ -3,7 +3,7 @@
 #include <QGLWidget>
 #include <QTimer>
 #include <core/corefwd.h>
-#include "editor/editorfwd.h"
+#include "../editorfwd.h"
 
 namespace atom {
 namespace editor {

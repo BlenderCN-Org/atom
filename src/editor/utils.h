@@ -4,7 +4,7 @@
 #include <core/ptr.h>
 #include <core/string.h>
 //#include "field_value.h"
-#include "editor/editorfwd.h"
+#include "editorfwd.h"
 
 namespace atom {
 namespace editor {

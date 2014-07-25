@@ -96,7 +96,7 @@ def conf(ctx):
 def build(ctx):
     build_core_lib(ctx)
     build_game_lib(ctx)
-    build_starter(ctx)
+    #build_starter(ctx)
     build_editor(ctx)
 
     if 'MY_BUILD_FONTTOOL' in ctx.env:
@@ -212,9 +212,8 @@ def build_core_lib(ctx):
     ctx.stlib(
       name='core',
       target = 'core',
-      source=ctx.path.ant_glob('src/core/**/crate.cpp'),
-      #source=ctx.path.ant_glob('src/core/**/*.cpp', excl=filter),
-      includes=['src'],
+      source=ctx.path.ant_glob('src/libcore/**/crate.cpp'),
+      #source=ctx.path.ant_glob('src/libcore/**/*.cpp', excl=filter),
       export_includes=['src'],
       use=['ogg', 'vorbisfile', 'GLEW', 'png', 'SDL']
     )
@@ -222,14 +221,13 @@ def build_core_lib(ctx):
 
 def build_game_lib(ctx):
     """build Game lib as static lib"""
-    #filter = 'src/**/crate.cpp'
+    #filter = 'src/libgame/**/crate.cpp'
     ctx.stlib(
       name='game',
       target = 'game',
-      source=ctx.path.ant_glob('src/game/**/crate.cpp'),
-      #source=ctx.path.ant_glob('src/game/**/*.cpp', excl=filter),
-      includes=['src'],
-      export_includes=['game/src'],
+      source=ctx.path.ant_glob('src/libgame/**/crate.cpp'),
+      #source=ctx.path.ant_glob('src/libgame/**/*.cpp', excl=filter),
+      includes=['src/libcore', 'src/libgame'],
       use=['core']
     )
 
@@ -239,7 +237,7 @@ def build_starter(ctx):
       name='run',
       target = 'run',
       source=ctx.path.ant_glob('src/runner/**/*.cpp'),
-      includes=['src'],
+      includes=['src/libcore', 'src/libgame'],
       use=['game', 'core']
     )
 
@@ -250,7 +248,7 @@ def build_editor(ctx):
       target='edit',
       features='cxx cxxprogram qt4',
       source=ctx.path.ant_glob('src/editor/**/crate.cpp') + ctx.path.ant_glob('src/editor/**/*.ui'),
-      includes=['src'],
+      includes=['src/libcore', 'src/libgame', 'build/src/editor/ui'],
       use=['game', 'core', 'QTCORE', 'QTGUI', 'QTOPENGL']
     )
 

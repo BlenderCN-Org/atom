@@ -6,7 +6,7 @@
 #include <core/corefwd.h>
 #include <core/string.h>
 #include <core/noncopyable.h>
-#include "editor/editorfwd.h"
+#include "../editorfwd.h"
 
 namespace atom {
 namespace editor {

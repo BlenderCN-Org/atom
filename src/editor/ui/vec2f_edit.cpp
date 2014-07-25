@@ -1,7 +1,7 @@
 #include "vec2f_edit.h"
 #include <QLabel>
 #include <QHBoxLayout>
-#include "editor/constants.h"
+#include "../constants.h"
 
 namespace atom {
 namespace editor {

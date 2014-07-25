@@ -1,8 +1,8 @@
 #include "field_edit.h"
 #include <core/log.h>
-#include "editor/field_value.h"
-#include "editor/constants.h"
-#include "editor/ui/vec2f_edit.h"
+#include "../field_value.h"
+#include "../constants.h"
+#include "../ui/vec2f_edit.h"
 
 namespace atom {
 namespace editor {

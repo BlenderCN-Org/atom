@@ -5,8 +5,8 @@
 #include <QSettings>
 #include <core/ptr.h>
 #include <core/corefwd.h>
-#include "editor/editorfwd.h"
-#include "editor/ui/editor_window.h"
+#include "editorfwd.h"
+#include "ui/editor_window.h"
 
 namespace atom {
 namespace editor {

@@ -7,7 +7,7 @@
 #include <memory>
 #include <core/system/core.h>
 #include <core/system/game_api.h>
-#include "editor/editorfwd.h"
+#include "../editorfwd.h"
 
 namespace atom {
 namespace editor {

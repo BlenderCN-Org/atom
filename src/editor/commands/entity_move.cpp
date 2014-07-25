@@ -1,6 +1,6 @@
 #include "entity_move.h"
 #include <core/world/entity.h>
-#include "editor/editor_application.h"
+#include "../editor_application.h"
 
 namespace atom {
 namespace editor {

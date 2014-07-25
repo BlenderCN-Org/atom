@@ -2,7 +2,7 @@
 
 #include <QString>
 #include <QUndoCommand>
-#include "editor/editorfwd.h"
+#include "../editorfwd.h"
 
 namespace atom {
 namespace editor {

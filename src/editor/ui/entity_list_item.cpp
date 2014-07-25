@@ -1,7 +1,7 @@
 #include "entity_list_item.h"
 #include <cassert>
 #include <core/world/entity.h>
-#include "editor/utils.h"
+#include "../utils.h"
 
 namespace atom {
 namespace editor {

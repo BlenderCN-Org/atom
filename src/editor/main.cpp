@@ -1,4 +1,4 @@
-#include "editor/editor_application.h"
+#include "editor_application.h"
 
 int main(int argc, char **argv)
 {

@@ -2,9 +2,9 @@
 #include <cassert>
 #include <core/meta.h>
 #include <core/world/world.h>
-#include "editor/field_value.h"
-#include "editor/utils.h"
-#include "editor/editor_application.h"
+#include "../field_value.h"
+#include "../utils.h"
+#include "../editor_application.h"
 
 namespace atom {
 namespace editor {

@@ -6,8 +6,8 @@
 #include <QHBoxLayout>
 #include <core/ptr.h>
 #include <core/math/vec.h>
-#include "editor/editorfwd.h"
-#include "editor/field_value.h"
+#include "../editorfwd.h"
+#include "../field_value.h"
 
 namespace atom {
 namespace editor {

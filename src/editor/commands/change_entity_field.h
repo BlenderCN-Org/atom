@@ -4,7 +4,7 @@
 #include <core/meta.h>
 #include <core/string.h>
 #include "editor_command.h"
-#include "editor/editorfwd.h"
+#include "../editorfwd.h"
 
 namespace atom {
 namespace editor {

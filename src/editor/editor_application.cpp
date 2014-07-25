@@ -7,7 +7,7 @@
 #include <core/system/game_api.h>
 #include <core/world/world.h>
 #include <core/exception.h>
-#include "editor/log.h"
+#include "log.h"
 
 namespace atom {
 namespace editor {

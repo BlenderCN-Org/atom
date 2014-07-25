@@ -2,7 +2,7 @@
 
 #include <QListWidget>
 #include <core/system/game_api.h> // kvoli VectorObjectUPtr
-#include "editor/editorfwd.h"
+#include "../editorfwd.h"
 
 namespace atom {
 namespace editor {

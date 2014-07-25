@@ -1,8 +1,8 @@
 #include "entity_list.h"
 #include <QMimeData>
-#include "editor/log.h"
-#include "editor/ui/entity_list_item.h"
-#include "editor/editor_application.h"
+#include "../log.h"
+#include "../ui/entity_list_item.h"
+#include "../editor_application.h"
 
 namespace atom {
 namespace editor {

@@ -4,6 +4,8 @@ import sys
 import time
 import os
 import json
+import collections
+import array
 
 filename_ext = ".m3d"
 
@@ -28,6 +30,53 @@ def has_triangles_only(mesh):
     return True
 
 
+def export_skeleton(ob, me):
+    """
+    Vracia None alebo named tuple (bone_weight, bone_index, skeleton)
+    """
+    pose = ob.parent.pose
+    
+    # build bone index: name => index
+    bone_index = dict()
+    i = 0
+    
+    for name, bone in pose.bones.items():
+        bone_index[name] = i
+        i = i + 1
+        
+    bone_list = {}
+    i = 0
+    
+    weight = array.array('f')   # 4 hodnoty float na vertex
+    index = array.array('I')    # 4 indexy (0-255) zakodovane do u32
+
+    for name, bone in pose.bones.items():
+        print('Exporting bone ' + name)
+        head = bone.bone.head
+        tail = bone.bone.tail
+        head_local = bone.bone.head_local
+        tail_local = bone.bone.tail_local
+        b = {}
+        b['head'] = [head.x, head.y, head.z]
+        b['tail'] = [tail.x, tail.y, tail.z]
+        b['head_local'] = [head_local.x, head_local.y, head_local.z]
+        b['tail_local'] = [tail_local.x, tail_local.y, tail_local.z]
+        b['index'] = i
+
+        if bone.parent != None:
+            b['parent'] = bone_index[bone.parent.name]
+
+        bone_list[name] = b
+        i = i + 1
+        
+    skeleton = {
+        'bones' : bone_list
+    }
+     
+    Result = collections.namedtuple('ExportSkeletonResult', 'skeleton weight index')
+    return Result(skeleton, None, None)
+    
+
 def export_mesh(ob, me, export_bones):
     vertices = []
     normals = []
@@ -47,40 +96,34 @@ def export_mesh(ob, me, export_bones):
         for i in poly.vertices:
             indices.append(i)
 
-    if export_bones:
-        pose = ob.parent.pose
-
-        bone_list = {}
-        i = 0
-
-        for name, bone in pose.bones.items():
-            print('Exporting bone ' + name)
-            start = bone.bone.head_local
-            b = {}
-            b['start'] = [start.x, start.y, start.z]
-            b['index'] = i
-
-            if bone.parent != None:
-                b['parent'] = bone.parent.name
-
-            bone_list[name] = b
-            i = i + 1
+    
+        
 
 
     vertex_stream = { 'type' : 'f32', 'data' : vertices }
     normal_stream = { 'type' : 'f32', 'data' : normals }
     index_stream  = { 'type' : 'u32', 'data' : indices }
+    
+    arrays = dict()
+    arrays['vertices'] = vertex_stream
+    arrays['normals'] = normal_stream
+    arrays['indices'] = index_stream
 
-    mesh = {
-      #'arrays' : {
-      #  "vertices" : vertex_stream,
-      #  "normals" : normal_stream,
-      #  "indices" : index_stream
-      #},
-      'skeleton' : {
-        'bones' : bone_list
-      }
-    }
+    mesh = dict()
+    mesh['arrays'] = arrays
+    
+    if export_bones:
+        skeleton = export_skeleton(ob, me)
+        assert skeleton != None
+        assert skeleton.skeleton != None
+        #assert skeleton.weight != None
+        #assert skeleton.index != None
+        
+        mesh['skeleton'] = skeleton.skeleton
+        arrays['bone_weight'] = skeleton.weight
+        arrays['bone_index'] = skeleton.index
+        
+    
     return mesh
 
 

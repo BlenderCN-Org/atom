@@ -1,9 +1,9 @@
 #include "entity_edit.h"
-#include "editor/log.h"
-#include "editor/editor_application.h"
-#include "editor/utils.h"
-#include "editor/ui/field_edit.h"
-#include "editor/commands/change_entity_field.h"
+#include "../log.h"
+#include "../editor_application.h"
+#include "../utils.h"
+#include "../ui/field_edit.h"
+#include "../commands/change_entity_field.h"
 
 namespace atom {
 namespace editor {

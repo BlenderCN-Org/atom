@@ -1,7 +1,7 @@
 #include "utils.h"
 #include <QStringList>
-#include "editor/field_value.h"
-#include "editor/log.h"
+#include "field_value.h"
+#include "log.h"
 
 namespace atom {
 namespace editor {
@@ -28,7 +28,7 @@ uptr<FieldValue> create_field_value_for_type(Type type)
       break;
 
     default:
-      log::warning("This field type \"%i\" is not supported in the %s", type, MM_FUNC_NAME);
+      log::warning("This field type \"%i\" is not supported in the %s", type, ATOM_FUNC_NAME);
       break;
   }
 

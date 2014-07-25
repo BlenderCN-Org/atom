@@ -11,12 +11,12 @@
 #include <core/audio/audio_service.h>
 #include <core/system/resource_service.h>
 #include <core/utils/json_utils.h>
-#include "editor/log.h"
-#include "editor/ui/game_view.h"
-#include "editor/ui/entity_list.h"
-#include "editor/ui/ui_editor_window.h"
-#include "editor/editor_application.h"
-#include "editor/ui_utils.h"
+#include "../log.h"
+#include "../ui/game_view.h"
+#include "../ui/entity_list.h"
+#include "ui_editor_window.h" //QQQ
+#include "../editor_application.h"
+#include "../ui_utils.h"
 
 namespace atom {
 namespace editor {
@@ -625,4 +625,4 @@ void EditorWindow::load_file(const QString &filename)
 }
 }
 
-#include "editor/ui/editor_window.moc"
+#include "editor_window.moc"

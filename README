@@ -15,3 +15,9 @@ TODO:
    "INSTALL_COMPONENT", "REGISTER_COMPONENT"
  - debug per entity, per component?
  - prekopat MoveCommand, aby pouzivat transform a nie position/rotation
+ - zmazat Singleton
+ - pouzivame TextureSampler
+ - vytvorit zakladny hlavickovy subor obsahujuci types, meta, noncopyable, ?string?, log
+ - potrebujem vec array a mat array? zbytocne subory
+ - co s platform.h? obsahuje len ATOM_FUNC_...cosi
+ - premiestnit math.h do hlavneho adresara?

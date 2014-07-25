@@ -10,10 +10,10 @@
 #include <core/video/draw_service.h>
 #include <core/utils/utils.h>
 #include <core/world/world.h>
-#include "editor/editor_application.h"
-#include "editor/commands/entity_move.h"
-#include "editor/commands/entity_add.h"
-#include "editor/log.h"
+#include "../editor_application.h"
+#include "../commands/entity_move.h"
+#include "../commands/entity_add.h"
+#include "../log.h"
 #include "game_view.h"
 
 namespace atom {
