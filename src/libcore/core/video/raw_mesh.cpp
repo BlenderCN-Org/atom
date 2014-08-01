@@ -4,7 +4,7 @@
 
 namespace atom {
 
-bool RawMesh::add_array(const String &name, Type type, uptr<u8> &&data, u32 size)
+bool RawMesh::add_array(const String &name, Type type, uptr<u8[]> &&data, u32 size)
 {
   uptr<ElementArray> array(new ElementArray());
   array->name = name;
@@ -13,8 +13,6 @@ bool RawMesh::add_array(const String &name, Type type, uptr<u8> &&data, u32 size
   array->size = size;
 
   my_arrays.push_back(std::move(array));
-
-  log::info("Adding array %s (%i)", name.c_str(), size);
   return true;
 }
 

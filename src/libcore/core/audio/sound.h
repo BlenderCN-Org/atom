@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../corefwd.h"
-#include "../types.h"
+#include "../platform.h"
+#include "../ptr.h"
 #include "audio_buffer.h"
 
 namespace atom {

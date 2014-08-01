@@ -2,11 +2,10 @@
 
 #include <deque>
 #include <mutex>
-#include "../corefwd.h"
-#include "../utils/singleton.h"
 #include "music.h"
 #include "audio_stream.h"
-#include "../types.h"
+#include "../foundation.h"
+#include "../utils/singleton.h"
 #include "../system/core.h"
 
 namespace atom {

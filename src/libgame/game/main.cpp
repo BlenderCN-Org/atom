@@ -42,7 +42,7 @@ uptr<Entity> create_test_object(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
-  uptr<MaterialComponent> material(new MaterialComponent("test2"));
+  uptr<MaterialComponent> material(new MaterialComponent("animal"));
   uptr<MeshComponent> mesh(new MeshComponent("animal"));
   uptr<SkeletonComponent> skeleton(new SkeletonComponent("animal"));
   uptr<RenderComponent> render(new RenderComponent());

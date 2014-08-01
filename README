@@ -21,3 +21,8 @@ TODO:
  - potrebujem vec array a mat array? zbytocne subory
  - co s platform.h? obsahuje len ATOM_FUNC_...cosi
  - premiestnit math.h do hlavneho adresara?
+ - rozlisenie medzi uniform a uniform array sa deje na zaklade parametru size,
+   ktory je pre polia vacsi ako 1, vynimkou je pole velkosti 1, riesenim je asi
+   rozlisovat medzi scalar a array podla nazvu pretoze pole ma nazov + [0]
+ - pretiahnut typy z types.h do platform.h a registraciu typov pre type_of do meta.h
+ - premenovat quaternion.h na quat.h

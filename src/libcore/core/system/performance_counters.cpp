@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
-#include "../types.h"
+#include "../platform.h"
 #include "../log.h"
 
 using std::find_if;

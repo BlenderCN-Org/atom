@@ -1,6 +1,6 @@
 #include "technique.h"
 #include <string.h>
-#include "../meta.h"
+#include "../math/mat_array.h"
 #include "../utils/utils.h"
 #include "../utils/gl_utils.h"
 #include "../video/shader.h"
@@ -8,8 +8,7 @@
 
 namespace atom {
 
-Technique::Technique(VideoService &vs)
-  : my_vs(vs)
+Technique::Technique()
 {
   my_gl_program = glCreateProgram();
 }
@@ -19,11 +18,11 @@ Technique::~Technique()
   glDeleteProgram(my_gl_program);
 }
 
-uptr<Technique> Technique::create(VideoService &vs, const String &name)
+uptr<Technique> Technique::create(const String &name)
 {
-  Shader pixel_shader(vs, VideoShaderType::PIXEL);
-  Shader vertex_shader(vs, VideoShaderType::VERTEX);
-  Shader geometry_shader(vs, VideoShaderType::GEOMETRY);
+  Shader pixel_shader(ShaderType::PIXEL);
+  Shader vertex_shader(ShaderType::VERTEX);
+  Shader geometry_shader(ShaderType::GEOMETRY);
 
   String pixel_src, vertex_src, geometry_src;
   const String prefix = String(SHADER_RESOURCE_DIR) + "/" + name;
@@ -44,7 +43,7 @@ uptr<Technique> Technique::create(VideoService &vs, const String &name)
 
   const Shader *shaders[3] = { &vertex_shader, &pixel_shader, &geometry_shader };
 
-  uptr<Technique> program(new Technique(vs));
+  uptr<Technique> program(new Technique());
   if (!program->link(shaders, geometry_shader.is_compiled() ? 3 : 2)) {
     log::warning("Can't link program \"%s\"", name.c_str());
     return nullptr;
@@ -181,7 +180,14 @@ void set_uniform(const MetaField &meta_field, const void *data, GLint gl_locatio
       break;
     }
 
+    case Type::MAT4F_ARRAY: {
+      const Mat4fArray &m = field_ref<Mat4fArray>(meta_field, data);
+      glUniformMatrix4fv(gl_location, m.size(), false, &m[0][0][0]);
+      break;
+    }
+
     default:
+      log::warning("Uniform pull: unknown type %i", meta_field.type);
       break;
   }
 }
@@ -197,7 +203,7 @@ void Technique::pull(const MetaObject &properties)
   }
 }
 
-Type Technique::get_type_from_gl_type(GLenum type)
+Type Technique::get_type_from_gl_type(GLenum type, GLint size)
 {
   switch (type) {
     case GL_FLOAT:
@@ -219,7 +225,7 @@ Type Technique::get_type_from_gl_type(GLenum type)
       return Type::MAT3F;
 
     case GL_FLOAT_MAT4:
-      return Type::MAT4F;
+      return size == 1 ? Type::MAT4F : Type::MAT4F_ARRAY;
 
     case GL_SAMPLER_2D:
       return Type::SAMPLER_2D;
@@ -252,13 +258,14 @@ bool Technique::get_shader_uniform_info(GLuint gl_program, GLuint index,
     return false;
   }
 
-  Type uniform_type = get_type_from_gl_type(type);
+  Type uniform_type = get_type_from_gl_type(type, size);
 
   if (uniform_type == Type::UNKNOWN) {
-    log::warning("Unknown uniform type \"%s\" (%i)", name, type);
+    log::error("Unknown uniform type \"%s\" (%i)", name, type);
     return false;
   }
 
+  log::info("Uniform info %s, type=%i, size=%i", name, type, size);
   uniform.type = uniform_type;
   uniform.name = name;
   uniform.gl_location = location;

@@ -24,27 +24,4 @@ const VideoBuffer *Mesh::get_uv() const
   return find_stream(StreamId::UV);
 }
 
-bool has_vertices(
-  const Mesh &mesh_buffer)
-{
-  return mesh_buffer.flags & Mesh::VERTICES;
-}
-
-bool has_texcoords(
-  const Mesh &mesh_buffer)
-{
-  return mesh_buffer.flags & Mesh::TEXCOORDS;
-}
-
-bool has_indices(
-  const Mesh &mesh_buffer)
-{
-  return mesh_buffer.flags & Mesh::INDICES;
-}
-
-namespace experimental {
-
-
-}
-
 }

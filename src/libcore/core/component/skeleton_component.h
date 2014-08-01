@@ -6,6 +6,7 @@ namespace atom {
 
 class SkeletonComponent : public Component {
   String my_mesh_name;
+  std::vector<Mat4f> my_transforms;
 
   void activate() override;
 
@@ -16,6 +17,7 @@ class SkeletonComponent : public Component {
 public:
   explicit SkeletonComponent(const String &mesh);
 
+  Slice<Mat4f> get_transforms() const;
 };
 
 }

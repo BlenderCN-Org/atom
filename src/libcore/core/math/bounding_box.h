@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../types.h"
+#include "../platform.h"
 #include "../math/mat.h"
 
 namespace atom {

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <cassert>
-#include "../types.h"
 
 namespace atom {
+
+const float EPSILON = 0.01f;
 
 template<typename T>
 struct Vec2 {

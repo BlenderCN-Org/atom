@@ -1,9 +1,7 @@
 #pragma once
 
 #include <vorbis/vorbisfile.h>
-#include "../corefwd.h"
-#include "../ptr.h"
-#include "../types.h"
+#include "../foundation.h"
 #include "../constants.h"
 #include "audio_buffer.h"
 
@@ -16,7 +14,7 @@ class Music : public AudioBuffer {
 public:
     static uptr<Music> create_from_file(
       const char *filename);
-    
+
     int read_old(void *buffer, int start, int size);
     int get_sample_rate();
     int get_channel_count();

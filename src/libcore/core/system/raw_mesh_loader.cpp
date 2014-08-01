@@ -43,7 +43,7 @@ bool load_raw_mesh_element_array_from_json(const rapidjson::Value &node,
         if (utils::read_array(data, buffer) && !buffer.empty()) {
           array.size = buffer.size() * sizeof(u32);
           array.type = Type::U32;
-          array.data = uptr<u8>(new u8[array.size]);
+          array.data = uptr<u8[]>(new u8[array.size]);
           log::info("Array size %i", array.size);
           memcpy(array.data.get(), buffer.data(), array.size);
           return true;
@@ -57,7 +57,7 @@ bool load_raw_mesh_element_array_from_json(const rapidjson::Value &node,
         if (utils::read_array(data, buffer) && !buffer.empty()) {
           array.size = buffer.size() * sizeof(f32);
           array.type = Type::F32;
-          array.data = uptr<u8>(new u8[array.size]);
+          array.data = uptr<u8[]>(new u8[array.size]);
           memcpy(array.data.get(), buffer.data(), array.size);
           return true;
         }
@@ -65,9 +65,11 @@ bool load_raw_mesh_element_array_from_json(const rapidjson::Value &node,
       break;
 
     default:
+      log::warning("Unknown array type \"%s\"", type.GetString());
       break;
   }
 
+  log::warning("load_raw_mesh_element_array_from_json: Something went wrong");
   return false;
 }
 
@@ -90,6 +92,7 @@ bool load_raw_mesh_arrays_from_json(const rapidjson::Value &arrays_node, RawMesh
     ElementArray array;
 
     if (!load_raw_mesh_element_array_from_json(array_node, array)) {
+      log::warning("Error while loading array \"%s\"", i->name.GetString());
       return false;
     }
     model.add_array(i->name.GetString(), array.type, std::move(array.data), array.size);
@@ -146,10 +149,6 @@ bool load_raw_mesh_skeleton_from_json(const rapidjson::Value &json_skeleton, Raw
     const rapidjson::Value &json_parent = value["parent"];
     bone.parent = json_parent.IsNull() ? -1 : json_parent.GetInt();
   }
-
-  log::info("Bones loaded");
-
-
 
   return true;
 }

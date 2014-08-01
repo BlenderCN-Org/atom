@@ -48,8 +48,8 @@ void DrawService::draw_primitive_rect(
   my_vs.bind_attribute(0, vertex_buffer, Type::VEC3F);
   my_vs.bind_attribute(1, uv_buffer, Type::VEC2F);
   my_vs.draw_arrays(GL_TRIANGLES, 0, 6);
-  my_vs.unbind_vertex_attribute(0);
-  my_vs.unbind_vertex_attribute(1);
+  my_vs.unbind_attribute(0);
+  my_vs.unbind_attribute(1);
 
 }
 

@@ -76,8 +76,9 @@ void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   vs.bind_attribute(0, *vertices, Type::VEC3F);
   vs.draw_index_array(GL_TRIANGLES, *indices, indices->size() / sizeof(u32));
   vs.draw_arrays(GL_TRIANGLES, 0, vertices->size() / sizeof(Vec3f));
-  vs.unbind_vertex_attribute(0);
+  vs.unbind_attribute(0);
 }
+
 
 //-----------------------------------------------------------------------------
 //
@@ -135,8 +136,79 @@ void PhongMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   vs.bind_attribute(0, *vb, Type::VEC3F);
   vs.bind_attribute(1, *nb, Type::VEC3F);
   vs.draw_index_array(GL_TRIANGLES, *ib, ib->size() / 3);
-  vs.unbind_vertex_attribute(0);
-  vs.unbind_vertex_attribute(1);
+  vs.unbind_attribute(0);
+  vs.unbind_attribute(1);
+}
+
+
+//-----------------------------------------------------------------------------
+//
+// Skin Material
+//
+//-----------------------------------------------------------------------------
+
+META_DEFINE_FIELDS(SkinMaterial) {
+  FIELD(SkinMaterial, my_shader, "shader"),
+  FIELD(SkinMaterial, my_color, "color"),
+};
+
+META_DEFINE_CLASS(SkinMaterial, Material, "SkinMaterial");
+
+
+uptr<Material> SkinMaterial::create(ResourceService &rs)
+{
+  return uptr<Material>(new SkinMaterial(rs.get_technique("skin")));
+}
+
+SkinMaterial::SkinMaterial(const TechniqueResourcePtr &shader)
+  : my_program(shader)
+{
+  META_INIT();
+}
+
+SkinMaterial::~SkinMaterial()
+{
+}
+
+void SkinMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
+{
+  assert(my_shader != nullptr);
+  const VideoBuffer *vb = mesh.find_stream(StreamId::VERTEX);
+  const VideoBuffer *nb = mesh.find_stream(StreamId::NORMAL);
+  const VideoBuffer *ib = mesh.find_stream(StreamId::INDEX);
+  const VideoBuffer *bi = mesh.find_stream(StreamId::BINDEX);
+  const VideoBuffer *bw = mesh.find_stream(StreamId::BWEIGHT);
+
+  if (vb == nullptr || nb == nullptr || ib == nullptr) {
+    log::warning("This mesh doesn't contain vertex, normal or index stream");
+    return;
+  }
+
+  if (bi == nullptr || bw == nullptr) {
+    log::warning("This mesh doesn't contain bone weight or index stream");
+    return;
+  }
+
+
+  VideoService &vs = context.video_processor;
+  vs.enable_depth_test();
+
+  Technique &program = my_program->program();
+  vs.bind_program(program);
+  context.uniforms.color = Vec3f(0.7, 0.7, 0.7);
+  context.uniforms.sun_dir = Vec3f(0, 0, -1);
+  context.uniforms.ambient_color = Vec3f(0.13, 0.13, 0.13);
+  //  program.set_param("model_view_projection", context.uniforms.transformations.model_view_projection());
+  for (Mat4f m : context.uniforms.bones) {
+    m = Mat4f::identity();
+  }
+  program.pull(meta_object(context.uniforms));
+
+  AttributeBinder vertex_attribute(vs, 0, *vb, Type::VEC3F);
+  AttributeBinder index_attribute(vs, 1, *bi, Type::U32);
+  AttributeBinder bweight(vs, 2, *bw, Type::VEC4F);
+
+  vs.draw_index_array(GL_TRIANGLES, *ib, ib->size() / 3);
 }
 
 }

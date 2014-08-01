@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <cmath>
-#include "../types.h"
 
 namespace atom {
 

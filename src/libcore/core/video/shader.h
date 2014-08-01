@@ -7,15 +7,19 @@
 
 namespace atom {
 
-enum class VideoShaderType {
+enum class ShaderType {
   VERTEX,
   GEOMETRY,
   PIXEL
 };
 
 class Shader : NonCopyable {
+  ShaderType  my_type;
+  bool        my_is_compiled;
+  GLuint      my_gl_shader;
+
 public:
-  Shader(VideoService &vs, VideoShaderType type);
+  explicit Shader(ShaderType type);
   ~Shader();
 
   bool compile(const String &src);
@@ -24,14 +28,13 @@ public:
 
   GLuint gl_shader() const;
 
-private:
-  static GLenum get_gl_shader_type(VideoShaderType type);
+  ShaderType get_shader_type() const
+  {
+    return my_type;
+  }
 
 private:
-  VideoService    &my_vs;
-  VideoShaderType  my_type;
-  bool             my_is_compiled;
-  GLuint           my_gl_shader;
+  static GLenum get_gl_shader_type(ShaderType type);
 };
 
 }

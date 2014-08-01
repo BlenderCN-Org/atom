@@ -2,7 +2,6 @@
 
 #include <SDL/SDL.h>
 #include "../corefwd.h"
-#include "../input/mouse.h"
 
 namespace atom {
 

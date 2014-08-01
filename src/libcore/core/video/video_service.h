@@ -36,6 +36,15 @@ enum class BlendOperation : GLenum {
   ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC_ALPHA
 };
 
+class AttributeBinder : private NonCopyable {
+  VideoService &my_vs;
+  int           my_index;
+
+public:
+  AttributeBinder(VideoService &vs, int index, const VideoBuffer &buffer, Type type);
+  ~AttributeBinder();
+};
+
 class VideoService : private NonCopyable {
 public:
   VideoService();
@@ -63,7 +72,7 @@ public:
 
   void bind_attribute(u32 index, const VideoBuffer &buffer, Type type);
 
-  void unbind_vertex_attribute(u32 index);
+  void unbind_attribute(u32 index);
 
 //  void bind_texture_buffer(TextureBuffer &texture_buffer);
 

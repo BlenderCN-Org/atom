@@ -1,13 +1,8 @@
 #pragma once
 
-#include "../corefwd.h"
-#include "../types.h"
-#include "../string.h"
+#include "../foundation.h"
 #include "../log.h"
 #include "../stdvec.h"
-#include "../math/vec.h"
-#include "../math/mat.h"
-#include "../math/quaternion.h"
 
 namespace atom {
 

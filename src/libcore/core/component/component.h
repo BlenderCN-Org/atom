@@ -21,7 +21,6 @@ typedef std::vector<GenericSlot *> SlotArray;
 
 class Component : NonCopyable {
   ComponentType my_type;
-  u32           my_priority;
   Entity       *my_entity;
   String        my_name;
   SlotArray     my_slots;

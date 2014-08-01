@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <cmath>
-#include "../types.h"
 #include "mat3.h"
 #include "vec.h"
 

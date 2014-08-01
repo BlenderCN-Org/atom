@@ -230,6 +230,14 @@ void VideoService::bind_attribute(u32 index, const VideoBuffer &buffer, Type typ
       glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, 0, 0);
       break;
 
+    case Type::VEC4F:
+      glVertexAttribPointer(index, 4, GL_FLOAT, GL_FALSE, 0, 0);
+      break;
+
+    case Type::U32:
+      glVertexAttribPointer(index, 1, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
+      break;
+
     default:
       log::error("Unsupported attribute type %i", static_cast<int>(type));
       break;
@@ -238,7 +246,7 @@ void VideoService::bind_attribute(u32 index, const VideoBuffer &buffer, Type typ
   unbind_array_buffer();
 }
 
-void VideoService::unbind_vertex_attribute(u32 index)
+void VideoService::unbind_attribute(u32 index)
 {
   glDisableVertexAttribArray(index);
 }
@@ -426,6 +434,18 @@ void VideoService::set_draw_face(DrawFace face)
       glDisable(GL_CULL_FACE);
       break;
   }
+}
+
+AttributeBinder::AttributeBinder(VideoService &vs, int index, const VideoBuffer &buffer, Type type)
+  : my_vs(vs)
+  , my_index(index)
+{
+  my_vs.bind_attribute(my_index, buffer, type);
+}
+
+AttributeBinder::~AttributeBinder()
+{
+  my_vs.unbind_attribute(my_index);
 }
 
 }

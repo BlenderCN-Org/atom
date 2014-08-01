@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "types.h"
+#include "platform.h"
 #include "string.h"
 
 namespace atom {

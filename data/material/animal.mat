@@ -1,0 +1,6 @@
+{
+  "type" : "skin",
+  "shader" : "skin",
+  "color" : [ 1, 0, 0 ],
+  "face" : "front"
+}

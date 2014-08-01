@@ -35,21 +35,19 @@ def export_skeleton(ob, me):
     Vracia None alebo named tuple (bone_weight, bone_index, skeleton)
     """
     pose = ob.parent.pose
-    
+    vertex_groups = ob.vertex_groups
+
     # build bone index: name => index
     bone_index = dict()
     i = 0
-    
+
     for name, bone in pose.bones.items():
         bone_index[name] = i
         i = i + 1
-        
-    bone_list = {}
-    i = 0
-    
-    weight = array.array('f')   # 4 hodnoty float na vertex
-    index = array.array('I')    # 4 indexy (0-255) zakodovane do u32
 
+    bone_list = {}
+
+    i = 0
     for name, bone in pose.bones.items():
         print('Exporting bone ' + name)
         head = bone.bone.head
@@ -67,15 +65,42 @@ def export_skeleton(ob, me):
             b['parent'] = bone_index[bone.parent.name]
 
         bone_list[name] = b
+
         i = i + 1
-        
+
+    #weight = array.array('f')   # 4 hodnoty float na vertex
+    #index = array.array('I')    # 4 indexy (0-255) zakodovane do u32
+    weight = list()   # 4 hodnoty float na vertex
+    index = list()    # 4 indexy (0-255) zakodovane do u32
+
+    for v in me.vertices:
+        packed_index = 0
+        used = 0
+        shift = 0
+
+        for group in v.groups:
+            vertex_group_name = vertex_groups[group.group].name
+            bindex = bone_index[vertex_group_name]
+
+            if group.weight > 0:
+              weight.append(group.weight)
+              packed_index = packed_index | (bindex << shift)
+              shift = shift + 8
+              used = used + 1
+
+        while used < 4:
+            used = used + 1
+            weight.append(0)
+
+        index.append(packed_index)
+
     skeleton = {
         'bones' : bone_list
     }
-     
+
     Result = collections.namedtuple('ExportSkeletonResult', 'skeleton weight index')
-    return Result(skeleton, None, None)
-    
+    return Result(skeleton, weight, index)
+
 
 def export_mesh(ob, me, export_bones):
     vertices = []
@@ -96,14 +121,10 @@ def export_mesh(ob, me, export_bones):
         for i in poly.vertices:
             indices.append(i)
 
-    
-        
-
-
     vertex_stream = { 'type' : 'f32', 'data' : vertices }
     normal_stream = { 'type' : 'f32', 'data' : normals }
     index_stream  = { 'type' : 'u32', 'data' : indices }
-    
+
     arrays = dict()
     arrays['vertices'] = vertex_stream
     arrays['normals'] = normal_stream
@@ -111,19 +132,21 @@ def export_mesh(ob, me, export_bones):
 
     mesh = dict()
     mesh['arrays'] = arrays
-    
+
     if export_bones:
         skeleton = export_skeleton(ob, me)
         assert skeleton != None
         assert skeleton.skeleton != None
         #assert skeleton.weight != None
         #assert skeleton.index != None
-        
+
+        weight = { 'type' : 'f32', 'data' : skeleton.weight }
+        index = { 'type' : 'u32', 'data' : skeleton.index }
+
         mesh['skeleton'] = skeleton.skeleton
-        arrays['bone_weight'] = skeleton.weight
-        arrays['bone_index'] = skeleton.index
-        
-    
+        arrays['bone_weight'] = weight
+        arrays['bone_index'] = index
+
     return mesh
 
 

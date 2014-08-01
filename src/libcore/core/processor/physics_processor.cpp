@@ -4,7 +4,6 @@ namespace atom {
 
 PhysicsProcessor::PhysicsProcessor(VideoService &vs, ResourceService &rs)
   : my_is_running(false)
-  , my_is_debug_enabled(false)
 {
 //  set_enable_debug(true);
 }

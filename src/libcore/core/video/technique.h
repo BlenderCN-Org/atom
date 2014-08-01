@@ -17,11 +17,14 @@ struct ShaderUniform {
 typedef std::vector<ShaderUniform> ShaderUniforms;
 
 class Technique : NonCopyable {
+  GLuint         my_gl_program;
+  ShaderUniforms my_uniforms;
+
 public:
-  Technique(VideoService &vs);
+  Technique();
   ~Technique();
 
-  static uptr<Technique> create(VideoService &vs, const String &name);
+  static uptr<Technique> create(const String &name);
 
   /**
    * Link shader programs. Then you should locate and map uniform.
@@ -39,7 +42,7 @@ public:
 
   void pull(const MetaObject &properties);
 
-  static Type get_type_from_gl_type(GLenum type);
+  static Type get_type_from_gl_type(GLenum type, GLint size);
 
   static bool get_shader_uniform_info(GLuint gl_program, GLuint index, ShaderUniform &uniform);
 
@@ -47,11 +50,6 @@ private:
   const ShaderUniform* find_param(const char *name) const;
 
   static bool load_and_compile(const String &filename, Shader &shader);
-
-private:
-  VideoService  &my_vs;
-  GLuint         my_gl_program;
-  ShaderUniforms my_uniforms;
 };
 
 }

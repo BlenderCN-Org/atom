@@ -1,16 +1,10 @@
 #pragma once
 
-#include "../types.h"
 #include "vec.h"
-#include "math.h"
+#include "mat.h"
+#include "quaternion.h"
 
 namespace atom {
-
-/**
- * Vypocitaj nasledovnika indexu vrchola v trojuholniku.
- */
-inline Index next_triangle_index(Index index)
-{ return (++index % 3) == 0 ? index - 3 : index; }
 
 /**
  * Vypocitaj koeficienty roviny (a, b, c, d) z troch vrcholov.

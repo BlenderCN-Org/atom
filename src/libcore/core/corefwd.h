@@ -14,7 +14,7 @@ class Texture;
 class VideoBuffer;
 class TextureSampler;
 class Mesh;
-struct RawMesh;
+class RawMesh;
 class Shader;
 class Technique;
 class Renderbuffer;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../types.h"
-
 namespace atom {
 
 template<typename T>

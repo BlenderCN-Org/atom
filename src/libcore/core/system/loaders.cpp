@@ -120,7 +120,7 @@ TechniqueLoader::~TechniqueLoader()
 
 ResourcePtr TechniqueLoader::create_resource(ResourceService &rs, const String &name)
 {
-  auto program = Technique::create(rs.video_service(), name);
+  auto program = Technique::create(name);
 
   if (program == nullptr) {
     log::error("Can't create shader \"%s\"", name.c_str());
@@ -149,7 +149,7 @@ void TechniqueLoader::reload_resource(ResourceService &rs, Resource &resource)
 {
   StringArray tokens = split_resource_name(resource.name());
   const String &name = tokens[1];
-  auto program = Technique::create(rs.video_service(), name);
+  auto program = Technique::create(name);
   // replace old technique only when the new one has been succesfully loaded
   if (program != nullptr) {
     dynamic_cast<TechniqueResource &>(resource).set_data(std::move(program));
@@ -177,7 +177,6 @@ void load_material_properties_from_json(const rapidjson::Value &obj, Material &m
   const MetaField *p;
 
   while ((p = prop.next())) {
-//    log::info("MetaField %s", p->name);
     utils::ReadResult result = utils::read_property_from_json(obj, *p, &material, rs);
 
     if (result != utils::ReadResult::OK)
@@ -294,6 +293,7 @@ MaterialLoader::MaterialLoader()
 {
   material_creators.push_back(MaterialCreator("flat"  , FlatMaterial::create));
   material_creators.push_back(MaterialCreator("phong" , PhongMaterial::create));
+  material_creators.push_back(MaterialCreator("skin"  , SkinMaterial::create));
 }
 
 MaterialLoader::~MaterialLoader()
@@ -347,6 +347,8 @@ void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model,
   const ElementArray *vertices = model.find_array("vertices");
   const ElementArray *normals = model.find_array("normals");
   const ElementArray *indices = model.find_array("indices");
+  const ElementArray *bone_index = model.find_array("bone_index");
+  const ElementArray *bone_weight = model.find_array("bone_weight");
 
   if (vertices == nullptr || indices == nullptr) {
     log::warning("No vertices or indices in model");
@@ -363,6 +365,17 @@ void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model,
   if (normals != nullptr) {
     normal_buffer.set_data(normals->data.get(), normals->size);
     mesh.add_stream(StreamId::NORMAL, std::move(normal_buffer));
+  }
+
+  if (bone_index != nullptr && bone_weight != nullptr) {
+    VideoBuffer bone_weight_buffer(rs.video_service());
+    VideoBuffer bone_index_buffer(rs.video_service());
+
+    bone_weight_buffer.set_data(&bone_weight->data[0], bone_weight->size);
+    bone_index_buffer.set_data(&bone_index->data[0], bone_index->size);
+
+    mesh.add_stream(StreamId::BINDEX, std::move(bone_index_buffer));
+    mesh.add_stream(StreamId::BWEIGHT, std::move(bone_weight_buffer));
   }
 
   mesh.add_stream(StreamId::VERTEX, std::move(vertex_buffer));

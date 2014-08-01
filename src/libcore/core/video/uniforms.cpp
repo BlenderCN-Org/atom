@@ -7,7 +7,8 @@ META_DEFINE_FIELDS(Uniforms) {
   FIELD(Uniforms, ambient_color, "ambient"),
   FIELD(Uniforms, sun_dir, "sun_dir"),
   FIELD(Uniforms, model, "model"),
-  FIELD(Uniforms, mvp, "mvp")
+  FIELD(Uniforms, mvp, "mvp"),
+  FIELD(Uniforms, bones, "bones[0]")
 //  FIELD(Uniforms, color, "color"),
 //  FIELD(Uniforms, color, "color"),
 };
@@ -19,6 +20,8 @@ Uniforms::Uniforms()
   , ambient_color(1, 1, 1)
 {
   META_INIT();
+
+  bones.resize(256, Mat4f::identity());
 }
 
 }

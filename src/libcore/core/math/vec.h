@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../platform.h"
+#include "../meta.h"
 #include "vec2.h"
 #include "vec3.h"
 #include "vec4.h"
@@ -7,7 +9,7 @@
 namespace atom {
 
 // vector specialization for most useful types
-typedef Vec2<uint32_t> Vec2u;
+typedef Vec2<u32> Vec2u;
 typedef Vec2<float> Vec2f;
 typedef Vec3<float> Vec3f;
 typedef Vec4<float> Vec4f;

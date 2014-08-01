@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SDL/SDL.h>
-#include "mouse.h"
 #include "../corefwd.h"
 #include "../noncopyable.h"
 #include "../utils/utils.h"

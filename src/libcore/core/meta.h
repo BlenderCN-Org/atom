@@ -1,9 +1,71 @@
 #pragma once
 
 #include <cstddef>
-#include "types.h"
+#include "platform.h"
+
+//QQQ komentar pre meta a types
 
 namespace atom {
+
+//
+// TYPES
+//
+
+enum class Type : u32 {
+  BOOL,
+  INT,
+  FLOAT,
+  I8,
+  U8,
+  I16,
+  U16,
+  I32,
+  U32,
+  I64,
+  U64,
+  F32,
+  F64,
+  VEC2F,
+  VEC3F,
+  VEC4F,
+  MAT2F,
+  MAT3F,
+  MAT4F,
+  MAT4F_ARRAY,
+  STRING,
+  SHADER,
+  TEXTURE,
+  SAMPLER_2D,
+  DRAW_FACE,
+  UNKNOWN
+//  IMAGE
+};
+
+template<typename T>
+Type type_of()
+{
+  return T::type;
+}
+
+template<typename T>
+inline Type type_of(const T &)
+{
+  return type_of<T>();
+}
+
+// toto makro nadefinuje mapovaciu sablonu type_of pre dany typ
+#define MAP_TYPE(type, mapped)  \
+  template<>                    \
+  inline Type type_of<type>()   \
+  { return Type::mapped; }
+
+MAP_TYPE(bool, BOOL)
+MAP_TYPE(float, FLOAT)
+MAP_TYPE(int, INT)
+
+//
+// META
+//
 
 struct MetaField {
   const char *name;

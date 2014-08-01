@@ -1,10 +1,7 @@
 #pragma once
 
 #include <cassert>
-#include "../corefwd.h"
-#include "../types.h"
-#include "../string.h"
-#include "../noncopyable.h"
+#include "../foundation.h"
 #include "pixel.h"
 
 namespace atom {

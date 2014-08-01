@@ -15,7 +15,15 @@ void SkeletonComponent::activate()
     return;
   }
 
-  log::info("Found %i bones", mesh->raw_mesh().bones.size());
+  i32 count = mesh->raw_mesh().bones.size();
+  log::info("Found %i bones", count);
+
+  my_transforms.clear();
+  my_transforms.resize(count, Mat4f::identity());
+
+  for (const Bone &bone : mesh->raw_mesh().bones) {
+    log::info("%s, parent %i", bone.name.c_str(), bone.parent);
+  }
 }
 
 void SkeletonComponent::deactivate()
@@ -33,6 +41,11 @@ SkeletonComponent::SkeletonComponent(const String &mesh)
   , my_mesh_name(mesh)
 {
   assert(!mesh.empty() && "Mesh name must be provided");
+}
+
+Slice<Mat4f> SkeletonComponent::get_transforms() const
+{
+  return Slice<Mat4f>(my_transforms.data(), my_transforms.size());
 }
 
 }

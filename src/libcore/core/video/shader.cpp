@@ -5,9 +5,8 @@
 
 namespace atom {
 
-Shader::Shader(VideoService &vs, VideoShaderType type)
-  : my_vs(vs)
-  , my_type(type)
+Shader::Shader(ShaderType type)
+  : my_type(type)
   , my_is_compiled(false)
   , my_gl_shader(0)
 {
@@ -52,16 +51,16 @@ GLuint Shader::gl_shader() const
   return my_gl_shader;
 }
 
-GLenum Shader::get_gl_shader_type(VideoShaderType type)
+GLenum Shader::get_gl_shader_type(ShaderType type)
 {
   switch (type) {
-    case VideoShaderType::VERTEX:
+    case ShaderType::VERTEX:
       return GL_VERTEX_SHADER;
 
-    case VideoShaderType::GEOMETRY:
+    case ShaderType::GEOMETRY:
       return GL_GEOMETRY_SHADER;
 
-    case VideoShaderType::PIXEL:
+    case ShaderType::PIXEL:
       return GL_FRAGMENT_SHADER;
 
     default:

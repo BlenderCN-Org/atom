@@ -55,6 +55,7 @@ public:
   META_DECLARE_CLASS;
 };
 
+
 //-----------------------------------------------------------------------------
 //
 // Phong Material
@@ -68,6 +69,31 @@ public:
   PhongMaterial(const TechniqueResourcePtr &shader);
 
   ~PhongMaterial();
+
+  void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
+
+  TechniqueResourcePtr my_shader;
+  Vec3f                my_color;
+
+  META_DECLARE_CLASS;
+private:
+  TechniqueResourcePtr my_program;
+};
+
+
+//-----------------------------------------------------------------------------
+//
+// Skin Material similar to phong but with bones
+//
+//-----------------------------------------------------------------------------
+
+class SkinMaterial : public Material {
+public:
+  static uptr<Material> create(ResourceService &rs);
+
+  SkinMaterial(const TechniqueResourcePtr &shader);
+
+  ~SkinMaterial();
 
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
 
