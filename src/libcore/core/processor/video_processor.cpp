@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "../system/resource_service.h"
 #include "../component/render_component.h"
+#include "../component/skeleton_component.h"
 #include "../video/render_context.h"
 #include "../video/uniforms.h"
 #include "../math/camera.h"
@@ -44,6 +45,8 @@ void VideoProcessor::render(const Camera &camera)
   my_vs.set_blending(BlendOperation::SRC_ALPHA, BlendOperation::ONE_MINUS_SRC_ALPHA);
 
   for (RenderComponent *component : my_components) {
+    Entity &entity = component->entity();
+
     const MaterialResourcePtr &material = component->material();
     const MeshResourcePtr &mesh = component->mesh();
 
@@ -52,9 +55,19 @@ void VideoProcessor::render(const Camera &camera)
       continue;
     }
 
-    u.transformations.model = component->entity().transform();
+    u.transformations.model = entity.transform();
     u.model = u.transformations.model;
     u.mvp = u.transformations.model_view_projection();
+
+    SkeletonComponent *skeleton = entity.find_component<SkeletonComponent>();
+
+    if (skeleton != nullptr) {
+      int i = 0;
+      for (const Mat4f &t: skeleton->my_transforms) {
+        u.bones[i++] = t;
+      }
+    }
+
 //    my_vs.set_draw_face(DrawFace::BOTH);
     my_vs.set_draw_face(material->material().face);
     material->material().draw_mesh(context, mesh->mesh());

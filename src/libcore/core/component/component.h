@@ -59,10 +59,7 @@ public:
 };
 
 template<typename T>
-ComponentType component_type_of()
-{
-  return ComponentType::UNKNOWN;
-}
+ComponentType component_type_of();
 
 #define MAP_COMPONENT_TYPE(type, mapped)  \
   template<>                    \

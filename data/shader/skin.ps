@@ -11,6 +11,6 @@ out vec4 output;
 void main(void)
 {
   float d = max(0, dot(sun_dir, normal));
-//  output = vec4(color * d + ambient, 1);
-  output = vec4(color * d + ambient + bonew.rgb, 1);
+  output = vec4(color * d + ambient, 1);
+//  output = vec4(0.1 * color * d + ambient + vec3(bonew.r + bonew.g, 0, bonew.a), 1);
 }

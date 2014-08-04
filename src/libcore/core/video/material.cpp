@@ -199,13 +199,13 @@ void SkinMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   context.uniforms.sun_dir = Vec3f(0, 0, -1);
   context.uniforms.ambient_color = Vec3f(0.13, 0.13, 0.13);
   //  program.set_param("model_view_projection", context.uniforms.transformations.model_view_projection());
-  for (Mat4f m : context.uniforms.bones) {
-    m = Mat4f::identity();
-  }
+
+
+
   program.pull(meta_object(context.uniforms));
 
   AttributeBinder vertex_attribute(vs, 0, *vb, Type::VEC3F);
-  AttributeBinder index_attribute(vs, 1, *bi, Type::U32);
+  AttributeBinder bindex_attribute(vs, 1, *bi, Type::VEC4U8);
   AttributeBinder bweight(vs, 2, *bw, Type::VEC4F);
 
   vs.draw_index_array(GL_TRIANGLES, *ib, ib->size() / 3);

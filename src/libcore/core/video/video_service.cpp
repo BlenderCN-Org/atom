@@ -234,8 +234,14 @@ void VideoService::bind_attribute(u32 index, const VideoBuffer &buffer, Type typ
       glVertexAttribPointer(index, 4, GL_FLOAT, GL_FALSE, 0, 0);
       break;
 
+      //QQQ bacha na int, int vyzaduje volanie glVertexAttribIPointer!!!
     case Type::U32:
-      glVertexAttribPointer(index, 1, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
+//      glVertexAttribIPointer(index, 1, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
+      glVertexAttribIPointer(index, 1, GL_UNSIGNED_INT, 0, 0);
+      break;
+
+    case Type::VEC4U8:
+      glVertexAttribIPointer(index, 4, GL_UNSIGNED_BYTE, 0, 0);
       break;
 
     default:

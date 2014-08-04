@@ -15,21 +15,21 @@ namespace atom {
 typedef sptr<World> WorldPtr;
 
 /*
- 
+
   Entity
    * activate
    * deactivate
    * clone
-  
+
   Component
    * attach
    * detach
    * duplicate
-   * 
+   *
    * (v)activate
    * (v)deactivate
    * (v)clone
-  
+
   Slot
    * activate
 */
@@ -65,7 +65,7 @@ public:
   ~Entity();
 
   uptr<Entity> clone(World &world) const;
-  
+
   /**
    * Entity was added to the world.
    */
@@ -83,9 +83,9 @@ public:
   void set_id(const String &id);
 
   void set_size(f32 width, f32 height);
-  
+
   const Mat4f& transform() const;
-  
+
   void set_transform(const Mat4f &transform);
 
   void update_bounding_box();
@@ -102,29 +102,29 @@ public:
   bool is_live() const;
 
   Core& core() const;
-  
+
   Component* find_component(const String &name);
-  
+
   Component* find_component(ComponentType type);
-  
+
   Component* find_component(ComponentType type, const String &name);
-  
+
   template<typename T>
   T* find_component()
   {
     Component *component = find_component(component_type_of<T>());
     return component != nullptr ? static_cast<T *>(component) : nullptr;
   }
-  
+
   template<typename T>
   T* find_component(const String &name)
   {
     Component *component = find_component(name);
     return component != nullptr ? static_cast<T *>(component) : nullptr;
   }
-  
+
   std::vector<Component *> find_components(ComponentType type);
-  
+
 public:
   META_DECLARE_CLASS_PTR; // each instance contains pointer to the MetaClass
   META_DECLARE_CLASS;     // static instance of MetaClass for Material

@@ -28,6 +28,7 @@ enum class Type : u32 {
   VEC2F,
   VEC3F,
   VEC4F,
+  VEC4U8,
   MAT2F,
   MAT3F,
   MAT4F,

@@ -333,15 +333,15 @@ void EditorWindow::switch_mode(EditorWindow::Mode mode)
 //      my_clone->set_camera(camera);
       my_game_view->set_world(my_clone);
 //      my_game_view->set_navigation(false);
-      my_game_view->grabMouse(Qt::BlankCursor);
+//      my_game_view->grabMouse(Qt::BlankCursor);
       application().setDoubleClickInterval(0);
 
       if (my_grab_input) {
         my_game_view->grabKeyboard();
       }
 
-      my_game_view->setMouseTracking(true);
-      my_game_view->installEventFilter(this);
+//      my_game_view->setMouseTracking(true);
+//      my_game_view->installEventFilter(this);
       my_game_view->setFocus();
       center_cursor(*my_game_view);
 

@@ -182,7 +182,7 @@ void set_uniform(const MetaField &meta_field, const void *data, GLint gl_locatio
 
     case Type::MAT4F_ARRAY: {
       const Mat4fArray &m = field_ref<Mat4fArray>(meta_field, data);
-      glUniformMatrix4fv(gl_location, m.size(), false, &m[0][0][0]);
+      glUniformMatrix4fv(gl_location, m.size(), false, reinterpret_cast<const GLfloat *>(m.data()));
       break;
     }
 

@@ -374,6 +374,10 @@ void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model,
     bone_weight_buffer.set_data(&bone_weight->data[0], bone_weight->size);
     bone_index_buffer.set_data(&bone_index->data[0], bone_index->size);
 
+    for (int i = 0; i < bone_index->size / 4; ++i) {
+      log::info("index %u", *reinterpret_cast<u32 *>(&bone_index->data[i * 4]));
+    }
+
     mesh.add_stream(StreamId::BINDEX, std::move(bone_index_buffer));
     mesh.add_stream(StreamId::BWEIGHT, std::move(bone_weight_buffer));
   }

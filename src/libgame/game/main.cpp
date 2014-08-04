@@ -14,6 +14,42 @@ using namespace atom;
 namespace atom {
 namespace {
 
+class AnimalScript : public ScriptComponent {
+  u32 my_tick;
+  Slot<SkeletonComponent> my_skeleton;
+
+  uptr<Component> clone() const override
+  {
+    return uptr<Component>(new AnimalScript());
+  }
+
+public:
+  AnimalScript()
+    : my_skeleton(this)
+    , my_tick(0)
+  {
+
+  }
+
+  void update() override
+  {
+    ++my_tick;
+    f32 angle1 = my_tick / 20.0f;
+    f32 angle2 = my_tick / 40.0f;
+
+//    for (Mat4f &m : my_skeleton->my_transforms) {
+//      m = Mat4f::rotation_z(angle1);
+//    }
+
+//    my_skeleton->my_transforms[0] = Mat4f::rotation_z(angle2);
+    my_skeleton->my_transforms[2] = Mat4f::rotation_z(angle2);
+    my_skeleton->my_transforms[1] = Mat4f::rotation_z(angle1);
+//    my_skeleton->my_transforms[] = Mat4f::rotation_z(angle);
+  }
+};
+
+
+
 Frame* create_first_frame(Core &core)
 {
   return nullptr;
@@ -46,7 +82,7 @@ uptr<Entity> create_test_object(World &world, Core &core)
   uptr<MeshComponent> mesh(new MeshComponent("animal"));
   uptr<SkeletonComponent> skeleton(new SkeletonComponent("animal"));
   uptr<RenderComponent> render(new RenderComponent());
-  uptr<ScriptComponent> script(new MySimpleUpdate());
+  uptr<ScriptComponent> script(new AnimalScript());
   entity->add_component(std::move(material));
   entity->add_component(std::move(mesh));
   entity->add_component(std::move(skeleton));

@@ -1,31 +1,31 @@
 #version 410
 
 layout(location = 0) in vec3 vertex_position;
-layout(location = 1) in uint bone_index;
+layout(location = 1) in uvec4 bone_index;
 layout(location = 2) in vec4 bone_weight;
 
 uniform mat4 bones[256];
 
-out vec4 bw;
+struct VSOut {
+  vec3 vertex;
+  vec4 bw;
+};
+
+out VSOut vsout;
 
 void main(void)
 {
-  uint bi0 = (int(bone_index)      ) & 0xFF;
-  uint bi1 = (int(bone_index) >>  8) & 0xFF;
-  uint bi2 = (int(bone_index) >> 16) & 0xFF;
-  uint bi3 = (int(bone_index) >> 24) & 0xFF;
+  uint bi0 = bone_index.x;
+  uint bi1 = bone_index.y;
+  uint bi2 = bone_index.z;
+  uint bi3 = bone_index.w;
 
-  mat4 transform = (bones[bi0] * bone_weight[0])
-                 + (bones[bi1] * bone_weight[1])
-                 + (bones[bi2] * bone_weight[2])
-                 + (bones[bi3] * bone_weight[3]);
+  vec4 v = vec4(vertex_position, 1);
 
-//  transform = bones[bi0] * bone_weight[0];
+  vec3 v0 = (bones[bi0] * v).xyz * bone_weight.x;
+  vec3 v1 = (bones[bi1] * v).xyz * bone_weight.y;
+    vec3 final = v0 + v1;
 
-
-//  transform = mat4(1.0);
-//  transform = (bones[0] * 0) * mat4(1.0);
-
-  gl_Position = transform * vec4(vertex_position, 1);
-//  gl_Position = mvp * vec4(vertex_position, 1);
+  vsout.bw = bone_weight;
+  vsout.vertex = final;
 }
