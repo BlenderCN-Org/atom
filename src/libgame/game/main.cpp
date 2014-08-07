@@ -25,8 +25,8 @@ class AnimalScript : public ScriptComponent {
 
 public:
   AnimalScript()
-    : my_skeleton(this)
-    , my_tick(0)
+    : my_tick(0)
+    , my_skeleton(this)
   {
 
   }

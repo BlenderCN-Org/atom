@@ -12,13 +12,13 @@ namespace atom {
  * Most of the operations requires normalized quaternion (performance reasons).
  */
 template<typename T>
-struct Quaternion {
+struct Quat {
 public:
   /**
    * Construct identity quaternion (1, 0, 0, 0)
    */
-  static Quaternion<T> identity()
-  { return Quaternion<T>(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0)); }
+  static Quat<T> identity()
+  { return Quat<T>(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0)); }
 
   /**
    * Create quaternion representing angle/axis rotation.
@@ -30,14 +30,14 @@ public:
    *
    * @note axis must be normalized.
    */
-  static Quaternion<T> from_axis_angle(
+  static Quat<T> from_axis_angle(
     T x,
     T y,
     T z,
     T angle)
   {
     T a = std::sin(angle * static_cast<T>(0.5));
-    return Quaternion<T>(std::cos(angle * static_cast<T>(0.5)), x * a, y * a, z * a);
+    return Quat<T>(std::cos(angle * static_cast<T>(0.5)), x * a, y * a, z * a);
   }
 
   /**
@@ -46,7 +46,7 @@ public:
    * @param v axis (must be unit vector)
    * @param angle
    */
-  static Quaternion<T> from_axis_angle(
+  static Quat<T> from_axis_angle(
     const Vec3<T> &v,
     T angle)
   { return from_axis_angle(v.x, v.y, v.z, angle); }
@@ -56,19 +56,19 @@ public:
    *
    * @param v axis/angle representation (axis must be unit vector)
    */
-  static Quaternion<T> from_axis_angle(
+  static Quat<T> from_axis_angle(
     const AxisAngle<T> &v)
   { return from_axis_angle(v.axis, v.angle); }
 
   /**
    * Empty constructor (no initialization).
    */
-  Quaternion() {};
+  Quat() {};
 
   /**
    * Construct quaternion from w, x, y, z coefficients.
    */
-  Quaternion(T qw, T qx, T qy, T qz)
+  Quat(T qw, T qx, T qy, T qz)
     : x(qx)
     , y(qy)
     , z(qz)
@@ -81,14 +81,14 @@ public:
    * @param qw w coefficient
    * @param qv direction coefficients
    */
-  Quaternion(T qw, const Vec3<T> &qv)
+  Quat(T qw, const Vec3<T> &qv)
     : w(qw)
     , x(qv.x)
     , y(qv.y)
     , z(qv.z)
   {}
 
-  Quaternion(const Vec3<T> &v)
+  Quat(const Vec3<T> &v)
    : x(v.x)
    , y(v.y)
    , z(v.z)
@@ -106,7 +106,7 @@ public:
   /**
    * Default copy constructor (quaternion doesn't need special one).
    */
-  Quaternion(const Quaternion<T> &q)
+  Quat(const Quat<T> &q)
     : x(q.x)
     , y(q.y)
     , z(q.z)
@@ -116,7 +116,7 @@ public:
   /**
    * Default copy operator (quaternion doesn't need special one).
    */
-  Quaternion<T>& operator=(const Quaternion<T> &q)
+  Quat<T>& operator=(const Quat<T> &q)
   {
     w = q.w;
     x = q.x;
@@ -175,19 +175,19 @@ public:
   /**
    * Konjugovany kvaternion (ma opacny smer).
    */
-  Quaternion<T> conjugated() const
-  { return Quaternion<T>(w, -x, -y, -z); }
+  Quat<T> conjugated() const
+  { return Quat<T>(w, -x, -y, -z); }
 
   /**
    * Inverzny kvaternion.
    */
-  Quaternion<T> inverted() const
+  Quat<T> inverted() const
   { return conjugated() / length2(); }
 
   /**
    * Normalizovany kvaternion (dlzka == 1).
    */
-  Quaternion<T> normalized() const
+  Quat<T> normalized() const
   { return *this / length(); }
 
   /**
@@ -250,19 +250,19 @@ public:
  * Dot product dvoch kvaternionov (neodmocnena dlzka).
  */
 template<typename T>
-T dot_product(const Quaternion<T> &a, const Quaternion<T> &b)
+T dot_product(const Quat<T> &a, const Quat<T> &b)
 {
   return a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
 template<typename T>
-bool operator==(const Quaternion<T> &a, const Quaternion<T> &b)
+bool operator==(const Quat<T> &a, const Quat<T> &b)
 {
   return (a.w == b.w) && (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
 }
 
 template<typename T>
-bool operator!=(const Quaternion<T> &a, const Quaternion<T> &b)
+bool operator!=(const Quat<T> &a, const Quat<T> &b)
 {
   return !operator==(a, b);
 }
@@ -271,43 +271,43 @@ bool operator!=(const Quaternion<T> &a, const Quaternion<T> &b)
  * Nasobenie skalarom.
  */
 template<typename T>
-Quaternion<T> operator+(const Quaternion<T> &q, T value)
+Quat<T> operator+(const Quat<T> &q, T value)
 {
-  return Quaternion<T>(q.w * value, q.x * value, q.y * value, q.z * value);
+  return Quat<T>(q.w * value, q.x * value, q.y * value, q.z * value);
 }
 
 /**
  * Nasobenie skalarom.
  */
 template<typename T>
-Quaternion<T> operator+(T value, const Quaternion<T> &q)
+Quat<T> operator+(T value, const Quat<T> &q)
 {
-  return Quaternion<T>(q.w * value, q.x * value, q.y * value, q.z * value);
+  return Quat<T>(q.w * value, q.x * value, q.y * value, q.z * value);
 }
 
 /**
  * Delenie skalarom.
  */
 template<typename T>
-Quaternion<T> operator/(const Quaternion<T> &q, T value)
+Quat<T> operator/(const Quat<T> &q, T value)
 {
-  return Quaternion<T>(q.w / value, q.x / value, q.y / value, q.z / value);
+  return Quat<T>(q.w / value, q.x / value, q.y / value, q.z / value);
 }
 
 /**
  * Sucet dvoch kvaternionov.
  */
 template<typename T>
-Quaternion<T> operator+(const Quaternion<T> &a, const Quaternion<T> &b)
+Quat<T> operator+(const Quat<T> &a, const Quat<T> &b)
 {
-  return Quaternion<T>(a.w + b.w, a.x + b.x, a.y + b.y, a.z + b.z);
+  return Quat<T>(a.w + b.w, a.x + b.x, a.y + b.y, a.z + b.z);
 }
 
 /**
  * Sucet dvoch kvaternionov.
  */
 template<typename T>
-Quaternion<T> operator+=(Quaternion<T> &a, const Quaternion<T> &b)
+Quat<T> operator+=(Quat<T> &a, const Quat<T> &b)
 {
   a.w += b.w;
   a.x += b.x;
@@ -320,13 +320,13 @@ Quaternion<T> operator+=(Quaternion<T> &a, const Quaternion<T> &b)
  * Rozdiel dvoch kvaternionov.
  */
 template<typename T>
-Quaternion<T> operator-(const Quaternion<T> &a, const Quaternion<T> &b)
+Quat<T> operator-(const Quat<T> &a, const Quat<T> &b)
 {
-  return Quaternion<T>(a.w - b.w, a.x - b.x, a.y - b.y, a.z - b.z);
+  return Quat<T>(a.w - b.w, a.x - b.x, a.y - b.y, a.z - b.z);
 }
 
 template<typename T>
-Quaternion<T> operator-=(Quaternion<T> &a, const Quaternion<T> &b)
+Quat<T> operator-=(Quat<T> &a, const Quat<T> &b)
 {
   a.w -= b.w;
   a.x -= b.x;
@@ -339,9 +339,9 @@ Quaternion<T> operator-=(Quaternion<T> &a, const Quaternion<T> &b)
  * Nasobenie dvoch kvaternionov.
  */
 template<typename T>
-Quaternion<T> operator*(const Quaternion<T> &a, const Quaternion<T> &b)
+Quat<T> operator*(const Quat<T> &a, const Quat<T> &b)
 {
-  return Quaternion<T>(
+  return Quat<T>(
     a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,
     a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
     a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
@@ -352,10 +352,10 @@ Quaternion<T> operator*(const Quaternion<T> &a, const Quaternion<T> &b)
  * Delenie dvoch kvaternionov.
  */
 template<typename T>
-Quaternion<T> operator/(const Quaternion<T> &a, const Quaternion<T> &b)
+Quat<T> operator/(const Quat<T> &a, const Quat<T> &b)
 {
   T l = b.length2();
-  return Quaternion<T>(
+  return Quat<T>(
     (a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z) / l,
     (a.x * b.w - a.w * b.x - a.z * b.y + a.y * b.z) / l,
     (a.y * b.w + a.z * b.x - a.w * b.y - a.x * b.z) / l,
@@ -376,9 +376,9 @@ Quaternion<T> operator/(const Quaternion<T> &a, const Quaternion<T> &b)
  * @note quaternion must be normalized
  */
 template<typename T>
-Vec3<T> rotate(const Quaternion<T> &q, const Vec3<T> &v)
+Vec3<T> rotate(const Quat<T> &q, const Vec3<T> &v)
 {
-  Quaternion<T> rotated = q * Quaternion<T>(0, v.x, v.y, v.z) * q.conjugated();
+  Quat<T> rotated = q * Quat<T>(0, v.x, v.y, v.z) * q.conjugated();
   return Vec3<T>(rotated.x, rotated.y, rotated.z);
 }
 
@@ -392,14 +392,14 @@ Vec3<T> rotate(const Quaternion<T> &q, const Vec3<T> &v)
  * \note quaternions must be normalized
  */
 template<typename T>
-Quaternion<T> rotate(const Quaternion<T> &a, const Quaternion<T> &b)
+Quat<T> rotate(const Quat<T> &a, const Quat<T> &b)
 { return a * b * a.conjugated(); }
 
 template<typename T>
-Quaternion<T> slerp(const Quaternion<T> &a, const Quaternion<T> &b, T t)
+Quat<T> slerp(const Quat<T> &a, const Quat<T> &b, T t)
 {
   // quaternion to return
-  Quaternion<T> q;
+  Quat<T> q;
   // Calculate angle between them.
   T half_cos = a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
   // if a=b or a=-b then theta = 0 and we can return a
@@ -412,7 +412,7 @@ Quaternion<T> slerp(const Quaternion<T> &a, const Quaternion<T> &b, T t)
   // if theta = 180 degrees then result is not fully defined
   // we could rotate around any axis normal to a or b
   if (std::fabs(half_sin) < static_cast<T>(0.001)) {
-    return Quaternion<T>(
+    return Quat<T>(
       a.w * 0.5 + b.w * 0.5,
       a.x * 0.5 + b.x * 0.5,
       a.y * 0.5 + b.y * 0.5,
@@ -422,7 +422,7 @@ Quaternion<T> slerp(const Quaternion<T> &a, const Quaternion<T> &b, T t)
   T ta = std::sin((1 - t) * half_theta) / half_sin;
   T tb  = std::sin(t * half_theta) / half_sin;
 
-  return Quaternion<T>(
+  return Quat<T>(
     a.w * ta + b.w * tb,
     a.x * ta + b.x * tb,
     a.y * ta + b.y * tb,
@@ -433,7 +433,7 @@ Quaternion<T> slerp(const Quaternion<T> &a, const Quaternion<T> &b, T t)
 // Quaternion using float (quaternions using double precision aren't used).
 //
 
-typedef Quaternion<float> Quatf;
+typedef Quat<f32> Quatf;
 static_assert(sizeof(Quatf) == 16, "Size of the Quaterion<float> should be 16 bytes");
 
 }

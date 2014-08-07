@@ -2,7 +2,7 @@
 
 #include "vec.h"
 #include "mat.h"
-#include "quaternion.h"
+#include "quat.h"
 
 namespace atom {
 

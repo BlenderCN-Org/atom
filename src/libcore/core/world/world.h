@@ -1,8 +1,7 @@
 #pragma once
 
 #include "entity.h"
-#include "../corefwd.h"
-#include "../math/mat.h"
+#include "../foundation.h"
 #include "../math/camera.h"
 #include "../video/mesh_tree.h"
 

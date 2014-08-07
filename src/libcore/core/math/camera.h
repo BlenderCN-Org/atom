@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mat.h"
-#include "quaternion.h"
+#include "quat.h"
 #include "../log.h"
 
 namespace atom {

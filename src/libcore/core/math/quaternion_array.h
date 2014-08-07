@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "quaternion.h"
+#include "quat.h"
 
 namespace atom {
 
