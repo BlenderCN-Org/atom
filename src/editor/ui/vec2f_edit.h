@@ -2,7 +2,7 @@
 
 #include <QWidget>
 #include <QDoubleSpinBox>
-#include <core/math/vec.h>
+#include <core/math/math.h>
 
 namespace atom {
 namespace editor {

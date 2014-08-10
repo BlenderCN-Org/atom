@@ -62,6 +62,8 @@ class BitmapFontResource;
 class SoundResource;
 class MusicResource;
 
+struct Bone;
+
 // loaders
 struct ResourceLoaders;
 class Loader;

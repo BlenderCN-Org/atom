@@ -1,11 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "../corefwd.h"
-#include "../meta.h"
-#include "../string.h"
-#include "../noncopyable.h"
-#include "../math/mat.h"
+#include "../foundation.h"
 #include "../math/bounding_box.h"
 #include "../math/transformations.h"
 #include "../component/component.h"

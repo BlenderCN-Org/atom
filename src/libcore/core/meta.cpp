@@ -4,7 +4,7 @@
 #include <cstring>
 #include "log.h"
 #include "string.h"
-#include "math/vec.h"
+#include "math/math.h"
 
 namespace atom {
 

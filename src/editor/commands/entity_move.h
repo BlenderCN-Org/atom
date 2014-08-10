@@ -1,8 +1,6 @@
 #pragma once
 
-#include <core/corefwd.h>
-#include <core/math/vec.h>
-#include <core/ptr.h>
+#include <core/foundation.h>
 #include "editor_command.h"
 
 namespace atom {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "mat.h"
+#include "math.h"
 
 namespace atom {
 

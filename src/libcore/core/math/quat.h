@@ -1,7 +1,7 @@
 #pragma once
 
-#include "vec3.h"
-#include "mat4.h"
+#include "vec.h"
+#include "mat.h"
 #include "axis_angle.h"
 
 namespace atom {
@@ -30,11 +30,7 @@ public:
    *
    * @note axis must be normalized.
    */
-  static Quat<T> from_axis_angle(
-    T x,
-    T y,
-    T z,
-    T angle)
+  static Quat<T> from_axis_angle(T x, T y, T z, T angle)
   {
     T a = std::sin(angle * static_cast<T>(0.5));
     return Quat<T>(std::cos(angle * static_cast<T>(0.5)), x * a, y * a, z * a);
@@ -46,24 +42,25 @@ public:
    * @param v axis (must be unit vector)
    * @param angle
    */
-  static Quat<T> from_axis_angle(
-    const Vec3<T> &v,
-    T angle)
-  { return from_axis_angle(v.x, v.y, v.z, angle); }
+  static Quat<T> from_axis_angle(const Vec3<T> &v, T angle)
+  {
+    return from_axis_angle(v.x, v.y, v.z, angle);
+  }
 
   /**
    * Create quaternion from axis angle.
    *
    * @param v axis/angle representation (axis must be unit vector)
    */
-  static Quat<T> from_axis_angle(
-    const AxisAngle<T> &v)
-  { return from_axis_angle(v.axis, v.angle); }
+  static Quat<T> from_axis_angle(const AxisAngle<T> &v)
+  {
+    return from_axis_angle(v.axis, v.angle);
+  }
 
   /**
    * Empty constructor (no initialization).
    */
-  Quat() {};
+  Quat() = default;
 
   /**
    * Construct quaternion from w, x, y, z coefficients.
@@ -116,14 +113,7 @@ public:
   /**
    * Default copy operator (quaternion doesn't need special one).
    */
-  Quat<T>& operator=(const Quat<T> &q)
-  {
-    w = q.w;
-    x = q.x;
-    y = q.y;
-    z = q.z;
-    return *this;
-  }
+  Quat<T>& operator=(const Quat<T> &q) = default;
 
   /**
    * Preved kvaternion na rotacnu maticu (predpoklada sa ze kvaternion je normalizovany).
@@ -428,12 +418,5 @@ Quat<T> slerp(const Quat<T> &a, const Quat<T> &b, T t)
     a.y * ta + b.y * tb,
     a.z * ta + b.z * tb);
 }
-
-//
-// Quaternion using float (quaternions using double precision aren't used).
-//
-
-typedef Quat<f32> Quatf;
-static_assert(sizeof(Quatf) == 16, "Size of the Quaterion<float> should be 16 bytes");
 
 }

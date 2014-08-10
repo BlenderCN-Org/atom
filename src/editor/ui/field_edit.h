@@ -4,8 +4,7 @@
 #include <QSpinBox>
 #include <QLineEdit>
 #include <QHBoxLayout>
-#include <core/ptr.h>
-#include <core/math/vec.h>
+#include <core/foundation.h>
 #include "../editorfwd.h"
 #include "../field_value.h"
 

@@ -1,10 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "../corefwd.h"
-#include "../noncopyable.h"
-#include "../math/vec.h"
-#include "../meta.h"
+#include "../foundation.h"
 #include "video_service.h"
 #include "texture_sampler.h"
 #include "technique.h"

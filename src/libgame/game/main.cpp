@@ -35,15 +35,30 @@ public:
   {
     ++my_tick;
     f32 angle1 = my_tick / 20.0f;
-    f32 angle2 = my_tick / 40.0f;
+    f32 angle2 = sin(angle1) / 3;
 
+    AxisAnglef aa;
+    aa.axis = Vec3f(0, 0, 1);
+    aa.angle = angle1;
+//    Vec3f a(0, 0, 1);
+    my_skeleton->find_bone("bmain")->transform = Quatf::from_axis_angle(0, 0, 1, angle1);
+//    my_skeleton->find_bone("bmain")->transform = Quatf::from_axis_angle(aa);
+    aa.axis = Vec3f(1, 0, 0);
+    aa.angle = angle2;
+    my_skeleton->find_bone("bleg_rr")->transform = Quatf::from_axis_angle(aa);
+
+    my_skeleton->recalculate_skeleton();
+
+//    my_skeleton->my_transforms[8] = Mat4f::rotation_x(angle1);
 //    for (Mat4f &m : my_skeleton->my_transforms) {
 //      m = Mat4f::rotation_z(angle1);
 //    }
 
+
+
 //    my_skeleton->my_transforms[0] = Mat4f::rotation_z(angle2);
-    my_skeleton->my_transforms[2] = Mat4f::rotation_z(angle2);
-    my_skeleton->my_transforms[1] = Mat4f::rotation_z(angle1);
+//    my_skeleton->my_transforms[2] = Mat4f::rotation_z(angle2);
+//    my_skeleton->my_transforms[1] = Mat4f::rotation_z(angle1);
 //    my_skeleton->my_transforms[] = Mat4f::rotation_z(angle);
   }
 };

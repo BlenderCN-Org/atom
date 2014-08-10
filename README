@@ -25,4 +25,4 @@ TODO:
    ktory je pre polia vacsi ako 1, vynimkou je pole velkosti 1, riesenim je asi
    rozlisovat medzi scalar a array podla nazvu pretoze pole ma nazov + [0]
  - pretiahnut typy z types.h do platform.h a registraciu typov pre type_of do meta.h
- - premenovat quaternion.h na quat.h
+ - potrebujem vec_array.h

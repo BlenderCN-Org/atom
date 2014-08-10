@@ -3,7 +3,7 @@
 #include <vector>
 #include "../corefwd.h"
 #include "../noncopyable.h"
-#include "../math/mat.h"
+#include "../math/math.h"
 #include "material.h"
 #include "mesh.h"
 

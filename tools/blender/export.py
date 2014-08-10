@@ -30,10 +30,16 @@ def has_triangles_only(mesh):
     return True
 
 
+def calculate_bone_matrix(bone):
+    assert bone != None
+    return calculate_bone_matrix(bone.parent) * bone.matrix if bone.parent != None else bone.matrix
+
+
 def export_skeleton(ob, me):
     """
     Vracia None alebo named tuple (bone_weight, bone_index, skeleton)
     """
+    ar = ob.parent
     pose = ob.parent.pose
     vertex_groups = ob.vertex_groups
 
@@ -47,9 +53,14 @@ def export_skeleton(ob, me):
 
     bone_list = {}
 
+    x_axis = mathutils.Vector((1, 0, 0))
+    y_axis = mathutils.Vector((0, 1, 0))
+    z_axis = mathutils.Vector((0, 0, 1))
+
     i = 0
     for name, bone in pose.bones.items():
         print('Exporting bone ' + name)
+
         head = bone.bone.head
         tail = bone.bone.tail
         head_local = bone.bone.head_local
@@ -60,6 +71,16 @@ def export_skeleton(ob, me):
         b['head_local'] = [head_local.x, head_local.y, head_local.z]
         b['tail_local'] = [tail_local.x, tail_local.y, tail_local.z]
         b['index'] = i
+
+        matrix = calculate_bone_matrix(ar.data.bones[name])
+
+        bone_x_axis = matrix * x_axis
+        bone_y_axis = matrix * y_axis
+        bone_z_axis = matrix * z_axis
+
+        b['x'] = [bone_x_axis.x, bone_x_axis.y, bone_x_axis.z]
+        b['y'] = [bone_y_axis.x, bone_y_axis.y, bone_y_axis.z]
+        b['z'] = [bone_z_axis.x, bone_z_axis.y, bone_z_axis.z]
 
         if bone.parent != None:
             b['parent'] = bone_index[bone.parent.name]

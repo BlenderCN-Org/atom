@@ -139,12 +139,36 @@ bool load_raw_mesh_skeleton_from_json(const rapidjson::Value &json_skeleton, Raw
       return false;
     }
 
-    Bone &bone = model.bones[index];
+    DataBone &bone = model.bones[index];
     bone.name = i->name.GetString();
-    utils::read_vec3f(value["head"], bone.head);
-    utils::read_vec3f(value["tail"], bone.tail);
-    utils::read_vec3f(value["local_head"], bone.local_head);
-    utils::read_vec3f(value["local_tail"], bone.local_tail);
+
+    if (!utils::read_vec3f(value["head"], bone.head)) {
+      log::warning("Can't read bone head");
+    }
+
+    if (!utils::read_vec3f(value["tail"], bone.tail)) {
+      log::warning("Can't read bone tail");
+    }
+
+    if (!utils::read_vec3f(value["head_local"], bone.local_head)) {
+      log::warning("Can't read bone head local");
+    }
+
+    if (!utils::read_vec3f(value["tail_local"], bone.local_tail)) {
+      log::warning("Can't read bone tail local");
+    }
+
+    if (!utils::read_vec3f(value["x"], bone.x)) {
+      log::warning("Can't read bone x axis");
+    }
+
+    if (!utils::read_vec3f(value["y"], bone.y)) {
+      log::warning("Can't read bone y axis");
+    }
+
+    if (!utils::read_vec3f(value["z"], bone.z)) {
+      log::warning("Can't read bone z axis");
+    }
 
     const rapidjson::Value &json_parent = value["parent"];
     bone.parent = json_parent.IsNull() ? -1 : json_parent.GetInt();

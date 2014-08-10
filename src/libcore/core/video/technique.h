@@ -1,10 +1,8 @@
 #pragma once
 
 #include <GL/glew.h>
-#include "../noncopyable.h"
-#include "../corefwd.h"
+#include "../foundation.h"
 #include "../stdvec.h"
-#include "../math/mat.h"
 
 namespace atom {
 

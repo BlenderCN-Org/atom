@@ -3,8 +3,8 @@
 #include <cstring>
 #include "../log.h"
 #include "../system/resource_service.h"
-#include "../math/vec.h"
 #include "../video/video_service.h"
+#include "../math/math.h"
 
 namespace atom {
 namespace utils {

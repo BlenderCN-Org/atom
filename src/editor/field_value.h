@@ -1,8 +1,6 @@
 #pragma once
 
-#include <core/noncopyable.h>
-#include <core/math/vec.h>
-#include <core/string.h>
+#include <core/foundation.h>
 
 namespace atom {
 namespace editor {

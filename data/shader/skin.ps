@@ -4,13 +4,18 @@ uniform vec3 sun_dir;
 uniform vec3 color;
 uniform vec3 ambient;
 
-in vec3 normal;
-in vec4 bonew;
+struct GSOut {
+  vec3 vertex;
+  vec3 normal;
+  vec4 bonew;  
+};
+
+in GSOut gsout;
+
 out vec4 output;
 
 void main(void)
 {
-  float d = max(0, dot(sun_dir, normal));
+  float d = max(0, dot(sun_dir, gsout.normal));
   output = vec4(color * d + ambient, 1);
-//  output = vec4(0.1 * color * d + ambient + vec3(bonew.r + bonew.g, 0, bonew.a), 1);
 }

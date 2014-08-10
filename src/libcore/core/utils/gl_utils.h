@@ -2,8 +2,7 @@
 
 #include <GL/glew.h>
 #include <GL/gl.h>
-#include "../math/vec.h"
-#include "../math/mat.h"
+#include "../math/math.h"
 
 namespace atom {
 

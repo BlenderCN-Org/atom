@@ -1,8 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "../corefwd.h"
-#include "../math/mat.h"
+#include "../foundation.h"
 #include "processor.h"
 
 namespace atom {
