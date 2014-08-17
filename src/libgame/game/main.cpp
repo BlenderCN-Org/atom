@@ -34,32 +34,19 @@ public:
   void update() override
   {
     ++my_tick;
-    f32 angle1 = my_tick / 20.0f;
+    f32 angle1 = my_tick / 10.0f;
     f32 angle2 = sin(angle1) / 3;
 
     AxisAnglef aa;
     aa.axis = Vec3f(0, 0, 1);
     aa.angle = angle1;
-//    Vec3f a(0, 0, 1);
-    my_skeleton->find_bone("bmain")->transform = Quatf::from_axis_angle(0, 0, 1, angle1);
-//    my_skeleton->find_bone("bmain")->transform = Quatf::from_axis_angle(aa);
-    aa.axis = Vec3f(1, 0, 0);
-    aa.angle = angle2;
-    my_skeleton->find_bone("bleg_rr")->transform = Quatf::from_axis_angle(aa);
+//    my_skeleton->find_bone("bmain")->transform = Quatf::from_axis_angle(Vec3f::axis_z(), angle1);
+    my_skeleton->find_bone("bleg_rr")->transform = Quatf::from_axis_angle(Vec3f::axis_x(), angle2);
+    my_skeleton->find_bone("bleg_rl")->transform = Quatf::from_axis_angle(Vec3f::axis_x(), -angle2);
+    my_skeleton->find_bone("bleg_fr")->transform = Quatf::from_axis_angle(Vec3f::axis_x(), angle2);
+    my_skeleton->find_bone("bleg_fl")->transform = Quatf::from_axis_angle(Vec3f::axis_x(), -angle2);
 
     my_skeleton->recalculate_skeleton();
-
-//    my_skeleton->my_transforms[8] = Mat4f::rotation_x(angle1);
-//    for (Mat4f &m : my_skeleton->my_transforms) {
-//      m = Mat4f::rotation_z(angle1);
-//    }
-
-
-
-//    my_skeleton->my_transforms[0] = Mat4f::rotation_z(angle2);
-//    my_skeleton->my_transforms[2] = Mat4f::rotation_z(angle2);
-//    my_skeleton->my_transforms[1] = Mat4f::rotation_z(angle1);
-//    my_skeleton->my_transforms[] = Mat4f::rotation_z(angle);
   }
 };
 
@@ -106,6 +93,22 @@ uptr<Entity> create_test_object(World &world, Core &core)
   return entity;
 }
 
+uptr<Entity> create_horse(World &world, Core &core)
+{
+  uptr<Entity> entity(new Entity(world, core));
+  // suzanne
+  uptr<MaterialComponent> material(new MaterialComponent("animal"));
+  uptr<MeshComponent> mesh(new MeshComponent("horse"));
+  uptr<SkeletonComponent> skeleton(new SkeletonComponent("horse"));
+  uptr<RenderComponent> render(new RenderComponent());
+//  uptr<ScriptComponent> script(new AnimalScript());
+  entity->add_component(std::move(material));
+  entity->add_component(std::move(mesh));
+  entity->add_component(std::move(skeleton));
+  entity->add_component(std::move(render));
+  return entity;
+}
+
 uptr<Entity> create_suzanne(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
@@ -125,6 +128,7 @@ std::vector<EntityCreator> create_object_creators(Core &)
 
   creators.push_back(EntityCreator("TestObject", create_test_object));
   creators.push_back(EntityCreator("Suzanne", create_suzanne));
+  creators.push_back(EntityCreator("Horse", create_horse));
 //  creators.push_back(EntityCreator("Box", game::create_box));
 //  creators.push_back(EntityCreator("Static Box", game::create_static_box));
 //  creators.push_back(EntityCreator("Platform", game::create_simple_static_platform));

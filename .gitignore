@@ -13,6 +13,7 @@ __pycache__/
 *.b
 *.orig
 *.anjuta*
+*.blend1
 gmon.out
 moc*cxx
 atom.config

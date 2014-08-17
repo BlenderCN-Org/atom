@@ -63,7 +63,7 @@ void VideoProcessor::render(const Camera &camera)
 
     if (skeleton != nullptr) {
       int i = 0;
-      for (const Mat4f &t: skeleton->my_transforms) {
+      for (const Mat4f &t: skeleton->get_transforms()) {
         u.bones[i++] = t;
       }
     }
