@@ -30,12 +30,14 @@ T& safe_cast(U &value)
 template<typename T, typename U>
 T safe_cast(U value)
 {
+  assert(dynamic_cast<T >(value) != nullptr);
   return dynamic_cast<T >(value);
 }
 
 template<typename T, typename U>
 T& safe_cast(U &value)
 {
+  assert(dynamic_cast<T >(value) != nullptr);
   return dynamic_cast<T &>(value);
 }
 

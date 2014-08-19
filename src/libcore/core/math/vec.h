@@ -137,13 +137,13 @@ struct Vec3 {
     , z(vz)
   {}
 
-  static Vec3<T> axis_x()
+  static Vec3<T> x_axis()
   { return Vec3<T>(1, 0, 0); }
 
-  static Vec3<T> axis_y()
+  static Vec3<T> y_axis()
   { return Vec3<T>(0, 1, 0); }
 
-  static Vec3<T> axis_z()
+  static Vec3<T> z_axis()
   { return Vec3<T>(0, 0, 1); }
 
   T& operator[](unsigned i)

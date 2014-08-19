@@ -5,9 +5,9 @@
 
 namespace atom {
 
-const Vec3f CAMERA_UP = Vec3f::axis_z();
-const Vec3f CAMERA_RIGHT = Vec3f::axis_x();
-const Vec3f CAMERA_FRONT = Vec3f::axis_y();
+const Vec3f CAMERA_UP = Vec3f::z_axis();
+const Vec3f CAMERA_RIGHT = Vec3f::x_axis();
+const Vec3f CAMERA_FRONT = Vec3f::y_axis();
 
 struct Camera {
   Mat4f view;

@@ -8,8 +8,7 @@
 #include <core/component/material_component.h>
 #include <core/component/script_component.h>
 #include <core/component/skeleton_component.h>
-
-using namespace atom;
+#include "monster.h"
 
 namespace atom {
 namespace {
@@ -41,10 +40,10 @@ public:
     aa.axis = Vec3f(0, 0, 1);
     aa.angle = angle1;
 //    my_skeleton->find_bone("bmain")->transform = Quatf::from_axis_angle(Vec3f::axis_z(), angle1);
-    my_skeleton->find_bone("bleg_rr")->transform = Quatf::from_axis_angle(Vec3f::axis_x(), angle2);
-    my_skeleton->find_bone("bleg_rl")->transform = Quatf::from_axis_angle(Vec3f::axis_x(), -angle2);
-    my_skeleton->find_bone("bleg_fr")->transform = Quatf::from_axis_angle(Vec3f::axis_x(), angle2);
-    my_skeleton->find_bone("bleg_fl")->transform = Quatf::from_axis_angle(Vec3f::axis_x(), -angle2);
+    my_skeleton->find_bone("bleg_rr")->transform = Quatf::from_axis_angle(Vec3f::x_axis(), angle2);
+    my_skeleton->find_bone("bleg_rl")->transform = Quatf::from_axis_angle(Vec3f::x_axis(), -angle2);
+    my_skeleton->find_bone("bleg_fr")->transform = Quatf::from_axis_angle(Vec3f::x_axis(), angle2);
+    my_skeleton->find_bone("bleg_fl")->transform = Quatf::from_axis_angle(Vec3f::x_axis(), -angle2);
 
     my_skeleton->recalculate_skeleton();
   }
@@ -93,18 +92,19 @@ uptr<Entity> create_test_object(World &world, Core &core)
   return entity;
 }
 
-uptr<Entity> create_horse(World &world, Core &core)
+uptr<Entity> create_monster(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
   uptr<MaterialComponent> material(new MaterialComponent("animal"));
-  uptr<MeshComponent> mesh(new MeshComponent("horse"));
-  uptr<SkeletonComponent> skeleton(new SkeletonComponent("horse"));
+  uptr<MeshComponent> mesh(new MeshComponent("monster"));
+  uptr<SkeletonComponent> skeleton(new SkeletonComponent("monster"));
   uptr<RenderComponent> render(new RenderComponent());
-//  uptr<ScriptComponent> script(new AnimalScript());
+  uptr<ScriptComponent> script(new MonsterScript());
   entity->add_component(std::move(material));
   entity->add_component(std::move(mesh));
   entity->add_component(std::move(skeleton));
+  entity->add_component(std::move(script));
   entity->add_component(std::move(render));
   return entity;
 }
@@ -128,7 +128,7 @@ std::vector<EntityCreator> create_object_creators(Core &)
 
   creators.push_back(EntityCreator("TestObject", create_test_object));
   creators.push_back(EntityCreator("Suzanne", create_suzanne));
-  creators.push_back(EntityCreator("Horse", create_horse));
+  creators.push_back(EntityCreator("Monster", create_monster));
 //  creators.push_back(EntityCreator("Box", game::create_box));
 //  creators.push_back(EntityCreator("Static Box", game::create_static_box));
 //  creators.push_back(EntityCreator("Platform", game::create_simple_static_platform));
@@ -150,9 +150,9 @@ GameAPI game_api = {
 
 extern "C" {
 
-const EntryPoint* entry_point()
+const atom::EntryPoint* entry_point()
 {
-  return &game_api;
+  return &atom::game_api;
 }
 
 }

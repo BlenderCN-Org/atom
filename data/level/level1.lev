@@ -24,7 +24,7 @@
         },
         {
             "id": "",
-            "class": "Horse",
+            "class": "Monster",
             "transform": [
                 1,
                 0,

@@ -19,6 +19,14 @@ enum class ComponentType {
 
 typedef std::vector<GenericSlot *> SlotArray;
 
+/**
+ * Properties of component:
+ *  - constructor with no parameters
+ *  - clone method
+ *  - controlled activation/deactivation through activate/deactivate method
+ *  - component has distinct types
+ *  - access to parent entity (entity is valid between calls activate/deactivate)
+ */
 class Component : NonCopyable {
   ComponentType my_type;
   Entity       *my_entity;

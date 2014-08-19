@@ -23,7 +23,7 @@ BasicCamera::BasicCamera()
 
 Mat4f BasicCamera::get_view_matrix() const
 {
-  Quatf r = get_rotation() * Quatf::from_axis_angle(Vec3f::axis_x(), M_PI / 2);
+  Quatf r = get_rotation() * Quatf::from_axis_angle(Vec3f::x_axis(), M_PI / 2);
   Mat4f m = Mat4f::translation(my_position)
           * r.rotation_matrix();
   return m.inverted();
@@ -46,8 +46,8 @@ Vec3f BasicCamera::get_right() const
 
 Quatf BasicCamera::get_rotation() const
 {
-  Quatf yaw = Quatf::from_axis_angle(Vec3f::axis_z(), -my_yaw);
-  Quatf pitch = Quatf::from_axis_angle(rotate(yaw, Vec3f::axis_x()), my_pitch);
+  Quatf yaw = Quatf::from_axis_angle(Vec3f::z_axis(), -my_yaw);
+  Quatf pitch = Quatf::from_axis_angle(rotate(yaw, Vec3f::x_axis()), my_pitch);
   return pitch * yaw;
 }
 

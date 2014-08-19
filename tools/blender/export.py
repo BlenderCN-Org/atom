@@ -61,10 +61,10 @@ def export_skeleton(ob, me):
     for name, bone in pose.bones.items():
         print('Exporting bone ' + name)
 
-        head = bone.bone.head
-        tail = bone.bone.tail
-        head_local = bone.bone.head_local
-        tail_local = bone.bone.tail_local
+        head = ar.matrix_world * bone.bone.head
+        tail = ar.matrix_world * bone.bone.tail
+        head_local = ar.matrix_world * bone.bone.head_local
+        tail_local = ar.matrix_world * bone.bone.tail_local
         b = {}
         b['head'] = [head.x, head.y, head.z]
         b['tail'] = [tail.x, tail.y, tail.z]
@@ -184,6 +184,8 @@ def export_object_to_file(ob, filename):
     current_object = bpy.context.active_object
     # duplicate the object
     bpy.ops.object.duplicate()
+    # apply all modifiers
+    bpy.ops.object.convert(target='MESH', keep_original=False)
 
     try:
         # convert all faces (of duplicated object) to triangles
