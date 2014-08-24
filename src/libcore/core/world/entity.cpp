@@ -32,6 +32,7 @@ uptr<Entity> Entity::clone(World &world) const
 
   for (const uptr<Component> &component : my_components) {
     uptr<Component> duplicate = component->duplicate();
+    entity->set_transform(my_transform);
     entity->add_component(std::move(duplicate));
   }
 

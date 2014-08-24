@@ -30,6 +30,12 @@ def has_triangles_only(mesh):
     return True
 
 
+def get_fps():
+    """Scene fps set in the Render Panel
+    """
+    return bpy.context.scene.render.fps / bpy.context.scene.render.fps_base
+
+
 def calculate_bone_matrix(bone):
     assert bone != None
     return calculate_bone_matrix(bone.parent) * bone.matrix if bone.parent != None else bone.matrix
