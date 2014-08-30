@@ -120,8 +120,7 @@ bool save_to_file(const QString &filename, const World &world)
   return true;
 }
 
-bool load_from_file(const QString &filename, World &world,
-  const std::vector<EntityCreator> &creators, Core &core)
+bool load_from_file(const QString &filename, Core &core, World &world)
 {
   world.clear();
 
@@ -137,7 +136,7 @@ bool load_from_file(const QString &filename, World &world,
   doc.ParseStream<0>(stream);
 
   if (doc.HasParseError()) {
-    log::error("Error while parsing \"%s\"", doc.GetParseError());
+    log::error("%s Offset %i", doc.GetParseError(), doc.GetErrorOffset());
     return false;
   }
 
@@ -179,7 +178,7 @@ bool load_from_file(const QString &filename, World &world,
 
     const String entity_class(class_name.GetString());
 
-    sptr<Entity> entity = create_entity(creators, entity_class, world, core);
+    sptr<Entity> entity = create_entity(core.entity_creators(), entity_class, world, core);
 
     if (entity == nullptr) {
       log::warning("Unknown entity class \"%s\"", entity_class.c_str());
@@ -609,14 +608,18 @@ bool EditorWindow::eventFilter(QObject *watched, QEvent *event)
 
 void EditorWindow::load_file(const QString &filename)
 {
-  // erase old scene QQQ should be erased after successful load
-  application().world()->clear();
+  World &world = *application().world();
+  Core &core = application().core();
+
+  // erase old scene
+  /// @todo scene should be erased only after the load is successful
+  world.clear();
   undo_stack().clear();
 
   // process selected file
-  if (!load_from_file(filename, *application().world(), application().core().entity_creators(),
-    application().core())) {
-    QMessageBox::warning(this, "Error opening file", QString("Can't world file \"%1\"").arg(filename));
+  if (!load_from_file(filename, core, world)) {
+    QMessageBox::warning(this, "Error opening file",
+      QString("Error while loading world file \"%1\".\nSee console log for more details.").arg(filename));
   }
 
   my_filename = filename;

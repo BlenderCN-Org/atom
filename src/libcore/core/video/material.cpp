@@ -74,8 +74,8 @@ void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   program.pull(properties);
 
   vs.bind_attribute(0, *vertices, Type::VEC3F);
-  vs.draw_index_array(GL_TRIANGLES, *indices, indices->size() / sizeof(u32));
-  vs.draw_arrays(GL_TRIANGLES, 0, vertices->size() / sizeof(Vec3f));
+  vs.draw_index_array(GL_LINES, *indices, indices->size() / sizeof(u32));
+//  vs.draw_arrays(GL_TRIANGLES, 0, vertices->size() / sizeof(Vec3f));
   vs.unbind_attribute(0);
 }
 

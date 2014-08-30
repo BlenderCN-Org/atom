@@ -49,11 +49,16 @@ def export_skeleton(ob, me):
     pose = ob.parent.pose
     vertex_groups = ob.vertex_groups
 
-    # build bone index: name => index
+    # build bone mapping table name => index
+    # the mapping table contains only 'deform' bones
     bone_index = dict()
     i = 0
 
     for name, bone in pose.bones.items():
+        # skip helper bones (IK, MCM, ...)
+        if bone.bone.use_deform == False:
+            continue
+
         bone_index[name] = i
         i = i + 1
 
@@ -65,6 +70,9 @@ def export_skeleton(ob, me):
 
     i = 0
     for name, bone in pose.bones.items():
+        if bone.bone.use_deform == False:
+            continue
+
         print('Exporting bone ' + name)
 
         head = ar.matrix_world * bone.bone.head

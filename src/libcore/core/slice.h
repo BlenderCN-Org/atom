@@ -50,6 +50,16 @@ public:
   {
     return my_data + my_count;
   }
+
+  const T* data() const
+  {
+    return my_data;
+  }
+
+  u32 size() const
+  {
+    return my_count;
+  }
 };
 
 }

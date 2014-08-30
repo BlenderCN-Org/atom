@@ -141,7 +141,7 @@ void Technique::locate_uniforms()
     ShaderUniform u;
 
     if (get_shader_uniform_info(my_gl_program, i, u)) {
-      log::info("Adding uniform %s", u.name.c_str());
+//      log::info("Adding uniform %s", u.name.c_str());QQQ
       my_uniforms.push_back(u);
     }
   }

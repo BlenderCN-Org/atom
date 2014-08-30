@@ -10,30 +10,17 @@ namespace atom {
 
 typedef sptr<World> WorldPtr;
 
-/*
-
-  Entity
-   * activate
-   * deactivate
-   * clone
-
-  Component
-   * attach
-   * detach
-   * duplicate
-   *
-   * (v)activate
-   * (v)deactivate
-   * (v)clone
-
-  Slot
-   * activate
-*/
-
 /**
- * Entita herneho objektu.
+ * Game entity - entity is each object in world. Entity is composed of components.
  *
- * Notes:
+ * Properties:
+ *  - no inheritance, don't derive Entity
+ *  - clone method (that clones all entity properties)
+ *
+ * Important methods:
+ *  - activate
+ *  - deactivate
+ *  - clone
  */
 class Entity : NonCopyable {
   enum class State {

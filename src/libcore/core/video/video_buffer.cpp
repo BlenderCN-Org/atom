@@ -26,7 +26,7 @@ VideoBuffer::~VideoBuffer()
 
 void VideoBuffer::set_data(const Vec2f *array, size_t count)
 {
-  set_data(reinterpret_cast<const void *>(array), count * sizeof(Vec2f));
+  set_raw_data(reinterpret_cast<const void *>(array), count * sizeof(Vec2f));
 }
 
 void VideoBuffer::set_data(const Vec2fArray &array)
@@ -36,7 +36,7 @@ void VideoBuffer::set_data(const Vec2fArray &array)
 
 void VideoBuffer::set_data(const Vec3f *array, size_t count)
 {
-  set_data(reinterpret_cast<const void *>(array), count * sizeof(Vec3f));
+  set_raw_data(reinterpret_cast<const void *>(array), count * sizeof(Vec3f));
 }
 
 void VideoBuffer::set_data(const Vec3fArray &array)
@@ -44,7 +44,7 @@ void VideoBuffer::set_data(const Vec3fArray &array)
   set_data(array.data(), array.size());
 }
 
-void VideoBuffer::set_data(const void *data, size_t size)
+void VideoBuffer::set_raw_data(const void *data, size_t size)
 {
   assert(data != nullptr);
   assert(size > 0);

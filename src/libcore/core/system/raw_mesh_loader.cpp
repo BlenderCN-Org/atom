@@ -44,7 +44,6 @@ bool load_raw_mesh_element_array_from_json(const rapidjson::Value &node,
           array.size = buffer.size() * sizeof(u32);
           array.type = Type::U32;
           array.data = uptr<u8[]>(new u8[array.size]);
-          log::info("Array size %i", array.size);
           memcpy(array.data.get(), buffer.data(), array.size);
           return true;
         }
@@ -87,7 +86,7 @@ bool load_raw_mesh_arrays_from_json(const rapidjson::Value &arrays_node, RawMesh
       return false;
     }
 
-    log::info("Loading array %s", i->name.GetString());
+//    log::info("Loading array %s", i->name.GetString());
     const rapidjson::Value &array_node = i->value;
     ElementArray array;
 

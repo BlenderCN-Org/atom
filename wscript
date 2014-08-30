@@ -215,7 +215,7 @@ def build_core_lib(ctx):
       source=ctx.path.ant_glob('src/libcore/**/crate.cpp'),
       #source=ctx.path.ant_glob('src/libcore/**/*.cpp', excl=filter),
       export_includes=['src'],
-      use=['ogg', 'vorbisfile', 'GLEW', 'png', 'SDL']
+      use=['SDL', 'GLEW', 'bullet', 'png', 'ogg', 'vorbisfile']
     )
 
 

@@ -110,6 +110,9 @@ class MeshComponent;
 class RenderComponent;
 class ScriptComponent;
 class SkeletonComponent;
+class PlaneColliderComponent;
+class BoxColliderComponent;
+class RigidBodyComponent;
 class GenericSlot;
 
 // component utils

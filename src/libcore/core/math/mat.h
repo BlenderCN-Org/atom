@@ -388,6 +388,12 @@ struct Mat4 {
       value(2, 0), value(2, 1), value(2, 2));
   }
 
+  /// @todo test
+  Vec3<T> origin() const
+  {
+    return Vec3<T>(value(0, 3), value(1, 3), value(2, 3));
+  }
+
   Mat4<T> inverted() const
   {
     T a = value(0, 0);

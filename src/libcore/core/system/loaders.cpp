@@ -359,11 +359,11 @@ void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model,
   VideoBuffer normal_buffer(rs.video_service());
   VideoBuffer index_buffer(rs.video_service());
 
-  vertex_buffer.set_data(vertices->data.get(), vertices->size);
-  index_buffer.set_data(indices->data.get(), indices->size);
+  vertex_buffer.set_raw_data(vertices->data.get(), vertices->size);
+  index_buffer.set_raw_data(indices->data.get(), indices->size);
 
   if (normals != nullptr) {
-    normal_buffer.set_data(normals->data.get(), normals->size);
+    normal_buffer.set_raw_data(normals->data.get(), normals->size);
     mesh.add_stream(StreamId::NORMAL, std::move(normal_buffer));
   }
 
@@ -371,12 +371,8 @@ void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model,
     VideoBuffer bone_weight_buffer(rs.video_service());
     VideoBuffer bone_index_buffer(rs.video_service());
 
-    bone_weight_buffer.set_data(&bone_weight->data[0], bone_weight->size);
-    bone_index_buffer.set_data(&bone_index->data[0], bone_index->size);
-
-    for (uint i = 0; i < bone_index->size / 4; ++i) {
-      log::info("index %u", *reinterpret_cast<u32 *>(&bone_index->data[i * 4]));
-    }
+    bone_weight_buffer.set_raw_data(&bone_weight->data[0], bone_weight->size);
+    bone_index_buffer.set_raw_data(&bone_index->data[0], bone_index->size);
 
     mesh.add_stream(StreamId::BINDEX, std::move(bone_index_buffer));
     mesh.add_stream(StreamId::BWEIGHT, std::move(bone_weight_buffer));

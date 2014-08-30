@@ -7,6 +7,7 @@
 #include <core/math/math.h>
 #include <core/system/resource_service.h>
 #include <core/processor/video_processor.h>
+#include <core/processor/physics_processor.h>
 #include <core/video/draw_service.h>
 #include <core/utils/utils.h>
 #include <core/world/world.h>
@@ -209,6 +210,14 @@ void GameView::paintGL()
   }
 
   my_world->processors().video.render(my_world->camera());
+
+  core.video_service().disable_depth_test();
+
+
+  my_world->processors().physics.debug_render();
+
+  core.video_service().enable_depth_test();
+
 
   core.video_service().unbind_write_framebuffer();
   my_world->processors().video.get_gbuffer().blit();

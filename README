@@ -10,6 +10,8 @@ Zavislosti:
 
 TODO:
  - proper clone method, Compoennt attriutes aren't copied
+ - rename VideoBuffer::set_raw_data to set_bytes???
+ - conversion from rotation matrix 3x3 to quaternion
  - attachable components
  - premenovat MAP_COMPONENT_TYPE na napr. DECLARE_COMPONENT, DEFINE_COMPONENT,
    "INSTALL_COMPONENT", "REGISTER_COMPONENT"

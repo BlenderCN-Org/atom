@@ -27,7 +27,7 @@ public:
 
   void set_data(const Vec3fArray &array);
 
-  void set_data(const void *data, size_t size);
+  void set_raw_data(const void *data, size_t size);
 
   /**
    * Vrat velkost dat v bytoch.

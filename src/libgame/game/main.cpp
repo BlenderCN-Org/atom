@@ -8,6 +8,8 @@
 #include <core/component/material_component.h>
 #include <core/component/script_component.h>
 #include <core/component/skeleton_component.h>
+#include <core/component/collider_component.h>
+#include <core/component/rigid_body_component.h>
 #include "monster.h"
 
 namespace atom {
@@ -109,6 +111,28 @@ uptr<Entity> create_monster(World &world, Core &core)
   return entity;
 }
 
+uptr<Entity> create_ground(World &world, Core &core)
+{
+  uptr<Entity> entity(new Entity(world, core));
+  uptr<PlaneColliderComponent> collider(new PlaneColliderComponent(Vec4f(0, 0, 1, 0)));
+  uptr<RigidBodyComponent> rigid_body(new RigidBodyComponent());
+  rigid_body->set_type(RigidBodyType::STATIC);
+  rigid_body->set_mass(0);
+  entity->add_component(std::move(collider));
+  entity->add_component(std::move(rigid_body));
+  return entity;
+}
+
+uptr<Entity> create_box(World &world, Core &core)
+{
+  uptr<Entity> entity(new Entity(world, core));
+  uptr<BoxColliderComponent> collider(new BoxColliderComponent(Vec3f(1, 1, 1)));
+  uptr<RigidBodyComponent> rigid_body(new RigidBodyComponent());
+  entity->add_component(std::move(collider));
+  entity->add_component(std::move(rigid_body));
+  return entity;
+}
+
 uptr<Entity> create_suzanne(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
@@ -129,6 +153,8 @@ std::vector<EntityCreator> create_object_creators(Core &)
   creators.push_back(EntityCreator("TestObject", create_test_object));
   creators.push_back(EntityCreator("Suzanne", create_suzanne));
   creators.push_back(EntityCreator("Monster", create_monster));
+  creators.push_back(EntityCreator("Ground", create_ground));
+  creators.push_back(EntityCreator("Box", create_box));
 //  creators.push_back(EntityCreator("Box", game::create_box));
 //  creators.push_back(EntityCreator("Static Box", game::create_static_box));
 //  creators.push_back(EntityCreator("Platform", game::create_simple_static_platform));

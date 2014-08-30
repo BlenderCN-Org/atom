@@ -8,13 +8,10 @@ namespace atom {
 const char CONFIG_FILENAME[] = "data/config";
 
 const int DEFAULT_SCREEN_WIDTH = 960;
-const int DEFAULT_SCREEN_HEIGHT = 544;
+const int DEFAULT_SCREEN_HEIGHT = 540;
 const int DEFAULT_SCREEN_BITS_PER_PIXEL = 32;
 const float DEFAULT_SCREEN_ASPECT_RATIO = DEFAULT_SCREEN_WIDTH / (float) DEFAULT_SCREEN_HEIGHT;
 const int FPS = 30;
-const int MAX_SKIP_FRAME = 3;
-const float DEFAULT_WORLD_WIDTH = 6;
-const float DEFAULT_WORLD_HEIGHT = (float) DEFAULT_WORLD_WIDTH / DEFAULT_SCREEN_ASPECT_RATIO;
 const String DEFAULT_SHADER_DIR("data/shader");
 
 const int AUDIO_FREQUENCY = 44100;
@@ -22,7 +19,7 @@ const u32 AUDIO_SAMPLES = 2048;  ///< desired buffer size (in samples)
 const u32 AUDIO_CHANNELS = 2;    ///< stereo
 const u32 AUDIO_SAMPLE_SIZE = 2;  ///< sample size is 2bytes (i16)
 
-const float ACCELERATION = 9.81; // acceleration constant
+const f32 ACCELERATION = 9.81; // acceleration constant
 
 const char DATA_DIR[] = "data";
 const char IMAGE_RESOURCE_DIR[] = "data/image"; ///< adresar s obrazkami

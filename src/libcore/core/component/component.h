@@ -14,12 +14,24 @@ enum class ComponentType {
   RAW_MESH,
   SCRIPT,
   RIGID_BODY,
-  SKELETON
+  SKELETON,
+  COLLIDER
 };
 
 typedef std::vector<GenericSlot *> SlotArray;
 
 /**
+ *
+ *
+ * Component contains these important methods
+ *  - attach
+ *  - detach
+ *  - duplicate
+ *
+ *  - (v)activate
+ *  - (v)deactivate
+ *  - (v)clone
+ *
  * Properties of component:
  *  - constructor with no parameters
  *  - clone method
@@ -75,7 +87,9 @@ ComponentType component_type_of();
   { return ComponentType::mapped; }
 
 
-
+/**
+ * See @ref Slot class
+ */
 class GenericSlot : NonCopyable {
   Component    *my_component;
   ComponentType my_type;
@@ -100,9 +114,13 @@ public:
   {
     return my_component != nullptr;
   }
-
 };
 
+/**
+ *
+ * Important methods:
+ *  - activate
+ */
 template<typename T>
 class Slot : public GenericSlot {
 public:
@@ -119,10 +137,5 @@ public:
     return component;
   }
 };
-
-
-
-
-
 
 }

@@ -4,3 +4,5 @@
 #include "material_component.cpp"
 #include "script_component.cpp"
 #include "skeleton_component.cpp"
+#include "collider_component.cpp"
+#include "rigid_body_component.cpp"

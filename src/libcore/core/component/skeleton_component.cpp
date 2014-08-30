@@ -55,7 +55,6 @@ void SkeletonComponent::activate()
   my_bones.clear();
 
   for (const DataBone &bone : mesh->raw_mesh().bones) {
-    log::info("%s, parent %i", bone.name.c_str(), bone.parent);
     Bone b;
     b.name = bone.name;
     b.local_head = bone.local_head;

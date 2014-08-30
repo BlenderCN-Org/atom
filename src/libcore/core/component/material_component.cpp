@@ -12,7 +12,6 @@ uptr<Component> MaterialComponent::clone() const
 void MaterialComponent::activate()
 {
   my_material = entity().core().resource_service().get_material(my_material_name);
-  log::info("Material %p", my_material.get());
 }
 
 void MaterialComponent::deactivate()
