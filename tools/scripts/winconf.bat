@@ -1,7 +1,7 @@
 @echo off
 
-if not defined QT4_ROOT (set QT4_ROOT="C:\Qt\qt-4.8.6")
-if not defined THIRDPARTY (set THIRDPARTY="C:\dev\thirdparty")
+if not defined QT4_ROOT (set QT4_ROOT=C:\Qt\qt-4.8.6\)
+if not defined THIRDPARTY (set THIRDPARTY=C:\dev\thirdparty\)
 
 python waf configure --msvc_version="msvc 12.0" --msvc_target="x86" -t release
 
