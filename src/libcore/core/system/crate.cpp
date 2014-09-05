@@ -4,6 +4,5 @@
 #include "performance_counters.cpp"
 #include "resource_service.cpp"
 #include "resources.cpp"
-#include "sdl.cpp"
 #include "loaders.cpp"
 #include "raw_mesh_loader.cpp"

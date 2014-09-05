@@ -140,8 +140,8 @@ void PhysicsProcessor::debug_render()
   index_buffer.set_raw_data(indices.data(), indices.size() * sizeof(u32));
 
   Uniforms &u = my_vs.get_uniforms();
-  u.transformations.model = Mat4f::identity();
-  u.model = Mat4f::identity();
+  u.transformations.model = Mat4f();
+  u.model = Mat4f();
   RenderContext context = { u, my_vs };
 
   mesh.add_stream(StreamId::VERTEX, std::move(vertex_buffer));

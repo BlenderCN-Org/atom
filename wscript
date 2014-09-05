@@ -44,7 +44,7 @@ class BuildType:
 def options(ctx):
     """Define build options
     """
-    ctx.load('compiler_cxx qt4')
+    ctx.load('compiler_c compiler_cxx qt4')
     ctx.add_option('-t', '--type', action='store', default='normal', help='Build type debug/normal/release/profile')
     ctx.add_option('--test', action='store', default='0', help='Build tests 0/1')
     ctx.add_option('--fonttool', action='store', default='0', help='Build fonttool 0/1')
@@ -55,7 +55,7 @@ def configure(ctx):
     Find required libraries
     Configure compile flags for 'core' lib (CORE), ???
     """
-    ctx.load('compiler_cxx qt4')
+    ctx.load('compiler_c compiler_cxx qt4')
 
     type = BuildType.DEBUG
 
@@ -94,6 +94,7 @@ def conf(ctx):
 
 
 def build(ctx):
+    build_flext_lib(ctx)
     build_core_lib(ctx)
     build_game_lib(ctx)
     #build_starter(ctx)
@@ -176,7 +177,6 @@ def check_required_linux_libs(ctx):
     """
     ctx.check_cxx(uselib_store='ogg', header_name='ogg/ogg.h', lib=['ogg'])
     ctx.check_cxx(uselib_store='vorbisfile', header_name='vorbis/vorbisfile.h', lib=['vorbisfile'])
-    ctx.check_cxx(uselib_store='GLEW', header_name='GL/glew.h', lib=['GLEW', 'GL'])
     ctx.check_cxx(uselib_store='png', header_name='libpng/png.h', lib=['png'])
     ctx.check_cxx(uselib_store='SDL', header_name='SDL/SDL.h', lib=['SDL'])
     ctx.check_cxx(uselib_store='pthread', header_name='pthread.h', lib=['pthread'])
@@ -194,7 +194,6 @@ def check_required_windows_libs(ctx):
     """
     ctx.check_cxx(lib=['libogg'], uselib_store='ogg', header_name='ogg/ogg.h')
     ctx.check_cxx(lib=['libvorbisfile', 'libvorbis'], uselib_store='vorbisfile', header_name='vorbis/vorbisfile.h')
-    ctx.check_cxx(lib=['glew32', 'OpenGL32'], uselib_store='GLEW', header_name='GL/glew.h')
     ctx.check_cxx(lib=['SDL'], uselib_store='SDL', header_name='SDL/SDL.h')
     ctx.check_cxx(lib=['libpng16'], uselib_store='png', header_name='png.h')
     ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h', lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
@@ -206,6 +205,16 @@ def check_required_windows_libs(ctx):
 #
 #------------------------------------------------------------------------------
 
+def build_flext_lib(ctx):
+    """Build small flextGL library"""
+    #filter = 'src/**/crate.cpp'
+    ctx.stlib(
+      name='flext',
+      target = 'flext',
+      source=ctx.path.ant_glob('src/flext/*.c'),
+      export_includes=['src/flext']
+    )
+
 
 def build_core_lib(ctx):
     """build Core engine as static lib"""
@@ -216,7 +225,7 @@ def build_core_lib(ctx):
       source=ctx.path.ant_glob('src/libcore/**/crate.cpp'),
       #source=ctx.path.ant_glob('src/libcore/**/*.cpp', excl=filter),
       export_includes=['src'],
-      use=['SDL', 'GLEW', 'bullet', 'png', 'ogg', 'vorbisfile']
+      use=['SDL', 'bullet', 'png', 'ogg', 'vorbisfile', 'flext']
     )
 
 
@@ -321,3 +330,13 @@ def is_linux():
 
 def is_windows():
     return platform.startswith('win32')
+
+
+#------------------------------------------------------------------------------
+#
+# Custom commands
+#
+#------------------------------------------------------------------------------
+
+def generate_flext(ctx):
+    os.system('python3 tools/flextGL/flextGLgen.py -D src/flext tools/flextGL/profiles/gl42_core.txt')

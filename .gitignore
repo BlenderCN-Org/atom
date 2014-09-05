@@ -24,3 +24,4 @@ atom.includes
 .waf-*
 waf3*
 .lock*
+gl.xml

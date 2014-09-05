@@ -100,9 +100,6 @@ GLint Texture::pixel_format_to_gl_format(PixelFormat format)
     case PixelFormat::R32I:
       return GL_R32I;
 
-    case PixelFormat::RGBA_DXT5:
-      return GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-
     case PixelFormat::D16:
       return GL_DEPTH_COMPONENT16;  // mozno by mohlo byt aj GL_DEPTH_COMPONENT
 

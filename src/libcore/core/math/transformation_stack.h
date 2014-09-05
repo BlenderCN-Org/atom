@@ -35,9 +35,9 @@ public:
     bool initialize = true)
   {
     if (initialize) {
-      my_model_stack.push_back(Mat4f::identity());
-      my_view_stack.push_back(Mat4f::identity());
-      my_projection_stack.push_back(Mat4f::identity());
+      my_model_stack.push_back(Mat4f());
+      my_view_stack.push_back(Mat4f());
+      my_projection_stack.push_back(Mat4f());
     }
   }
 

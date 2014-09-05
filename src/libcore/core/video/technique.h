@@ -1,7 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
-#include "../foundation.h"
+#include "../utils/gl_utils.h"
 #include "../stdvec.h"
 
 namespace atom {

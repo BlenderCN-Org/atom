@@ -21,7 +21,7 @@ Uniforms::Uniforms()
 {
   META_INIT();
 
-  bones.resize(256, Mat4f::identity());
+  bones.resize(256, Mat4f());
 }
 
 }

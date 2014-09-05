@@ -3,7 +3,7 @@
 namespace atom {
 
 MeshTreeNode::MeshTreeNode()
-  : transformations(Mat4f::identity())
+  : transformations(Mat4f())
   , visible(true)
 {
 }

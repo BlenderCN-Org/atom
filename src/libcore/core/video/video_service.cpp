@@ -45,10 +45,11 @@ bool check_gl_limits()
     return false;
   }
 
-  if (!GLEW_ARB_shading_language_420pack) {
-    error("ARB_shading_language_420pack not present");
-    return false;
-  }
+  //QQQ
+//  if (!GLEW_ARB_shading_language_420pack) {
+//    error("ARB_shading_language_420pack not present");
+//    return false;
+//  }
 
   GLint gl_max_vertex_uniform_components = 0;
   GLint gl_max_geometry_uniform_components = 0;
@@ -67,21 +68,21 @@ bool check_gl_limits()
 //    "GL_ARB_texture_float",
 //    "GL_EXT_texture_buffer_object",
 
-  for (const String &extension : required_extensions) {
-    if (!glewGetExtension(extension.c_str())) {
-      error("Missing OpenGL extension %s", extension.c_str());
-      return false;
-    }
-  }
+//  for (const String &extension : required_extensions) {
+//    if (!glewGetExtension(extension.c_str())) {
+//      error("Missing OpenGL extension %s", extension.c_str());
+//      return false;
+//    }
+//  }
 
-  GLint gl_max_texture_units;
-  glGetIntegerv(GL_MAX_TEXTURE_UNITS, &gl_max_texture_units);
-  log::debug(DEBUG_VIDEO, "Max texture units %i", gl_max_texture_units);
+//  GLint gl_max_texture_units;
+//  glGetIntegerv(GL_MAX_TEXTURE_UNITS, &gl_max_texture_units);
+//  log::debug(DEBUG_VIDEO, "Max texture units %i", gl_max_texture_units);
 
-  if (gl_max_texture_units < 2) {
-    error("OpenGL doesn't support more that 1 texture units");
-    return false;
-  }
+//  if (gl_max_texture_units < 2) {
+//    error("OpenGL doesn't support more that 1 texture units");
+//    return false;
+//  }
 
   GLint gl_max_draw_buffers;
   glGetIntegerv(GL_MAX_DRAW_BUFFERS, &gl_max_draw_buffers);

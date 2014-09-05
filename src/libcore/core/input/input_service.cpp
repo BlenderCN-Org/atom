@@ -1,6 +1,5 @@
 #include "input_service.h"
 
-#include "../system/sdl.h"
 #include "../math/math.h"
 #include "../log.h"
 

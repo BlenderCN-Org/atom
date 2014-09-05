@@ -6,6 +6,10 @@
 
 namespace atom {
 
+struct Unitialized {
+  
+};
+
 /**
  * Quaternion template is type independent.
  * The quaternion_utils.h defines float quaternion Quatf, this is used everywhere.
@@ -57,11 +61,14 @@ public:
     return from_axis_angle(v.axis, v.angle);
   }
 
-  /**
-   * Empty constructor (no initialization).
-   */
-  Quat() = default;
-
+  Quat()
+    : x(0)
+    , y(0)
+    , z(0)
+    , w(1)
+  {
+  }
+  
   /**
    * Construct quaternion from w, x, y, z coefficients.
    */

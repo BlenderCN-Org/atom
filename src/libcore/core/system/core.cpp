@@ -11,7 +11,6 @@
 #include "../input/input_service.h"
 #include "game_api.h"
 #include "config.h"
-#include "sdl.h"
 
 namespace atom {
 
@@ -126,10 +125,16 @@ void Core::do_init(InitMode mode)
   }
 
   // initialize GLEW
-  GLenum result = glewInit();
-  if (result != GLEW_OK) {
-    error("Can't initialize GLEW: %s\n", glewGetErrorString(result));
+
+  if (flextInit() != GL_TRUE) {
+    error("Can't initialize Opengl 4.2");
+    return;
   }
+
+//  GLenum result = glewInit();QQQ
+//  if (result != GLEW_OK) {
+//    error("Can't initialize GLEW: %s\n", glewGetErrorString(result));
+//  }
 
   init_services();
 

@@ -5,6 +5,13 @@
 namespace atom {
 
 //
+// Matrix module
+//
+// All matrices are initialized by default (identity).
+//
+
+
+//
 // 2x2 Matrix
 //
 
@@ -16,7 +23,10 @@ struct Mat2 {
 
   Vec2<T> data[SIZE];
 
-  Mat2() = default;
+  Mat2()
+  {
+    set_identity();
+  }
 
   Mat2(
     T v00, T v01,
@@ -26,6 +36,14 @@ struct Mat2 {
     value(0, 1) = v01;
     value(1, 0) = v10;
     value(1, 1) = v11;
+  }
+  
+  void set_identity()
+  {
+    value(0, 0) = 1;
+    value(0, 1) = 0;
+    value(1, 0) = 0;
+    value(1, 1) = 1;
   }
 
   T& value(unsigned row, unsigned column)
@@ -122,7 +140,10 @@ struct Mat3 {
     return data[column];
   }
 
-  Mat3() = default;
+  Mat3()
+  {
+    set_identity();
+  }
 
   Mat3(
     T v00, T v01, T v02,
@@ -132,6 +153,19 @@ struct Mat3 {
     value(0, 0) = v00;  value(0, 1) = v01;  value(0, 2) = v02;
     value(1, 0) = v10;  value(1, 1) = v11;  value(1, 2) = v12;
     value(2, 0) = v20;  value(2, 1) = v21;  value(2, 2) = v22;
+  }
+  
+  void set_identity()
+  {
+    value(0, 0) = 1;
+    value(0, 1) = 0;
+    value(0, 2) = 0;
+    value(1, 0) = 0;
+    value(1, 1) = 1;
+    value(1, 2) = 0;
+    value(2, 0) = 0;
+    value(2, 1) = 0;
+    value(2, 2) = 1;
   }
 };
 
@@ -152,7 +186,7 @@ struct Mat4 {
 
   static Mat4<T> rotation_x(T angle)
   {
-    Mat4<T> m = Mat4<T>::identity();
+    Mat4<T> m;
     T s = std::sin(angle);
     T c = std::cos(angle);
 
@@ -165,7 +199,7 @@ struct Mat4 {
 
   static Mat4<T> rotation_y(T angle)
   {
-    Mat4<T> m = Mat4<T>::identity();
+    Mat4<T> m;
     T s = std::sin(angle);
     T c = std::cos(angle);
 
@@ -178,7 +212,7 @@ struct Mat4 {
 
   static Mat4<T> rotation_z(T angle)
   {
-    Mat4<T> m = Mat4<T>::identity();
+    Mat4<T> m;
     T s = std::sin(angle);
     T c = std::cos(angle);
 
@@ -191,7 +225,7 @@ struct Mat4 {
 
   static Mat4<T> scale(T sx, T sy, T sz)
   {
-    Mat4<T> m = Mat4<T>::identity();
+    Mat4<T> m;
     m.value(0, 0) = sx;
     m.value(1, 1) = sy;
     m.value(2, 2) = sz;
@@ -206,7 +240,7 @@ struct Mat4 {
     T zmin,
     T zmax)
   {
-    Mat4<T> m = Mat4<T>::identity();
+    Mat4<T> m;
     m.value(0, 0) =  2.0 / (xmax - xmin);
     m.value(1, 1) =  2.0 / (ymax - ymin);
     m.value(2, 2) = -2.0 / (zmax - zmin);
@@ -217,32 +251,7 @@ struct Mat4 {
     m.value(3, 3) = 1.0;
     return m;
   }
-
-  static Mat4<T> identity()
-  {
-    Mat4 result;
-    result.value(0, 0) = 1.0;
-    result.value(0, 1) = 0.0;
-    result.value(0, 2) = 0.0;
-    result.value(0, 3) = 0.0;
-
-    result.value(1, 0) = 0.0;
-    result.value(1, 1) = 1.0;
-    result.value(1, 2) = 0.0;
-    result.value(1, 3) = 0.0;
-
-    result.value(2, 0) = 0.0;
-    result.value(2, 1) = 0.0;
-    result.value(2, 2) = 1.0;
-    result.value(2, 3) = 0.0;
-
-    result.value(3, 0) = 0.0;
-    result.value(3, 1) = 0.0;
-    result.value(3, 2) = 0.0;
-    result.value(3, 3) = 1.0;
-    return result;
-  }
-
+  
   static Mat4<T> perspective(
     T fov,
     T aspect,
@@ -254,7 +263,7 @@ struct Mat4 {
 //    assert(fov > 0.0f);
 //    assert(aspect > 0.0f);
 
-    Mat4<T> m = Mat4<T>::identity();
+    Mat4<T> m;
     T ymax = near * tan(fov * 0.5);
     T ymin = -ymax;
     T xmax = ymax * aspect;
@@ -273,7 +282,7 @@ struct Mat4 {
 
   static Mat4<T> translation(T x, T y, T z)
   {
-    Mat4<T> m = Mat4<T>::identity();
+    Mat4<T> m;
     m.value(0, 3) = x;
     m.value(1, 3) = y;
     m.value(2, 3) = z;
@@ -294,7 +303,7 @@ struct Mat4 {
     assert(aspect > 0.0f);
     assert(near > 0.0f);
 
-    Mat4<T> m = Mat4<T>::identity();
+    Mat4<T> m;
     T ymax = near * tan(fov * 0.5);
     T ymin = -ymax;
     T xmax = ymax * aspect;
@@ -351,7 +360,10 @@ struct Mat4 {
     return data[column];
   }
 
-  Mat4() = default;
+  Mat4()
+  {
+    set_identity();
+  }
 
   Mat4(
     T v00, T v01, T v02, T v03,
@@ -363,6 +375,29 @@ struct Mat4 {
     value(1, 0) = v10;  value(1, 1) = v11;  value(1, 2) = v12;  value(1, 3) = v13;
     value(2, 0) = v20;  value(2, 1) = v21;  value(2, 2) = v22;  value(2, 3) = v23;
     value(3, 0) = v30;  value(3, 1) = v31;  value(3, 2) = v32;  value(3, 3) = v33;
+  }
+  
+  void set_identity()
+  {
+    value(0, 0) = 1;
+    value(0, 1) = 0;
+    value(0, 2) = 0;
+    value(0, 3) = 0;
+
+    value(1, 0) = 0;
+    value(1, 1) = 1;
+    value(1, 2) = 0;
+    value(1, 3) = 0;
+
+    value(2, 0) = 0;
+    value(2, 1) = 0;
+    value(2, 2) = 1;
+    value(2, 3) = 0;
+
+    value(3, 0) = 0;
+    value(3, 1) = 0;
+    value(3, 2) = 0;
+    value(3, 3) = 1;
   }
 
   void rotate_x(T angle)

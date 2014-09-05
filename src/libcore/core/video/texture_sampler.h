@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
+#include "../utils/gl_utils.h"
 #include "../noncopyable.h"
 
 namespace atom {

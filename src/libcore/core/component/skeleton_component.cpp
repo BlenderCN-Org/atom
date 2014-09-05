@@ -51,7 +51,7 @@ void SkeletonComponent::activate()
   log::info("Found %i bones", count);
 
   my_transforms.clear();
-  my_transforms.resize(count, Mat4f::identity());
+  my_transforms.resize(count, Mat4f());
   my_bones.clear();
 
   for (const DataBone &bone : mesh->raw_mesh().bones) {

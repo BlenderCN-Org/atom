@@ -148,7 +148,7 @@ void Entity::init(f32 width, f32 height, const Vec3f &position, f32 rotation)
   my_width = width;
   my_height = height;
   my_class = "Base class";
-  my_transform = Mat4f::identity();
+  my_transform = Mat4f();
   META_INIT();
 }
 

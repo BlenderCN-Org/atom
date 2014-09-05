@@ -17,7 +17,6 @@ enum class PixelFormat {
   RGBA32UI, ///< rgba, 32bits per pixel (unsigned int), total 128bits (16bytes)
   RGB32I,   ///< rgb, 32bits per pixel (signed int), total 96bits (12bytes)
   R32I,     ///< grayscale, 32bits (signed int), total 32bits (4bytes)
-  RGBA_DXT5,
   RGB32F,
   D16,
   D32,

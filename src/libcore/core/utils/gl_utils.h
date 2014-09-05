@@ -1,8 +1,7 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include "../math/math.h"
+#include <flextGL.h>
+#include "../foundation.h"
 
 namespace atom {
 

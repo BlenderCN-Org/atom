@@ -5,8 +5,6 @@
 #endif
 
 #include <cassert>
-#include <GL/glew.h>
-#include <GL/gl.h>
 #include "../log.h"
 #include "../string.h"
 #include "utils.h"

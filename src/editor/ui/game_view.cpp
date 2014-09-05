@@ -1,4 +1,3 @@
-#include <GL/glew.h>
 #include <QApplication>
 #include <QDragEnterEvent>
 #include <QDropEvent>

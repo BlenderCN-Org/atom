@@ -15,7 +15,6 @@
 #include "math/transformation_stack.h"
 #include "video/bitmap_font.h"
 #include "video/uniforms.h"
-#include "system/sdl.h"
 
 //using std::chrono::high_resolution_clock;
 //using std::chrono::duration_cast;
@@ -129,8 +128,8 @@ void FrameProcessor::draw_counters(
   Config &config = Config::instance();
   Uniforms &u = my_core.video_service().get_uniforms();
 
-  u.transformations.model = Mat4f::identity();
-  u.transformations.view = Mat4f::identity();
+  u.transformations.model = Mat4f();
+  u.transformations.view = Mat4f();
   u.transformations.projection =
     Mat4f::orthographic(0.0f, 100.0f, 0.0f, 100.0f / config.get_aspect_ratio(), 0.0f, 1000.0f);
 
