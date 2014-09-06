@@ -37,7 +37,7 @@ struct Mat2 {
     value(1, 0) = v10;
     value(1, 1) = v11;
   }
-  
+
   void set_identity()
   {
     value(0, 0) = 1;
@@ -154,7 +154,7 @@ struct Mat3 {
     value(1, 0) = v10;  value(1, 1) = v11;  value(1, 2) = v12;
     value(2, 0) = v20;  value(2, 1) = v21;  value(2, 2) = v22;
   }
-  
+
   void set_identity()
   {
     value(0, 0) = 1;
@@ -251,7 +251,7 @@ struct Mat4 {
     m.value(3, 3) = 1.0;
     return m;
   }
-  
+
   static Mat4<T> perspective(
     T fov,
     T aspect,
@@ -376,7 +376,7 @@ struct Mat4 {
     value(2, 0) = v20;  value(2, 1) = v21;  value(2, 2) = v22;  value(2, 3) = v23;
     value(3, 0) = v30;  value(3, 1) = v31;  value(3, 2) = v32;  value(3, 3) = v33;
   }
-  
+
   void set_identity()
   {
     value(0, 0) = 1;
@@ -532,10 +532,10 @@ Mat4<T> operator*(const Mat4<T> &a, const Mat4<T> &b)
 
   for (unsigned i = 0; i < 4; ++i) {
     for (unsigned j = 0; j < 4; ++j) {
-      result(i, j) = a(i, 0) * b(0, j)
-                   + a(i, 1) * b(1, j)
-                   + a(i, 2) * b(2, j)
-                   + a(i, 3) * b(3, j);
+      result(i, j) = a(i, 0) * b(0, j) +
+                     a(i, 1) * b(1, j) +
+                     a(i, 2) * b(2, j) +
+                     a(i, 3) * b(3, j);
     }
   }
 

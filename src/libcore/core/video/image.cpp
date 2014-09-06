@@ -9,11 +9,6 @@
 #include "framebuffer.h"
 #include "texture.h"
 
-
-using std::ofstream;
-using std::copy;
-using std::swap;
-
 namespace atom {
 
 /**
@@ -251,7 +246,7 @@ void png_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
   if (ptr == nullptr)
     error("Can' write PNG data to nullptr file");
 
-  ofstream *file = static_cast<ofstream *>(ptr);
+  std::ofstream *file = static_cast<std::ofstream *>(ptr);
   file->write(reinterpret_cast<const char *>(data), length);
 }
 
@@ -264,7 +259,7 @@ bool Image::save_to_png(const String &filename)
     return false;
   }
 
-  ofstream file(filename, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+  std::ofstream file(filename, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
 
   if (!file.is_open())
     error("Can't open file %s", filename.c_str());

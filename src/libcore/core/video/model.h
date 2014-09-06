@@ -25,15 +25,13 @@ struct ElementArray {
 };
 
 class Model {
-private:
   std::vector<uptr<ElementArray>> my_arrays;
 
 public:
   std::vector<DataBone> bones;
 
-public:
   bool add_array(const String &name, Type type, uptr<u8[]> &&data, u32 size);
-  const ElementArray* find_array(const String &name) const;
+  const ElementArray* find_array(const String &name, Type type) const;
 };
 
 }

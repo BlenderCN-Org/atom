@@ -1,5 +1,18 @@
 #pragma once
 
+/**
+ * @file foundation.h
+ * This header covers basic engine functionality:
+ *  - sized types
+ *  - string
+ *  - slice
+ *  - smart pointers
+ *  - non-copyable class
+ *  - meta classes
+ *  - math (vectors, matrices, quaternions, ...)
+ *  - engine types forward declarations
+ */
+
 #include "platform.h"
 #include "meta.h"
 #include "ptr.h"
@@ -8,12 +21,3 @@
 #include "string.h"
 #include "slice.h"
 #include "corefwd.h"
-
-//QQQ okomentovat na co sluzi tento hlavickovy subor
-// meta a typy
-// math praca s vektorimi, maticami a quaternionmi
-// uncopyable
-// uptr, sptr a wptr
-// retazce
-// slicy
-// forward deklaracie

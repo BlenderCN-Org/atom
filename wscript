@@ -352,4 +352,7 @@ def is_windows():
 #------------------------------------------------------------------------------
 
 def generate_flext(ctx):
+    """Generate flextGL library source files (flextGL.h and flextGL.c)
+    Useful when changing OpenGL version or adding/removing an OpenGL extension
+    """
     os.system('python3 tools/flextGL/flextGLgen.py -D src/flext tools/flextGL/profiles/gl42_core.txt')

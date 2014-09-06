@@ -8,10 +8,6 @@
 #include "bitmap_font.h"
 #include "mesh.h"
 
-using std::ofstream;
-using std::swap;
-using std::fill_n;
-
 namespace atom {
 
 DrawService::DrawService(VideoService &vs, ResourceService &rs)

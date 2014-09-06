@@ -1,17 +1,8 @@
 #include "bitmap_font.h"
 
 #include <vector>
-#include <limits>
 #include <algorithm>
 #include "../system/resource_service.h"
-
-using std::ifstream;
-using std::swap;
-using std::vector;
-using std::numeric_limits;
-using std::for_each;
-using std::min;
-using std::max;
 
 namespace atom {
 
@@ -19,7 +10,7 @@ uptr<BitmapFont> BitmapFont::create(ResourceService &rs, const std::string &name
 {
   // load font definition from fnt file
   String fnt_filename = String(IMAGE_RESOURCE_DIR) + "/" + name + ".fnt";
-  ifstream fnt_file(fnt_filename.c_str());
+  std::ifstream fnt_file(fnt_filename.c_str());
 
   if (!fnt_file.is_open()) {
     error("Can't read font fnt file for font \"%s\"", fnt_filename.c_str());
@@ -59,7 +50,7 @@ uptr<BitmapFont> BitmapFont::create(ResourceService &rs, const std::string &name
     return nullptr;
   }
 
-  vector<CharInfo> chars;
+  std::vector<CharInfo> chars;
   chars.reserve(count);
 
   for (unsigned i = 0; i < count; ++i) {
@@ -112,7 +103,7 @@ BitmapFont::BitmapFont(
   float line_height,
   float base_height)
   : my_texture(texture)
-  , my_min_char(numeric_limits<unsigned>::max())
+  , my_min_char(U32_MAX)
   , my_max_char(0)
   , my_line_height(line_height)
   , my_base_height(base_height)

@@ -4,7 +4,7 @@
 
 // Bullet forward declaration
 class btRigidBody;
-class btDefaultMotionState;
+struct btDefaultMotionState;
 
 namespace atom {
 
@@ -14,7 +14,6 @@ enum class RigidBodyType {
   DYNAMIC
 };
 
-//QQQ unfinished component
 class RigidBodyComponent : public Component {
   uptr<btRigidBody> my_rigid_body;
   uptr<btDefaultMotionState> my_motion_state;

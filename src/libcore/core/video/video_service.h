@@ -7,6 +7,31 @@ namespace atom {
 
 class Uniforms;
 
+const u32 MAX_ATTRIBUTES = 8;
+
+enum class DrawType {
+  NONE,
+  LINES,
+  TRIANGLES
+};
+
+struct DrawCommand {
+  VideoBuffer *attributes[MAX_ATTRIBUTES];
+  Type         types[MAX_ATTRIBUTES];
+  VideoBuffer *indices;
+  Technique   *program;
+  DrawType     draw;
+
+  DrawCommand()
+    : attributes{ nullptr }
+    , indices(nullptr)
+    , program(nullptr)
+    , draw(DrawType::NONE)
+  {
+    // empty
+  }
+};
+
 enum class FramebufferTarget {
   INVALID = -1,
   READ = GL_READ_FRAMEBUFFER,
@@ -48,6 +73,8 @@ public:
   VideoService();
 
   ~VideoService();
+
+  void draw(const DrawCommand &command);
 
   void bind_program(Technique &program);
 

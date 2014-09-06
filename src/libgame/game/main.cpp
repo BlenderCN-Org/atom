@@ -11,6 +11,8 @@
 #include <core/component/collider_component.h>
 #include <core/component/rigid_body_component.h>
 #include <core/component/model_component.h>
+#include <core/video/model.h>
+#include <core/video/mesh.h>
 #include "monster.h"
 
 namespace atom {
@@ -19,6 +21,12 @@ namespace {
 class SkeletonBodyScript : public ScriptComponent {
   Slot<ModelComponent>    my_model;
   Slot<SkeletonComponent> my_skeleton;
+  Slot<MeshComponent>     my_mesh;
+  std::vector<Vec3f>      my_vertices;
+  std::vector<Vec3f>      my_last_vertices;
+  MeshResourcePtr         my_mesh_resource;
+  bool                    my_is_initialized;
+  VideoBuffer            *my_mesh_vertices;
 
   uptr<Component> clone() const override
   {
@@ -29,13 +37,83 @@ public:
   SkeletonBodyScript()
     : my_model(this)
     , my_skeleton(this)
+    , my_mesh(this)
+    , my_is_initialized(false)
+    , my_mesh_vertices(nullptr)
   {
-
+    my_mesh_resource.reset(new MeshResource());
+    my_mesh_resource->set_data(uptr<Mesh>(new Mesh()));
   }
 
   void update() override
   {
+    const Model &model = my_model->get_model()->model();
 
+    const ElementArray *vertice_array = model.find_array("vertices", Type::F32);
+    const u8 *vertice_data = vertice_array->data.get();
+    const ElementArray *bweight_array = model.find_array("bone_weight", Type::F32);
+    const u8 *bweight_data = bweight_array->data.get();
+    const ElementArray *bindex_array = model.find_array("bone_index", Type::U32);
+    const u8 *bindex_data = bindex_array->data.get();
+
+    if (!my_is_initialized) {
+      const ElementArray *index_array = model.find_array("indices", Type::U32);
+      my_is_initialized = true;
+      Mesh *mesh = my_mesh_resource->data();
+
+      uptr<VideoBuffer> mesh_indices(new VideoBuffer(core().video_service()));
+      uptr<VideoBuffer> mesh_vertices(new VideoBuffer(core().video_service()));
+
+      mesh_indices->set_bytes(index_array->data.get(), index_array->size);
+
+      mesh->vertex = std::move(mesh_vertices);
+      mesh->surface = std::move(mesh_indices);
+      my_mesh_vertices = mesh->vertex.get();
+      my_mesh_vertices->set_bytes(vertice_array->data.get(), vertice_array->size);
+      my_mesh->set_mesh(my_mesh_resource);
+    }
+
+
+    u32 vertex_count = vertice_array->size / sizeof(Vec3f);
+
+    u32 bweight_count = bweight_array->size / sizeof(Vec4f);
+    u32 bindex_count = bindex_array->size / sizeof(Vec4u8);
+
+    if (vertex_count != bweight_count || vertex_count != bindex_count) {
+      log::error("Corrupted model data arrays");
+      return;
+    }
+
+    const Vec3f *vertices = reinterpret_cast<const Vec3f *>(vertice_data);
+    const Vec4f *bone_weight = reinterpret_cast<const Vec4f *>(bweight_data);
+    const Vec4u8 *bone_index = reinterpret_cast<const Vec4u8 *>(bindex_data);
+
+    my_last_vertices.swap(my_vertices);
+    my_vertices.clear();
+    my_vertices.reserve(vertex_count);
+
+    my_skeleton->recalculate_skeleton();
+
+    const Slice<Mat4f> transforms = my_skeleton->get_transforms();
+
+    for (u32 i = 0; i < vertex_count; ++i) {
+      const Vec4f v = Vec4f(vertices[i], 1);
+      const Vec4f &weight = bone_weight[i];
+      const Vec4u8 index = bone_index[i];
+
+      const Mat4f &m0 = transforms[index[0]];
+      const Mat4f &m1 = transforms[index[1]];
+      const Mat4f &m2 = transforms[index[2]];
+      const Mat4f &m3 = transforms[index[3]];
+
+      const Vec3f v0 = (m0 * v * weight[0]).to_vec3();
+      const Vec3f v1 = (m1 * v * weight[1]).to_vec3();
+      const Vec3f v2 = (m2 * v * weight[2]).to_vec3();
+      const Vec3f v3 = (m3 * v * weight[3]).to_vec3();
+      my_vertices.push_back(v0 + v1 + v2 + v3);
+
+      my_mesh_vertices->set_data(my_vertices.data(), my_vertices.size() * sizeof(Vec3f));
+    }
   }
 };
 
@@ -121,10 +199,10 @@ uptr<Entity> create_test_object(World &world, Core &core)
   return entity;
 }
 
+
 uptr<Entity> create_monster(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
-  // suzanne
   uptr<ModelComponent> model(new ModelComponent("monster"));
   uptr<MaterialComponent> material(new MaterialComponent("animal"));
   uptr<MeshComponent> mesh(new MeshComponent());
@@ -139,6 +217,27 @@ uptr<Entity> create_monster(World &world, Core &core)
   entity->add_component(std::move(render));
   return entity;
 }
+
+uptr<Entity> create_manual_monster(World &world, Core &core)
+{
+  uptr<Entity> entity(new Entity(world, core));
+  uptr<ModelComponent> model(new ModelComponent("monster"));
+  uptr<MaterialComponent> material(new MaterialComponent("manual"));
+  uptr<MeshComponent> mesh(new MeshComponent(MeshComponentMode::MANUAL));
+  uptr<SkeletonComponent> skeleton(new SkeletonComponent());
+  uptr<RenderComponent> render(new RenderComponent());
+  uptr<ScriptComponent> skeleton_script(new MonsterScript());
+  uptr<SkeletonBodyScript> script(new SkeletonBodyScript());
+  entity->add_component(std::move(model));
+  entity->add_component(std::move(material));
+  entity->add_component(std::move(mesh));
+  entity->add_component(std::move(skeleton));
+  entity->add_component(std::move(script));
+  entity->add_component(std::move(skeleton_script));
+  entity->add_component(std::move(render));
+  return entity;
+}
+
 
 uptr<Entity> create_ground(World &world, Core &core)
 {
@@ -184,6 +283,7 @@ std::vector<EntityCreator> create_object_creators(Core &)
   creators.push_back(EntityCreator("TestObject", create_test_object));
   creators.push_back(EntityCreator("Suzanne", create_suzanne));
   creators.push_back(EntityCreator("Monster", create_monster));
+  creators.push_back(EntityCreator("ManualMonster", create_manual_monster));
   creators.push_back(EntityCreator("Ground", create_ground));
   creators.push_back(EntityCreator("Box", create_box));
 //  creators.push_back(EntityCreator("Box", game::create_box));

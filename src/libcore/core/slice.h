@@ -60,6 +60,16 @@ public:
   {
     return my_count;
   }
+
+  T& operator[](u32 index)
+  {
+    return my_data[index];
+  }
+
+  const T& operator[](u32 index) const
+  {
+    return my_data[index];
+  }
 };
 
 }

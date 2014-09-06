@@ -39,13 +39,13 @@ class FlatMaterial : public Material {
 public:
   static uptr<Material> create(ResourceService &rs);
 
-  FlatMaterial(const TechniqueResourcePtr &phong_shader);
+  FlatMaterial(const TechniqueResourcePtr &shader);
 
   ~FlatMaterial();
 
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
 
-  TechniqueResourcePtr shader;
+  TechniqueResourcePtr my_shader;
 
   Vec3f color;
 

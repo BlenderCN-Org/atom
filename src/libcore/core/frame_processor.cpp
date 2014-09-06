@@ -16,12 +16,6 @@
 #include "video/bitmap_font.h"
 #include "video/uniforms.h"
 
-//using std::chrono::high_resolution_clock;
-//using std::chrono::duration_cast;
-//using std::this_thread::sleep_for;
-using std::placeholders::_1;
-using std::bind;
-
 namespace atom {
 
 FrameProcessor::FrameProcessor(Core &core)

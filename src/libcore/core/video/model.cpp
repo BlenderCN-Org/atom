@@ -16,10 +16,13 @@ bool Model::add_array(const String &name, Type type, uptr<u8[]> &&data, u32 size
   return true;
 }
 
-const ElementArray* Model::find_array(const String &name) const
+const ElementArray* Model::find_array(const String &name, Type type) const
 {
   auto found = std::find_if(my_arrays.begin(), my_arrays.end(),
-    [&name](const uptr<ElementArray> &array) { return array->name == name; });
+    [&name, &type](const uptr<ElementArray> &array)
+    {
+      return array->name == name && array->type == type;
+    });
 
   return found != my_arrays.end() ? found->get() : nullptr;
 }

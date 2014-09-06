@@ -3,8 +3,6 @@
 #include "video_service.h"
 #include "image.h"
 
-using std::swap;
-
 namespace atom {
 
 Texture::Texture(VideoService &vs)

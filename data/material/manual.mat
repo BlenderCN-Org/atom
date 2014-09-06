@@ -1,0 +1,6 @@
+{
+  "type" : "phong",
+  "shader" : "phong",
+  "color" : [ 1, 0, 0 ],
+  "face" : "front"
+}

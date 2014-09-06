@@ -2,6 +2,7 @@
 
 #include "../platform.h"
 #include "../meta.h"
+#include "../slice.h"
 #include "vec.h"
 #include "mat.h"
 #include "quat.h"
@@ -11,12 +12,13 @@ namespace atom {
 //
 // Vector specialization for most useful types
 //
-typedef Vec2<u32> Vec2u;
+typedef Vec2<u32> Vec2u32;
+typedef Vec4<u8> Vec4u8;
 typedef Vec2<float> Vec2f;
 typedef Vec3<float> Vec3f;
 typedef Vec4<float> Vec4f;
 
-static_assert(sizeof(Vec2u) == 8, "Velkost musi byt 8bytov");
+static_assert(sizeof(Vec2u32) == 8, "Velkost musi byt 8bytov");
 static_assert(sizeof(Vec2f) == 8, "Velkost musi byt 8bytov");
 static_assert(sizeof(Vec3f) == 12, "Velkost musi byt 8bytov");
 static_assert(sizeof(Vec4f) == 16, "Velkost musi byt 8bytov");
@@ -97,5 +99,16 @@ T lerp(T x, T min, T max)
 {
   return min + x * (max - min);
 }
+
+struct Ray {
+  Vec3f origin;
+  Vec3f dir;
+};
+
+/**
+ * Calculate nearest intersection of ray and triangle mesh.
+ */
+f32 intersect(const Slice<Vec3f> &vertices, const Slice<u32> &indices,
+  const Ray &ray, u32 &index);
 
 }

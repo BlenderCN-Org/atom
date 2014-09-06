@@ -8,6 +8,8 @@ Zavislosti:
  - Qt4 (editor)
 
 TODO:
+ - pridat do ScriptComponent metodu init/on_init
+ - delete Vec2Array... or replace by Slice
  - allow Entity without ModelComponent, just MeshComponent
  - proper clone method, Component attributes are not copied
  - rename VideoBuffer::set_raw_data to set_bytes???

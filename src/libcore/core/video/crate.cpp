@@ -3,7 +3,6 @@
 #include "framebuffer.cpp"
 #include "image.cpp"
 #include "material.cpp"
-#include "mesh.cpp"
 #include "mesh_tree.cpp"
 #include "mesh_tree_node.cpp"
 #include "renderbuffer.cpp"

@@ -11,8 +11,6 @@
 #include "technique.h"
 #include "../utils/gl_utils.h"
 
-using std::vector;  //QQQ
-
 namespace atom {
 namespace {
 
@@ -63,27 +61,6 @@ bool check_gl_limits()
     gl_max_vertex_uniform_components, gl_max_geometry_uniform_components,
     gl_max_fragment_uniform_components);
 
-  vector<String> required_extensions;
-  required_extensions.push_back("GL_ARB_texture_non_power_of_two");
-//    "GL_ARB_texture_float",
-//    "GL_EXT_texture_buffer_object",
-
-//  for (const String &extension : required_extensions) {
-//    if (!glewGetExtension(extension.c_str())) {
-//      error("Missing OpenGL extension %s", extension.c_str());
-//      return false;
-//    }
-//  }
-
-//  GLint gl_max_texture_units;
-//  glGetIntegerv(GL_MAX_TEXTURE_UNITS, &gl_max_texture_units);
-//  log::debug(DEBUG_VIDEO, "Max texture units %i", gl_max_texture_units);
-
-//  if (gl_max_texture_units < 2) {
-//    error("OpenGL doesn't support more that 1 texture units");
-//    return false;
-//  }
-
   GLint gl_max_draw_buffers;
   glGetIntegerv(GL_MAX_DRAW_BUFFERS, &gl_max_draw_buffers);
   log::debug(DEBUG_VIDEO, "Max draw buffers %i", gl_max_draw_buffers);
@@ -133,6 +110,33 @@ VideoService::VideoService()
 
 VideoService::~VideoService()
 {
+}
+
+void VideoService::draw(const DrawCommand &command)
+{
+  if (command.program == nullptr) {
+    log::warning("DrawCommand without program");
+    return;
+  }
+
+  for (u32 i = 0; i < MAX_ATTRIBUTES; ++i) {
+    if (command.attributes[i] != nullptr) {
+      bind_attribute(i, *command.attributes[i], command.types[i]);
+    } else {
+      unbind_attribute(i);
+    }
+  }
+
+  bind_program(*command.program);
+  command.program->pull(meta_object(*my_uniforms));
+
+  if (command.draw == DrawType::TRIANGLES) {
+    draw_index_array(GL_TRIANGLES, *command.indices, command.indices->size() / sizeof(u32));
+  } else if (command.draw == DrawType::LINES) {
+    draw_index_array(GL_LINES, *command.indices, command.indices->size() / sizeof(u32));
+  } else {
+    log::warning("DrawCommand is missing primitive type");
+  }
 }
 
 void VideoService::bind_program(Technique &program)

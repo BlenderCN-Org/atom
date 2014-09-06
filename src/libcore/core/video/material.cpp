@@ -25,7 +25,7 @@ Material::~Material()
 //-----------------------------------------------------------------------------
 
 META_DEFINE_FIELDS(FlatMaterial) {
-  FIELD(FlatMaterial, shader, "shader"),
+  FIELD(FlatMaterial, my_shader, "shader"),
   FIELD(FlatMaterial, color, "color")
 };
 
@@ -36,8 +36,8 @@ uptr<Material> FlatMaterial::create(ResourceService &rs)
   return uptr<Material>(new FlatMaterial(rs.get_technique("flat")));
 }
 
-FlatMaterial::FlatMaterial(const TechniqueResourcePtr &xshader)
-  : shader(xshader)
+FlatMaterial::FlatMaterial(const TechniqueResourcePtr &shader)
+  : my_shader(shader)
 {
   META_INIT();
 }
@@ -48,35 +48,22 @@ FlatMaterial::~FlatMaterial()
 
 void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
-  assert(shader != nullptr);
+  assert(my_shader != nullptr);
 
-  const VideoBuffer *vertices = mesh.find_stream(StreamId::VERTEX);
-  const VideoBuffer *indices = mesh.find_stream(StreamId::INDEX);
-
-  if (vertices == nullptr) {
-    log::warning("This mesh doesn't have vertex stream");
+  if (mesh.vertex == nullptr || mesh.surface == nullptr) {
+    log::warning("%s: mesh missing vertex or surface data", ATOM_FUNC_NAME);
     return;
   }
 
-  if (indices == nullptr) {
-    log::warning("This mesh doesn't have index stream");
-    return;
-  }
-
-  Technique &program = shader->program();
-  VideoService &vs = context.video_processor;
-  vs.bind_program(program);
-  program.set_param("model_view_projection", context.uniforms.transformations.model_view_projection());
   context.uniforms.color = color;
-//  program.set_param("color", color);
 
-  MetaObject properties = meta_object(context.uniforms);
-  program.pull(properties);
-
-  vs.bind_attribute(0, *vertices, Type::VEC3F);
-  vs.draw_index_array(GL_LINES, *indices, indices->size() / sizeof(u32));
-//  vs.draw_arrays(GL_TRIANGLES, 0, vertices->size() / sizeof(Vec3f));
-  vs.unbind_attribute(0);
+  DrawCommand command;
+  command.draw = DrawType::LINES;
+  command.attributes[0] = mesh.vertex.get();
+  command.types[0] = Type::VEC3F;
+  command.indices = mesh.surface.get();
+  command.program = &my_shader->program();
+  context.video_processor.draw(command);
 }
 
 
@@ -112,32 +99,24 @@ PhongMaterial::~PhongMaterial()
 void PhongMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
   assert(my_shader != nullptr);
-  const VideoBuffer *vb = mesh.find_stream(StreamId::VERTEX);
-  const VideoBuffer *nb = mesh.find_stream(StreamId::NORMAL);
-  const VideoBuffer *ib = mesh.find_stream(StreamId::INDEX);
 
-  if (vb == nullptr || nb == nullptr || ib == nullptr) {
-    log::warning("This mesh doesn't contain vertex, normal or index stream");
-    return;
+  if (mesh.vertex == nullptr || mesh.surface == nullptr) {
+    log::warning("%s: mesh missing vertex or surface data", ATOM_FUNC_NAME);
   }
-
 
   VideoService &vs = context.video_processor;
   vs.enable_depth_test();
-
-  Technique &program = my_program->program();
-  vs.bind_program(program);
   context.uniforms.color = Vec3f(0.7, 0.7, 0.7);
   context.uniforms.sun_dir = Vec3f(0, 0, -1);
   context.uniforms.ambient_color = Vec3f(0.13, 0.13, 0.13);
-//  program.set_param("model_view_projection", context.uniforms.transformations.model_view_projection());
-  program.pull(meta_object(context.uniforms));
 
-  vs.bind_attribute(0, *vb, Type::VEC3F);
-  vs.bind_attribute(1, *nb, Type::VEC3F);
-  vs.draw_index_array(GL_TRIANGLES, *ib, ib->size() / 3);
-  vs.unbind_attribute(0);
-  vs.unbind_attribute(1);
+  DrawCommand command;
+  command.draw = DrawType::TRIANGLES;
+  command.attributes[0] = mesh.vertex.get();
+  command.types[0] = Type::VEC3F;
+  command.indices = mesh.surface.get();
+  command.program = &my_shader->program();
+  context.video_processor.draw(command);
 }
 
 
@@ -173,42 +152,32 @@ SkinMaterial::~SkinMaterial()
 void SkinMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
   assert(my_shader != nullptr);
-  const VideoBuffer *vb = mesh.find_stream(StreamId::VERTEX);
-  const VideoBuffer *nb = mesh.find_stream(StreamId::NORMAL);
-  const VideoBuffer *ib = mesh.find_stream(StreamId::INDEX);
-  const VideoBuffer *bi = mesh.find_stream(StreamId::BINDEX);
-  const VideoBuffer *bw = mesh.find_stream(StreamId::BWEIGHT);
 
-  if (vb == nullptr || nb == nullptr || ib == nullptr) {
-    log::warning("This mesh doesn't contain vertex, normal or index stream");
+  if (mesh.vertex == nullptr || mesh.normal == nullptr || mesh.surface == nullptr) {
+    log::warning("%s: mesh is missing vertex, normal or surface data", ATOM_FUNC_NAME);
+    return;
+  } else if (mesh.bone_weight == nullptr || mesh.bone_index == nullptr) {
+    log::warning("%s: mesh is missing bone weight or bone index data", ATOM_FUNC_NAME);
     return;
   }
-
-  if (bi == nullptr || bw == nullptr) {
-    log::warning("This mesh doesn't contain bone weight or index stream");
-    return;
-  }
-
 
   VideoService &vs = context.video_processor;
   vs.enable_depth_test();
-
-  Technique &program = my_program->program();
-  vs.bind_program(program);
   context.uniforms.color = Vec3f(0.7, 0.7, 0.7);
   context.uniforms.sun_dir = Vec3f(0, 0, -1);
   context.uniforms.ambient_color = Vec3f(0.13, 0.13, 0.13);
-  //  program.set_param("model_view_projection", context.uniforms.transformations.model_view_projection());
 
-
-
-  program.pull(meta_object(context.uniforms));
-
-  AttributeBinder vertex_attribute(vs, 0, *vb, Type::VEC3F);
-  AttributeBinder bindex_attribute(vs, 1, *bi, Type::VEC4U8);
-  AttributeBinder bweight(vs, 2, *bw, Type::VEC4F);
-
-  vs.draw_index_array(GL_TRIANGLES, *ib, ib->size() / 3);
+  DrawCommand command;
+  command.draw = DrawType::TRIANGLES;
+  command.attributes[0] = mesh.vertex.get();
+  command.types[0] = Type::VEC3F;
+  command.attributes[1] = mesh.bone_index.get();
+  command.types[1] = Type::VEC4U8;
+  command.attributes[2] = mesh.bone_weight.get();
+  command.types[2] = Type::VEC4F;
+  command.indices = mesh.surface.get();
+  command.program = &my_shader->program();
+  vs.draw(command);
 }
 
 }

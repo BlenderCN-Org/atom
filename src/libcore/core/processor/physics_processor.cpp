@@ -125,10 +125,10 @@ void PhysicsProcessor::debug_render()
 
   Mesh mesh;
 
-  VideoBuffer vertex_buffer(my_vs);
-  VideoBuffer index_buffer(my_vs);
+  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(my_vs));
+  uptr<VideoBuffer> index_buffer(new VideoBuffer(my_vs));
 
-  vertex_buffer.set_data(lines.data(), lines.size());
+  vertex_buffer->set_data(lines.data(), lines.size());
 
   std::vector<u32> indices;
   indices.reserve(lines.size());
@@ -137,15 +137,15 @@ void PhysicsProcessor::debug_render()
     indices.push_back(i);
   }
 
-  index_buffer.set_bytes(indices.data(), indices.size() * sizeof(u32));
+  index_buffer->set_bytes(indices.data(), indices.size() * sizeof(u32));
 
   Uniforms &u = my_vs.get_uniforms();
   u.transformations.model = Mat4f();
   u.model = Mat4f();
   RenderContext context = { u, my_vs };
 
-  mesh.add_stream(StreamId::VERTEX, std::move(vertex_buffer));
-  mesh.add_stream(StreamId::INDEX, std::move(index_buffer));
+  mesh.vertex = std::move(vertex_buffer);
+  mesh.surface = std::move(index_buffer);
 
   material->material().draw_mesh(context, mesh);
 }

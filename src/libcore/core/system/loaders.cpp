@@ -344,42 +344,36 @@ void MeshLoader::reload_resource(ResourceService &rs, Resource &resource)
 
 void MeshLoader::load_mesh_from_model(ResourceService &rs, const Model &model, Mesh &mesh)
 {
-  const ElementArray *vertices = model.find_array("vertices");
-  const ElementArray *normals = model.find_array("normals");
-  const ElementArray *indices = model.find_array("indices");
-  const ElementArray *bone_index = model.find_array("bone_index");
-  const ElementArray *bone_weight = model.find_array("bone_weight");
+  const ElementArray *vertices = model.find_array("vertices", Type::F32);
+  const ElementArray *normals = model.find_array("normals", Type::F32);
+  const ElementArray *indices = model.find_array("indices", Type::U32);
+  const ElementArray *bone_index = model.find_array("bone_index", Type::U32);
+  const ElementArray *bone_weight = model.find_array("bone_weight", Type::F32);
 
-  if (vertices == nullptr || indices == nullptr) {
-    log::warning("No vertices or indices in model");
-    return;
+  if (vertices != nullptr) {
+    mesh.vertex.reset(new VideoBuffer(rs.video_service()));
+    mesh.vertex->set_bytes(vertices->data.get(), vertices->size);
   }
-
-  VideoBuffer vertex_buffer(rs.video_service());
-  VideoBuffer normal_buffer(rs.video_service());
-  VideoBuffer index_buffer(rs.video_service());
-
-  vertex_buffer.set_bytes(vertices->data.get(), vertices->size);
-  index_buffer.set_bytes(indices->data.get(), indices->size);
 
   if (normals != nullptr) {
-    normal_buffer.set_bytes(normals->data.get(), normals->size);
-    mesh.add_stream(StreamId::NORMAL, std::move(normal_buffer));
+    mesh.normal.reset(new VideoBuffer(rs.video_service()));
+    mesh.normal->set_bytes(normals->data.get(), normals->size);
   }
 
-  if (bone_index != nullptr && bone_weight != nullptr) {
-    VideoBuffer bone_weight_buffer(rs.video_service());
-    VideoBuffer bone_index_buffer(rs.video_service());
-
-    bone_weight_buffer.set_bytes(&bone_weight->data[0], bone_weight->size);
-    bone_index_buffer.set_bytes(&bone_index->data[0], bone_index->size);
-
-    mesh.add_stream(StreamId::BINDEX, std::move(bone_index_buffer));
-    mesh.add_stream(StreamId::BWEIGHT, std::move(bone_weight_buffer));
+  if (indices != nullptr) {
+    mesh.surface.reset(new VideoBuffer(rs.video_service()));
+    mesh.surface->set_bytes(indices->data.get(), indices->size);
   }
 
-  mesh.add_stream(StreamId::VERTEX, std::move(vertex_buffer));
-  mesh.add_stream(StreamId::INDEX, std::move(index_buffer));
+  if (bone_weight != nullptr) {
+    mesh.bone_weight.reset(new VideoBuffer(rs.video_service()));
+    mesh.bone_weight->set_bytes(bone_weight->data.get(), bone_weight->size);
+  }
+
+  if (bone_index != nullptr) {
+    mesh.bone_index.reset(new VideoBuffer(rs.video_service()));
+    mesh.bone_index->set_bytes(bone_index->data.get(), bone_index->size);
+  }
 }
 
 //-----------------------------------------------------------------------------

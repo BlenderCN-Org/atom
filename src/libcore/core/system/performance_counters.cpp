@@ -6,17 +6,11 @@
 #include "../platform.h"
 #include "../log.h"
 
-using std::find_if;
-using std::chrono::high_resolution_clock;
-using std::chrono::duration_cast;
-using std::chrono::milliseconds;
-using std::setprecision;
-
 namespace atom {
 
 void PerformanceCounters::start(const String &counter_name)
 {
-  assert(find_if(my_counters.begin(), my_counters.end(),
+  assert(std::find_if(my_counters.begin(), my_counters.end(),
     [&counter_name](const CounterInfo &counter_info) -> bool
     { return counter_name == counter_info.name; }) == my_counters.end() && "This counter already exist, you can't start existing counter");
   // ak aktualne bezi nejaky casovac tak ho nastav ako nadradeny
@@ -28,20 +22,20 @@ void PerformanceCounters::start(const String &counter_name)
     parent = my_running_counters.back();
   // vloz novy zaznam o casovaci a vloz ho do zasobnika aktualne beziacich casovacov
   my_counters.push_back(CounterInfo(counter_name, parent,
-    high_resolution_clock::now(), TimePoint()));
+    std::chrono::high_resolution_clock::now(), TimePoint()));
   my_running_counters.push_back(my_counters.size() - 1);
 }
 
 void PerformanceCounters::stop(const String &counter_name)
 {
-  auto counter = find_if(my_counters.begin(), my_counters.end(),
+  auto counter = std::find_if(my_counters.begin(), my_counters.end(),
     [&counter_name](const CounterInfo &counter_info) -> bool
     { return counter_name == counter_info.name; });
   // casovac musi bezat (musi o nom existovat zaznam)
   assert(counter != my_counters.end() && "Trying to stop a nonexistent counter");
   log::debug(DEBUG_COUNTERS, "Stopping counter %s", counter_name.c_str());
   // nastav stop time a odstran ho zo zasobnika beziacich casovacov
-  counter->stop_time = high_resolution_clock::now();
+  counter->stop_time = std::chrono::high_resolution_clock::now();
   my_running_counters.pop_back();
 }
 
@@ -55,7 +49,7 @@ void PerformanceCounters::clear()
 PerformanceCounters::CounterInfo PerformanceCounters::get_counter(
   const String &counter_name) const
 {
-  auto i = find_if(my_counters.begin(), my_counters.end(),
+  auto i = std::find_if(my_counters.begin(), my_counters.end(),
     [&counter_name](const CounterInfo &counter_info)
     { return counter_name == counter_info.name; });
   // over najdenie zaznamu
@@ -93,7 +87,7 @@ void PerformanceCounters::print_and_process_counter(
     output << "  ";
 
   float duration = my_counters[counter_index].microseconds().count() / 1000.0;
-  output << setprecision(2) << my_counters[counter_index].name << ": " << duration << "ms\n";
+  output << std::setprecision(2) << my_counters[counter_index].name << ": " << duration << "ms\n";
 
   int count = my_counters.size();
   for (int i = 0; i < count; ++i) {

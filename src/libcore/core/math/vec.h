@@ -322,6 +322,11 @@ struct Vec4 {
     return data[i];
   }
 
+  Vec3<T> to_vec3() const
+  {
+    return Vec3<T>(x, y, z);
+  }
+
   union {
     struct {
       T x;
@@ -343,6 +348,18 @@ template<typename T>
 Vec4<T> operator-(const Vec4<T> &a, const Vec4<T> &b)
 {
   return Vec4<T>(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
+}
+
+template<typename T>
+Vec4<T> operator*(const Vec4<T> &v, T x)
+{
+  return Vec4<T>(v.x * x, v.y * x, v.z * x, v.w * x);
+}
+
+template<typename T>
+Vec4<T> operator*(T x, const Vec4<T> &v)
+{
+  return Vec4<T>(v.x * x, v.y * x, v.z * x, v.w * x);
 }
 
 template<typename T>

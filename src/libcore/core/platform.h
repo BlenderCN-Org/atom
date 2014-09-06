@@ -51,6 +51,8 @@ static_assert(I16_MIN < I16_MAX, "Min has to be smaller than max");
 static_assert(I32_MIN < I32_MAX, "Min has to be smaller than max");
 static_assert(I64_MIN < I64_MAX, "Min has to be smaller than max");
 
+const u32 U32_MAX = 0xFFFFFFFF;
+
 
 // hodnota float je v OpenGL GLfloat
 #define INDEX_GL_TYPE GL_UNSIGNED_INT
