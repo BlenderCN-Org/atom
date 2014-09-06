@@ -10,10 +10,35 @@
 #include <core/component/skeleton_component.h>
 #include <core/component/collider_component.h>
 #include <core/component/rigid_body_component.h>
+#include <core/component/model_component.h>
 #include "monster.h"
 
 namespace atom {
 namespace {
+
+class SkeletonBodyScript : public ScriptComponent {
+  Slot<ModelComponent>    my_model;
+  Slot<SkeletonComponent> my_skeleton;
+
+  uptr<Component> clone() const override
+  {
+    return uptr<Component>(new SkeletonBodyScript());
+  }
+
+public:
+  SkeletonBodyScript()
+    : my_model(this)
+    , my_skeleton(this)
+  {
+
+  }
+
+  void update() override
+  {
+
+  }
+};
+
 
 class AnimalScript : public ScriptComponent {
   u32 my_tick;
@@ -81,11 +106,13 @@ uptr<Entity> create_test_object(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
+  uptr<ModelComponent> model(new ModelComponent("animal"));
   uptr<MaterialComponent> material(new MaterialComponent("animal"));
-  uptr<MeshComponent> mesh(new MeshComponent("animal"));
-  uptr<SkeletonComponent> skeleton(new SkeletonComponent("animal"));
+  uptr<MeshComponent> mesh(new MeshComponent());
+  uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<RenderComponent> render(new RenderComponent());
   uptr<ScriptComponent> script(new AnimalScript());
+  entity->add_component(std::move(model));
   entity->add_component(std::move(material));
   entity->add_component(std::move(mesh));
   entity->add_component(std::move(skeleton));
@@ -98,11 +125,13 @@ uptr<Entity> create_monster(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
+  uptr<ModelComponent> model(new ModelComponent("monster"));
   uptr<MaterialComponent> material(new MaterialComponent("animal"));
-  uptr<MeshComponent> mesh(new MeshComponent("monster"));
-  uptr<SkeletonComponent> skeleton(new SkeletonComponent("monster"));
+  uptr<MeshComponent> mesh(new MeshComponent());
+  uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<RenderComponent> render(new RenderComponent());
   uptr<ScriptComponent> script(new MonsterScript());
+  entity->add_component(std::move(model));
   entity->add_component(std::move(material));
   entity->add_component(std::move(mesh));
   entity->add_component(std::move(skeleton));
@@ -137,9 +166,11 @@ uptr<Entity> create_suzanne(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
+  uptr<ModelComponent> model(new ModelComponent("suzzane"));
   uptr<MaterialComponent> material(new MaterialComponent("test2"));
-  uptr<MeshComponent> mesh(new MeshComponent("suzanne"));
+  uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
+  entity->add_component(std::move(model));
   entity->add_component(std::move(material));
   entity->add_component(std::move(mesh));
   entity->add_component(std::move(render));

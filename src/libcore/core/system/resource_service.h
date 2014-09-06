@@ -42,7 +42,7 @@ public:
 
   MaterialResourcePtr get_material(const String &name);
 
-  RawMeshResourcePtr get_raw_mesh(const String &name);
+  ModelResourcePtr get_model(const String &name);
 
   MeshResourcePtr get_mesh(const String &name);
 

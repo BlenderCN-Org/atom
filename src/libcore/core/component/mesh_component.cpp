@@ -6,7 +6,7 @@ namespace atom {
 
 void MeshComponent::activate()
 {
-  my_mesh = core().resource_service().get_mesh(my_mesh_name);
+  my_mesh = core().resource_service().get_mesh(my_model->get_model_name());
 }
 
 void MeshComponent::deactivate()
@@ -16,13 +16,12 @@ void MeshComponent::deactivate()
 
 uptr<Component> MeshComponent::clone() const
 {
-  uptr<MeshComponent> component(new MeshComponent(my_mesh_name));
-  return std::move(component);
+  return uptr<MeshComponent>(new MeshComponent());
 }
 
-MeshComponent::MeshComponent(const String &mesh)
+MeshComponent::MeshComponent()
   : Component(ComponentType::MESH)
-  , my_mesh_name(mesh)
+  , my_model(this)
 {
   // empty
 }

@@ -24,7 +24,7 @@ struct ElementArray {
   u32        size;
 };
 
-class RawMesh {
+class Model {
 private:
   std::vector<uptr<ElementArray>> my_arrays;
 

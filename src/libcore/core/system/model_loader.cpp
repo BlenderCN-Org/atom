@@ -1,4 +1,4 @@
-#include "raw_mesh_loader.h"
+#include "model_loader.h"
 #include "../utils/utils.h"
 #include "../utils/json_utils.h"
 
@@ -6,11 +6,11 @@ namespace atom {
 
 //-----------------------------------------------------------------------------
 //
-// RawMesh Loader
+// Model Loader
 //
 //-----------------------------------------------------------------------------
 
-bool load_raw_mesh_element_array_from_json(const rapidjson::Value &node,
+bool load_model_element_array_from_json(const rapidjson::Value &node,
   ElementArray &array)
 {
   if (!node.IsObject()) {
@@ -68,11 +68,11 @@ bool load_raw_mesh_element_array_from_json(const rapidjson::Value &node,
       break;
   }
 
-  log::warning("load_raw_mesh_element_array_from_json: Something went wrong");
+  log::warning("%s: Something went wrong", ATOM_FUNC_NAME);
   return false;
 }
 
-bool load_raw_mesh_arrays_from_json(const rapidjson::Value &arrays_node, RawMesh &model)
+bool load_model_arrays_from_json(const rapidjson::Value &arrays_node, Model &model)
 {
   if (!arrays_node.IsObject()) {
     return false;
@@ -90,7 +90,7 @@ bool load_raw_mesh_arrays_from_json(const rapidjson::Value &arrays_node, RawMesh
     const rapidjson::Value &array_node = i->value;
     ElementArray array;
 
-    if (!load_raw_mesh_element_array_from_json(array_node, array)) {
+    if (!load_model_element_array_from_json(array_node, array)) {
       log::warning("Error while loading array \"%s\"", i->name.GetString());
       return false;
     }
@@ -101,7 +101,7 @@ bool load_raw_mesh_arrays_from_json(const rapidjson::Value &arrays_node, RawMesh
 }
 
 
-bool load_raw_mesh_skeleton_from_json(const rapidjson::Value &json_skeleton, RawMesh &model)
+bool load_model_skeleton_from_json(const rapidjson::Value &json_skeleton, Model &model)
 {
   assert(json_skeleton.IsObject() && "Skeleton node must be JSON object");
   const rapidjson::Value &json_bones = json_skeleton["bones"];
@@ -176,24 +176,24 @@ bool load_raw_mesh_skeleton_from_json(const rapidjson::Value &json_skeleton, Raw
   return true;
 }
 
-bool load_raw_mesh_from_json(const rapidjson::Value &mesh_node, RawMesh &model)
+bool load_model_from_json(const rapidjson::Value &mesh_node, Model &model)
 {
   if (!mesh_node.IsObject()) {
     return false;
   }
 
-  if (!load_raw_mesh_arrays_from_json(mesh_node["arrays"], model)) {
+  if (!load_model_arrays_from_json(mesh_node["arrays"], model)) {
     return false;
   }
   if (mesh_node.HasMember("skeleton") &&
-    !load_raw_mesh_skeleton_from_json(mesh_node["skeleton"], model)) {
+    !load_model_skeleton_from_json(mesh_node["skeleton"], model)) {
     return false;
   }
 
   return true;
 }
 
-bool load_model(const String &filename, RawMesh &model)
+bool load_model(const String &filename, Model &model)
 {
   std::ifstream input(filename);
 
@@ -209,19 +209,19 @@ bool load_model(const String &filename, RawMesh &model)
     return false;
   }
 
-  return load_raw_mesh_from_json(doc["mesh"], model);
+  return load_model_from_json(doc["mesh"], model);
 }
 
-ResourcePtr RawMeshLoader::create_resource(ResourceService &rs, const String &name)
+ResourcePtr ModelLoader::create_resource(ResourceService &rs, const String &name)
 {
   String filename = get_model_filename(name);
-  uptr<RawMesh> model(new RawMesh());
+  uptr<Model> model(new Model());
 
   if (!load_model(filename, *model)) {
     return nullptr;
   }
 
-  sptr<RawMeshResource> resource = std::make_shared<RawMeshResource>();
+  sptr<ModelResource> resource = std::make_shared<ModelResource>();
   resource->set_name(String(RESOURCE_MODEL_TAG) + ":" + name);
   resource->depend_on_file(filename);
   resource->set_loader(this);
@@ -229,7 +229,7 @@ ResourcePtr RawMeshLoader::create_resource(ResourceService &rs, const String &na
   return resource;
 }
 
-void RawMeshLoader::reload_resource(ResourceService &rs, Resource &resource)
+void ModelLoader::reload_resource(ResourceService &rs, Resource &resource)
 {
   StringArray tokens = split_resource_name(resource.name());
 
@@ -237,19 +237,19 @@ void RawMeshLoader::reload_resource(ResourceService &rs, Resource &resource)
     auto model = load_model(get_model_filename(tokens[1]));
 
     if (model != nullptr) {
-      dynamic_cast<RawMeshResource &>(resource).set_data(std::move(model));
+      dynamic_cast<ModelResource &>(resource).set_data(std::move(model));
     }
   }
 }
 
-String RawMeshLoader::get_model_filename(const String &name)
+String ModelLoader::get_model_filename(const String &name)
 {
   return String(MESH_RESOURCE_DIR) + "/" + name + "." + MESH_EXT;
 }
 
-uptr<RawMesh> load_model(const String &filename)
+uptr<Model> load_model(const String &filename)
 {
-  uptr<RawMesh> mesh(new RawMesh());
+  uptr<Model> mesh(new Model());
 
   if (load_model(filename, *mesh)) {
     return std::move(mesh);

@@ -1,30 +1,23 @@
 Zavislosti:
  - OpenGL (4.2)
- - GLEW
  - SDL (1.2)
+ - Bullet
  - vorbis/vorbisfile
  - ogg
  - libpng
- - Qt4
- - Bullet
+ - Qt4 (editor)
 
 TODO:
- - proper clone method, Compoennt attriutes aren't copied
+ - allow Entity without ModelComponent, just MeshComponent
+ - proper clone method, Component attributes are not copied
  - rename VideoBuffer::set_raw_data to set_bytes???
  - conversion from rotation matrix 3x3 to quaternion
- - attachable components
  - premenovat MAP_COMPONENT_TYPE na napr. DECLARE_COMPONENT, DEFINE_COMPONENT,
    "INSTALL_COMPONENT", "REGISTER_COMPONENT"
  - debug per entity, per component?
  - prekopat MoveCommand, aby pouzivat transform a nie position/rotation
  - zmazat Singleton
  - pouzivame TextureSampler
- - vytvorit zakladny hlavickovy subor obsahujuci types, meta, noncopyable, ?string?, log
- - potrebujem vec array a mat array? zbytocne subory
- - co s platform.h? obsahuje len ATOM_FUNC_...cosi
- - premiestnit math.h do hlavneho adresara?
  - rozlisenie medzi uniform a uniform array sa deje na zaklade parametru size,
    ktory je pre polia vacsi ako 1, vynimkou je pole velkosti 1, riesenim je asi
    rozlisovat medzi scalar a array podla nazvu pretoze pole ma nazov + [0]
- - pretiahnut typy z types.h do platform.h a registraciu typov pre type_of do meta.h
- - potrebujem vec_array.h

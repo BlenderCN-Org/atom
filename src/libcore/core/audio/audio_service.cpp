@@ -106,10 +106,10 @@ void AudioService::clear()
 void AudioService::mix_test_audio(u8 *buffer, u32 len)
 {
   log::info("Mixing audio %i", my_counter);
-  uint count = len / 2;
+  u32 count = len / 2;
   i16 *samples = reinterpret_cast<i16 *>(buffer);
 
-  for (uint i = 0; i < count; i += 2) {
+  for (u32 i = 0; i < count; i += 2) {
     float v = sin((my_counter + i) / 10.0f) * 1000;
     samples[i] = v;
     samples[i + 1] = v;

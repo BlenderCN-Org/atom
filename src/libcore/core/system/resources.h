@@ -172,15 +172,15 @@ public:
 
 //-----------------------------------------------------------------------------
 //
-// RawMesh Resource
+// Model Resource
 //
 //-----------------------------------------------------------------------------
 
-class RawMeshResource : public StandardResource<RawMesh> {
+class ModelResource : public StandardResource<Model> {
 public:
-  ~RawMeshResource();
+  ~ModelResource();
 
-  const RawMesh& raw_mesh() const
+  const Model& model() const
   {
     return *data();
   }

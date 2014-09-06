@@ -5,8 +5,8 @@
 namespace atom {
 
 class MeshComponent : public Component {
-  String my_mesh_name;
-  MeshResourcePtr my_mesh;
+  Slot<ModelComponent> my_model;
+  MeshResourcePtr      my_mesh;
 
   uptr<Component> clone() const override;
 
@@ -15,10 +15,8 @@ class MeshComponent : public Component {
   void deactivate() override;
 
 public:
-  MeshComponent(const String &mesh);
+  MeshComponent();
   ~MeshComponent();
-
-
 
   MeshResourcePtr mesh() const;
 };

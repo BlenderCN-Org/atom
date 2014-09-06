@@ -16,12 +16,12 @@ struct Bone {
 
 
 class SkeletonComponent : public Component {
-  String             my_mesh_name;
-  std::vector<Bone>  my_bones;
-  std::vector<Mat4f> my_transforms;
+  Slot<ModelComponent> my_model;
+  std::vector<Bone>    my_bones;
+  std::vector<Mat4f>   my_transforms;
 
 public:
-  explicit SkeletonComponent(const String &mesh);
+  SkeletonComponent();
 
   Slice<Mat4f> get_transforms() const;
 

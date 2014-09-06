@@ -148,10 +148,10 @@ struct PixelRGBA32UI {
 struct PixelRGBA32F {
   static const PixelFormat pixel_format = PixelFormat::RGBA32F;
 
-  float32_t r;
-  float32_t g;
-  float32_t b;
-  float32_t a;
+  f32 r;
+  f32 g;
+  f32 b;
+  f32 a;
 };
 static_assert(sizeof(PixelRGBA32F) == 16, "PixelRGBA32F ma velkost 16bytov (4 * 4bajty)");
 
@@ -161,9 +161,9 @@ static_assert(sizeof(PixelRGBA32F) == 16, "PixelRGBA32F ma velkost 16bytov (4 * 
 struct PixelRGB32F {
   static const PixelFormat pixel_format = PixelFormat::RGB32F;
 
-  float32_t r;
-  float32_t g;
-  float32_t b;
+  f32 r;
+  f32 g;
+  f32 b;
 };
 static_assert(sizeof(PixelRGB32F) == 12, "PixelRGB32F ma velkost 12bytov (3 * 4bajty)");
 
@@ -218,7 +218,7 @@ static_assert(sizeof(PixelD24S8) == 4, "Invalid struct size, must be 32bites");
 struct PixelD32F {
   static const PixelFormat pixel_format = PixelFormat::D32F;
 
-  float32_t depth; ///@todo myslim ze depth je 16bitovy float
+  f32 depth; ///@todo myslim ze depth je 16bitovy float
 };
 
 static_assert(sizeof(PixelD32F) == 4, "Invalid struct size, must be 32bites");

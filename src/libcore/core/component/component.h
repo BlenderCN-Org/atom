@@ -8,6 +8,7 @@ namespace atom {
 
 enum class ComponentType {
   UNKNOWN,
+  MODEL,
   MATERIAL,
   RENDER,
   MESH,
@@ -45,9 +46,11 @@ class Component : NonCopyable {
   String        my_name;
   SlotArray     my_slots;
 
-  virtual void activate() = 0;
+  // empty implementation
+  virtual void activate();
 
-  virtual void deactivate() = 0;
+  // empty implementation
+  virtual void deactivate();
 
   virtual uptr<Component> clone() const = 0;
 
@@ -127,7 +130,7 @@ public:
   explicit Slot(Component *parent, const String &name = String())
     : GenericSlot(parent, component_type_of<T>(), name)
   {
-    // empty
+    // if you've got compile error -> probably trying to use nonexisting component
   }
 
   T* operator->() const

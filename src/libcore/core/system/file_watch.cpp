@@ -179,7 +179,7 @@ String FileWatch::to_string(const inotify_event *event)
   // ziskaj textovy popis eventu
   const INotifyEventDescription &event_description = get_event_description(event->mask);
   // preved inotify event na retazec
-  const uint BUFFER_SIZE = 1024;
+  const u32 BUFFER_SIZE = 1024;
   char buffer[BUFFER_SIZE];
   snprintf(buffer, BUFFER_SIZE, "%s %s %s (wd=%i, mask=%X, len=%i, name=%s)",
     event_description.event, event_description.description, get_full_path(event->wd,

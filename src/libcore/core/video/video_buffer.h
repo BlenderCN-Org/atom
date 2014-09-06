@@ -12,12 +12,31 @@ namespace atom {
  * Umoznuje aj nahravanie dat.
  */
 class VideoBuffer : NonCopyable {
+  VideoService    &my_vs;
+  u32              my_size;       ///< velkost dat v bytoch
+  GLuint           my_gl_buffer;
+
 public:
   explicit VideoBuffer(VideoService &vs);
 
   VideoBuffer(VideoBuffer &&buffer);
 
   ~VideoBuffer();
+
+  void set_bytes(const void *data, u32 size);
+
+  /**
+   * Vrat velkost dat v bytoch.
+   */
+  u32 size() const
+  {
+    return my_size;
+  }
+
+  GLuint gl_buffer() const
+  {
+    return my_gl_buffer;
+  }
 
   void set_data(const Vec2f *array, size_t count);
 
@@ -26,23 +45,6 @@ public:
   void set_data(const Vec3f *array, size_t count);
 
   void set_data(const Vec3fArray &array);
-
-  void set_raw_data(const void *data, size_t size);
-
-  /**
-   * Vrat velkost dat v bytoch.
-   */
-  int size() const;
-
-  GLuint gl_buffer() const
-  {
-    return my_gl_buffer;
-  }
-
-private:
-  VideoService    &my_vs;
-  size_t           my_size;       ///< velkost dat v bytoch
-  GLuint           my_gl_buffer;
 };
 
 }

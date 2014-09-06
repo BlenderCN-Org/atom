@@ -61,7 +61,7 @@ bool read_array(const rapidjson::Value &node, std::vector<T> &array)
 
   std::vector<T> tmp;
 
-  for (uint i = 0; i < node.Size(); ++i) {
+  for (u32 i = 0; i < node.Size(); ++i) {
     T element;
     if (read_element(node[i], element)) {
       tmp.push_back(element);
@@ -101,7 +101,7 @@ bool read_vector(const rapidjson::Value &node, T &value)
 
   T tmp;
 
-  for (uint i = 0; i < node.Size(); ++i) {
+  for (u32 i = 0; i < node.Size(); ++i) {
     const rapidjson::Value &element = node[i];
 
     if (!element.IsNumber()) {
@@ -124,8 +124,8 @@ bool read_matrix(const rapidjson::Value &node, T &value)
 
   T tmp;
 
-  for (uint col = 0; col < T::SIZE; ++col) {
-    for (uint row = 0; row < T::SIZE; ++row) {
+  for (u32 col = 0; col < T::SIZE; ++col) {
+    for (u32 row = 0; row < T::SIZE; ++row) {
       const rapidjson::Value &element = node[col * T::SIZE + row];
 
       if (!element.IsNumber()) {
@@ -213,7 +213,7 @@ void write_vector(const T &v, rapidjson::Value &node, Allocator &allocator)
 {
   node.SetArray();
 
-  for (uint i = 0; i < T::SIZE; ++i) {
+  for (u32 i = 0; i < T::SIZE; ++i) {
     node.PushBack(v[i], allocator);
   }
 }
@@ -223,8 +223,8 @@ void write_matrix(const T &m, rapidjson::Value &node, Allocator &allocator)
 {
   node.SetArray();
 
-  for (uint col = 0; col < T::SIZE; ++col) {
-    for (uint row = 0; row < T::SIZE; ++row) {
+  for (u32 col = 0; col < T::SIZE; ++col) {
+    for (u32 row = 0; row < T::SIZE; ++row) {
       node.PushBack(m[col][row], allocator);
     }
   }

@@ -6,15 +6,15 @@ namespace atom {
 
 //-----------------------------------------------------------------------------
 //
-// RawMesh Loader
+// Model Loader
 //
 //-----------------------------------------------------------------------------
 
-bool load_model(const String &filename, RawMesh &model);
+bool load_model(const String &filename, Model &model);
 
-uptr<RawMesh> load_model(const String &filename);
+uptr<Model> load_model(const String &filename);
 
-class RawMeshLoader : public Loader {
+class ModelLoader : public Loader {
 public:
   ResourcePtr create_resource(ResourceService &rs, const String &name) override;
 

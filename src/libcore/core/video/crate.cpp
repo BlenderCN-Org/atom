@@ -12,7 +12,7 @@
 #include "video_service.cpp"
 #include "texture_sampler.cpp"
 #include "gbuffer.cpp"
-#include "raw_mesh.cpp"
+#include "model.cpp"
 #include "shader.cpp"
 #include "technique.cpp"
 #include "uniforms.cpp"

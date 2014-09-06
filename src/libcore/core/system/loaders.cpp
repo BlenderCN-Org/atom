@@ -1,7 +1,7 @@
 #include "loaders.h"
 #include "../video/material.h"
 #include "../video/bitmap_font.h"
-#include "../video/raw_mesh.h"
+#include "../video/model.h"
 #include "../video/mesh.h"
 #include "../audio/sound.h"
 #include "../audio/music.h"
@@ -308,14 +308,14 @@ MaterialLoader::~MaterialLoader()
 
 ResourcePtr MeshLoader::create_resource(ResourceService &rs, const String &name)
 {
-  RawMeshResourcePtr model_resource = rs.get_raw_mesh(name);
+  ModelResourcePtr model_resource = rs.get_model(name);
 
   if (model_resource == nullptr) {
     return nullptr;
   }
 
   uptr<Mesh> mesh(new Mesh());
-  load_mesh_from_model(rs, model_resource->raw_mesh(), *mesh);
+  load_mesh_from_model(rs, model_resource->model(), *mesh);
 
   sptr<MeshResource> resource = std::make_shared<MeshResource>();
   resource->set_name(make_resource_name(RESOURCE_MESH_TAG, name));
@@ -330,19 +330,19 @@ void MeshLoader::reload_resource(ResourceService &rs, Resource &resource)
   StringArray tokens = split_resource_name(resource.name());
 
   if (tokens.size() > 1) {
-    RawMeshResourcePtr model_resource = rs.get_raw_mesh(tokens[1]);
+    ModelResourcePtr model_resource = rs.get_model(tokens[1]);
 
     if (model_resource == nullptr) {
       return;
     }
 
     uptr<Mesh> mesh(new Mesh());
-    load_mesh_from_model(rs, model_resource->raw_mesh(), *mesh);
+    load_mesh_from_model(rs, model_resource->model(), *mesh);
     dynamic_cast<MeshResource &>(resource).set_data(std::move(mesh));
   }
 }
 
-void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model, Mesh &mesh)
+void MeshLoader::load_mesh_from_model(ResourceService &rs, const Model &model, Mesh &mesh)
 {
   const ElementArray *vertices = model.find_array("vertices");
   const ElementArray *normals = model.find_array("normals");
@@ -359,11 +359,11 @@ void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model,
   VideoBuffer normal_buffer(rs.video_service());
   VideoBuffer index_buffer(rs.video_service());
 
-  vertex_buffer.set_raw_data(vertices->data.get(), vertices->size);
-  index_buffer.set_raw_data(indices->data.get(), indices->size);
+  vertex_buffer.set_bytes(vertices->data.get(), vertices->size);
+  index_buffer.set_bytes(indices->data.get(), indices->size);
 
   if (normals != nullptr) {
-    normal_buffer.set_raw_data(normals->data.get(), normals->size);
+    normal_buffer.set_bytes(normals->data.get(), normals->size);
     mesh.add_stream(StreamId::NORMAL, std::move(normal_buffer));
   }
 
@@ -371,8 +371,8 @@ void MeshLoader::load_mesh_from_model(ResourceService &rs, const RawMesh &model,
     VideoBuffer bone_weight_buffer(rs.video_service());
     VideoBuffer bone_index_buffer(rs.video_service());
 
-    bone_weight_buffer.set_raw_data(&bone_weight->data[0], bone_weight->size);
-    bone_index_buffer.set_raw_data(&bone_index->data[0], bone_index->size);
+    bone_weight_buffer.set_bytes(&bone_weight->data[0], bone_weight->size);
+    bone_index_buffer.set_bytes(&bone_index->data[0], bone_index->size);
 
     mesh.add_stream(StreamId::BINDEX, std::move(bone_index_buffer));
     mesh.add_stream(StreamId::BWEIGHT, std::move(bone_weight_buffer));

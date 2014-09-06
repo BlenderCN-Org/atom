@@ -6,7 +6,7 @@
 #include "../noncopyable.h"
 #include "../string.h"
 #include "../utils/json_utils.h"
-#include "../video/raw_mesh.h"
+#include "../video/model.h"
 #include "../log.h"
 #include "resources.h"
 
@@ -118,7 +118,7 @@ public:
   void reload_resource(ResourceService &rs, Resource &resource) override;
 
 private:
-  static void load_mesh_from_model(ResourceService &rs, const RawMesh &model, Mesh &mesh);
+  static void load_mesh_from_model(ResourceService &rs, const Model &model, Mesh &mesh);
 };
 
 

@@ -8,7 +8,7 @@
 #include "../audio/music.h"
 #include "../video/mesh.h"
 #include "../video/bitmap_font.h"
-#include "raw_mesh_loader.h"
+#include "model_loader.h"
 #include "loaders.h"
 #include "config.h"
 
@@ -19,7 +19,7 @@ struct ResourceLoaders {
   TextureLoader    texture;
   MaterialLoader   material;
   TechniqueLoader  technique;
-  RawMeshLoader    raw_mesh;
+  ModelLoader      model;
   MeshLoader       mesh;
   BitmapFontLoader bitmap_font;
   SoundLoader      sound;
@@ -186,9 +186,9 @@ MaterialResourcePtr ResourceService::get_material(const String &name)
   return find_or_load_resource<MaterialResource>(*this, name, RESOURCE_MATERIAL_TAG, my_loaders->material);
 }
 
-RawMeshResourcePtr ResourceService::get_raw_mesh(const String &name)
+ModelResourcePtr ResourceService::get_model(const String &name)
 {
-  return find_or_load_resource<RawMeshResource>(*this, name, RESOURCE_MODEL_TAG, my_loaders->raw_mesh);
+  return find_or_load_resource<ModelResource>(*this, name, RESOURCE_MODEL_TAG, my_loaders->model);
 }
 
 MeshResourcePtr ResourceService::get_mesh(const String &name)

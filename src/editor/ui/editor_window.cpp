@@ -152,7 +152,7 @@ bool load_from_file(const QString &filename, Core &core, World &world)
 
   const rapidjson::Value &entities = doc["entities"];
 
-  uint count = entities.Size();
+  u32 count = entities.Size();
 
   log::debug(DEBUG_EDITOR_LOAD, "Loading entities (%u)", count);
 

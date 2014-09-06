@@ -3,19 +3,14 @@
 #include <cstdint>
 
 #if defined(__GNUC__) || defined(__clang__)
-#  define ATOM_FUNC_NAME __PRETTY_FUNCTION__
+  #define ATOM_FUNC_NAME __PRETTY_FUNCTION__
 #elif defined(_MSC_VER)
-#  define ATOM_FUNC_NAME __FUNCSIG__
+  #define ATOM_FUNC_NAME __FUNCSIG__
 #else
-#error Unsupported compiler
+  #error Unsupported compiler
 #endif
 
 namespace atom {
-
-typedef uint32_t Index;
-
-typedef unsigned uint;
-typedef float float32_t;
 
 typedef   int8_t  i8;
 typedef  uint8_t  u8;
@@ -50,7 +45,6 @@ const i8  I8_MIN  = -I8_MAX  - 1;
 const i16 I16_MIN = -I16_MAX - 1;
 const i32 I32_MIN = -I32_MAX - 1;
 const i64 I64_MIN = -I64_MAX - 1;
-
 
 static_assert(I8_MIN  < I8_MAX , "Min has to be smaller than max");
 static_assert(I16_MIN < I16_MAX, "Min has to be smaller than max");

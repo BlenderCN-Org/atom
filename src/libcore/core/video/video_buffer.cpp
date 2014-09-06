@@ -24,27 +24,7 @@ VideoBuffer::~VideoBuffer()
   glDeleteBuffers(1, &my_gl_buffer);
 }
 
-void VideoBuffer::set_data(const Vec2f *array, size_t count)
-{
-  set_raw_data(reinterpret_cast<const void *>(array), count * sizeof(Vec2f));
-}
-
-void VideoBuffer::set_data(const Vec2fArray &array)
-{
-  set_data(array.data(), array.size());
-}
-
-void VideoBuffer::set_data(const Vec3f *array, size_t count)
-{
-  set_raw_data(reinterpret_cast<const void *>(array), count * sizeof(Vec3f));
-}
-
-void VideoBuffer::set_data(const Vec3fArray &array)
-{
-  set_data(array.data(), array.size());
-}
-
-void VideoBuffer::set_raw_data(const void *data, size_t size)
+void VideoBuffer::set_bytes(const void *data, u32 size)
 {
   assert(data != nullptr);
   assert(size > 0);
@@ -55,9 +35,24 @@ void VideoBuffer::set_raw_data(const void *data, size_t size)
   my_vs.unbind_array_buffer();
 }
 
-int VideoBuffer::size() const
+void VideoBuffer::set_data(const Vec2f *array, size_t count)
 {
-  return my_size;
+  set_bytes(reinterpret_cast<const void *>(array), count * sizeof(Vec2f));
+}
+
+void VideoBuffer::set_data(const Vec2fArray &array)
+{
+  set_data(array.data(), array.size());
+}
+
+void VideoBuffer::set_data(const Vec3f *array, size_t count)
+{
+  set_bytes(reinterpret_cast<const void *>(array), count * sizeof(Vec3f));
+}
+
+void VideoBuffer::set_data(const Vec3fArray &array)
+{
+  set_data(array.data(), array.size());
 }
 
 }

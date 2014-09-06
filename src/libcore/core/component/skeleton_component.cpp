@@ -1,16 +1,17 @@
 #include "skeleton_component.h"
 #include "../world/entity.h"
 #include "../log.h"
-#include "../video/raw_mesh.h"
+#include "../video/model.h"
 #include "../system/resource_service.h"
+#include "../system/resources.h"
 
 namespace atom {
 
-SkeletonComponent::SkeletonComponent(const String &mesh)
+SkeletonComponent::SkeletonComponent()
   : Component(ComponentType::SKELETON)
-  , my_mesh_name(mesh)
+  , my_model(this)
 {
-  assert(!mesh.empty() && "Mesh name must be provided");
+  // empty
 }
 
 Slice<Mat4f> SkeletonComponent::get_transforms() const
@@ -40,21 +41,23 @@ Bone* SkeletonComponent::find_bone(const String &name)
 
 void SkeletonComponent::activate()
 {
-  RawMeshResourcePtr mesh = core().resource_service().get_raw_mesh(my_mesh_name);
+  ModelResourcePtr resource  = my_model->get_model();
 
-  if (mesh == nullptr) {
-    log::warning("Can't find mesh for skeleton");
+  if (resource == nullptr) {
+    log::warning("Can't find model for skeleton");
     return;
   }
 
-  i32 count = mesh->raw_mesh().bones.size();
+  const Model &model = resource->model();
+
+  i32 count = model.bones.size();
   log::info("Found %i bones", count);
 
   my_transforms.clear();
   my_transforms.resize(count, Mat4f());
   my_bones.clear();
 
-  for (const DataBone &bone : mesh->raw_mesh().bones) {
+  for (const DataBone &bone : model.bones) {
     Bone b;
     b.name = bone.name;
     b.local_head = bone.local_head;
@@ -74,7 +77,7 @@ void SkeletonComponent::deactivate()
 
 uptr<Component> SkeletonComponent::clone() const
 {
-  return uptr<Component>(new SkeletonComponent(my_mesh_name));
+  return uptr<Component>(new SkeletonComponent());
 }
 
 Mat4f SkeletonComponent::calculate_bone_matrix(const Bone &bone) const

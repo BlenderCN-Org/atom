@@ -1,4 +1,5 @@
 #include "component.cpp"
+#include "model_component.cpp"
 #include "render_component.cpp"
 #include "mesh_component.cpp"
 #include "material_component.cpp"

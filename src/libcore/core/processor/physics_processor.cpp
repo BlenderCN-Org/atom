@@ -137,7 +137,7 @@ void PhysicsProcessor::debug_render()
     indices.push_back(i);
   }
 
-  index_buffer.set_raw_data(indices.data(), indices.size() * sizeof(u32));
+  index_buffer.set_bytes(indices.data(), indices.size() * sizeof(u32));
 
   Uniforms &u = my_vs.get_uniforms();
   u.transformations.model = Mat4f();

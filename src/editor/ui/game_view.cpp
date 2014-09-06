@@ -100,7 +100,7 @@ void GameView::dropEvent(QDropEvent *event)
       log::debug(DEBUG_EDITOR, "Drop event %s", object_type.toLatin1().data());
 
       bool ok = false;
-      uint index = object_type.toLatin1().toInt(&ok);
+      int index = object_type.toLatin1().toInt(&ok);
 
       if (index >= application().core().entity_creators().size()) {
         log::warning("Invalid object index %i, max index is %i", index,

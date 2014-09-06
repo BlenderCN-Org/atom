@@ -176,12 +176,18 @@ def check_required_linux_libs(ctx):
     :type ctx: waflib.Configure.ConfigurationContext
     :param ctx: configuration context
     """
-    ctx.check_cxx(uselib_store='ogg', header_name='ogg/ogg.h', lib=['ogg'])
-    ctx.check_cxx(uselib_store='vorbisfile', header_name='vorbis/vorbisfile.h', lib=['vorbisfile'])
-    ctx.check_cxx(uselib_store='png', header_name='libpng/png.h', lib=['png'])
-    ctx.check_cxx(uselib_store='SDL', header_name='SDL/SDL.h', lib=['SDL'])
-    ctx.check_cxx(uselib_store='pthread', header_name='pthread.h', lib=['pthread'])
-    ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h', lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
+    ctx.check_cxx(uselib_store='SDL', header_name='SDL/SDL.h',
+        lib=['SDL'])
+    ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h',
+        lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
+    ctx.check_cxx(uselib_store='vorbisfile', header_name='vorbis/vorbisfile.h',
+        lib=['vorbisfile'])
+    ctx.check_cxx(uselib_store='ogg', header_name='ogg/ogg.h',
+        lib=['ogg'])
+    ctx.check_cxx(uselib_store='png', header_name='libpng/png.h',
+        lib=['png'])
+    ctx.check_cxx(uselib_store='pthread', header_name='pthread.h',
+        lib=['pthread'])
 
     if 'MY_BUILD_TESTS' in ctx.env:
         ctx.check_cxx(uselib_store='gtest', header_name='gtest/gtest.h', lib=['gtest_main', 'gtest'], use=['pthread'])
@@ -193,11 +199,17 @@ def check_required_windows_libs(ctx):
     :type ctx: waflib.Configure.ConfigurationContext
     :param ctx: configuration context
     """
-    ctx.check_cxx(lib=['libogg'], uselib_store='ogg', header_name='ogg/ogg.h')
-    ctx.check_cxx(lib=['libvorbisfile', 'libvorbis'], uselib_store='vorbisfile', header_name='vorbis/vorbisfile.h')
-    ctx.check_cxx(lib=['SDL'], uselib_store='SDL', header_name='SDL/SDL.h')
-    ctx.check_cxx(lib=['libpng16'], uselib_store='png', header_name='png.h')
-    ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h', lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
+    ctx.check_cxx(uselib_store='SDL', header_name='SDL/SDL.h',
+        lib=['SDL'])
+    ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h',
+        lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
+    ctx.check_cxx(uselib_store='vorbisfile', header_name='vorbis/vorbisfile.h',
+        lib=['libvorbisfile'])
+    ctx.check_cxx(uselib_store='ogg', header_name='ogg/ogg.h',
+        lib=['libogg'])
+    ctx.check_cxx(uselib_store='png', header_name='png.h',
+        lib=['libpng16'])
+
 
 
 #------------------------------------------------------------------------------

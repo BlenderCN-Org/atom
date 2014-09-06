@@ -1,10 +1,10 @@
-#include "raw_mesh.h"
+#include "model.h"
 #include <algorithm>
 #include "../log.h"
 
 namespace atom {
 
-bool RawMesh::add_array(const String &name, Type type, uptr<u8[]> &&data, u32 size)
+bool Model::add_array(const String &name, Type type, uptr<u8[]> &&data, u32 size)
 {
   uptr<ElementArray> array(new ElementArray());
   array->name = name;
@@ -16,7 +16,7 @@ bool RawMesh::add_array(const String &name, Type type, uptr<u8[]> &&data, u32 si
   return true;
 }
 
-const ElementArray* RawMesh::find_array(const String &name) const
+const ElementArray* Model::find_array(const String &name) const
 {
   auto found = std::find_if(my_arrays.begin(), my_arrays.end(),
     [&name](const uptr<ElementArray> &array) { return array->name == name; });

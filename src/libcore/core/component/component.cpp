@@ -5,6 +5,16 @@
 
 namespace atom {
 
+void Component::activate()
+{
+  // empty
+}
+
+void Component::deactivate()
+{
+  // empty
+}
+
 Component::Component(ComponentType type)
   : my_type(type)
   , my_entity(nullptr)

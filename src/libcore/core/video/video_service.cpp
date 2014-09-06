@@ -352,7 +352,7 @@ void VideoService::bind_write_framebuffer(Framebuffer &framebuffer, bool verify)
   // vytvor z bitovej masky color attachment-ov pole draw buffers
   std::vector<GLenum> draw_buffers;
   unsigned color_attachments = framebuffer.color_attachments();
-  for (uint i = 0; i < sizeof(unsigned) * 8; ++i) {
+  for (u32 i = 0; i < sizeof(u32) * 8; ++i) {
     if (color_attachments & (1 << i))
       draw_buffers.push_back(GL_COLOR_ATTACHMENT0 + i);
   }
