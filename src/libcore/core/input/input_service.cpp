@@ -111,7 +111,7 @@ InputService::~InputService()
 void InputService::poll()
 {
   // clear key edge state
-  for (uint i = 0; i < to_size(Key::COUNT); ++i) {
+  for (u32 i = 0; i < to_size(Key::COUNT); ++i) {
     my_keys[i].up = false;
     my_keys[i].down = false;
   }

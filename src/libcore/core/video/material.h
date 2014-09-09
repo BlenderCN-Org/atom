@@ -9,6 +9,9 @@
 
 namespace atom {
 
+//FlatSkin vertices, weight, bones, indices
+//PhongSkin vertices, normals, bones, indices
+
 class Material : private NonCopyable {
 public:
   Material()
@@ -29,35 +32,73 @@ public:
 
 typedef sptr<Material> MaterialPtr;
 
-//-----------------------------------------------------------------------------
-//
-// Flat Material
-//
-//-----------------------------------------------------------------------------
 
-class FlatMaterial : public Material {
+//
+// Lines Material - vertices, color
+//
+
+class LinesMaterial : public Material {
 public:
   static uptr<Material> create(ResourceService &rs);
 
-  FlatMaterial(const TechniqueResourcePtr &shader);
+  LinesMaterial(const TechniqueResourcePtr &shader);
 
-  ~FlatMaterial();
+  ~LinesMaterial();
 
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
 
   TechniqueResourcePtr my_shader;
-
   Vec3f color;
 
   META_DECLARE_CLASS;
 };
 
 
-//-----------------------------------------------------------------------------
 //
-// Phong Material
+// Flat Material - vertices, indices, color
 //
-//-----------------------------------------------------------------------------
+
+class FlatMaterial : public Material {
+public:
+  static uptr<Material> create(ResourceService &rs);
+  
+  FlatMaterial(const TechniqueResourcePtr &shader);
+  
+  ~FlatMaterial();
+  
+  void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
+  
+  TechniqueResourcePtr my_shader;
+  Vec3f color;
+  
+  META_DECLARE_CLASS;
+};
+
+
+//
+// WireframeMaterial - vertices, indices, color
+//
+
+class WireframeMaterial : public Material {
+public:
+  static uptr<Material> create(ResourceService &rs);
+  
+  WireframeMaterial(const TechniqueResourcePtr &shader);
+  
+  ~WireframeMaterial();
+  
+  void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
+  
+  TechniqueResourcePtr my_shader;
+  Vec3f color;
+  
+  META_DECLARE_CLASS;
+};
+
+
+//
+// PhongMaterial - vertices, normals, indices
+//
 
 class PhongMaterial : public Material {
 public:
@@ -78,19 +119,18 @@ private:
 };
 
 
-//-----------------------------------------------------------------------------
 //
-// Skin Material similar to phong but with bones
+// FlatSkinMaterial - flat shading + animated by bones
+//                  - vertices, weight, bones, indices
 //
-//-----------------------------------------------------------------------------
 
-class SkinMaterial : public Material {
+class FlatSkinMaterial : public Material {
 public:
   static uptr<Material> create(ResourceService &rs);
 
-  SkinMaterial(const TechniqueResourcePtr &shader);
+  FlatSkinMaterial(const TechniqueResourcePtr &shader);
 
-  ~SkinMaterial();
+  ~FlatSkinMaterial();
 
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
 

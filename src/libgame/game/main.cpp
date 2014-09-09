@@ -22,6 +22,7 @@ class SkeletonBodyScript : public ScriptComponent {
   Slot<ModelComponent>    my_model;
   Slot<SkeletonComponent> my_skeleton;
   Slot<MeshComponent>     my_mesh;
+  Slot<RenderComponent>   my_render;
   std::vector<Vec3f>      my_vertices;
   std::vector<Vec3f>      my_last_vertices;
   MeshResourcePtr         my_mesh_resource;
@@ -38,6 +39,7 @@ public:
     : my_model(this)
     , my_skeleton(this)
     , my_mesh(this)
+    , my_render(this)
     , my_is_initialized(false)
     , my_mesh_vertices(nullptr)
   {
@@ -71,6 +73,7 @@ public:
       my_mesh_vertices = mesh->vertex.get();
       my_mesh_vertices->set_bytes(vertice_array->data.get(), vertice_array->size);
       my_mesh->set_mesh(my_mesh_resource);
+      my_render->set_enabled(true);
     }
 
 
@@ -226,6 +229,7 @@ uptr<Entity> create_manual_monster(World &world, Core &core)
   uptr<MeshComponent> mesh(new MeshComponent(MeshComponentMode::MANUAL));
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<RenderComponent> render(new RenderComponent());
+  render->set_enabled(false);
   uptr<ScriptComponent> skeleton_script(new MonsterScript());
   uptr<SkeletonBodyScript> script(new SkeletonBodyScript());
   entity->add_component(std::move(model));
@@ -266,7 +270,7 @@ uptr<Entity> create_suzanne(World &world, Core &core)
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
   uptr<ModelComponent> model(new ModelComponent("suzzane"));
-  uptr<MaterialComponent> material(new MaterialComponent("test2"));
+  uptr<MaterialComponent> material(new MaterialComponent("flat"));
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
   entity->add_component(std::move(model));

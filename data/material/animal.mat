@@ -1,6 +1,6 @@
 {
-  "type" : "skin",
-  "shader" : "skin",
+  "type" : "flat_skin",
+  "shader" : "flat_skin",
   "color" : [ 1, 0, 0 ],
   "face" : "front"
 }

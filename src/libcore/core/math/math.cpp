@@ -70,7 +70,7 @@ Vec4f plane_from_vertices(
 
 f32 intersect(const Slice<Vec3f> &vertices, const Slice<u32> &indices, const Ray &ray, u32 &index)
 {
-
+  return -1;
 }
 
 }

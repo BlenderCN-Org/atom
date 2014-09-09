@@ -133,9 +133,20 @@ void VideoService::draw(const DrawCommand &command)
   if (command.draw == DrawType::TRIANGLES) {
     draw_index_array(GL_TRIANGLES, *command.indices, command.indices->size() / sizeof(u32));
   } else if (command.draw == DrawType::LINES) {
-    draw_index_array(GL_LINES, *command.indices, command.indices->size() / sizeof(u32));
+    if (command.indices != nullptr) {
+      not_tested();
+      draw_index_array(GL_LINES, *command.indices, command.indices->size() / sizeof(u32));
+    } else {
+      draw_arrays(GL_LINES, 0, command.attributes[0]->size() / sizeof(Vec3f));
+    }
   } else {
     log::warning("DrawCommand is missing primitive type");
+  }
+  
+  for (u32 i = 0; i < MAX_ATTRIBUTES; ++i) {
+    if (command.attributes[i] != nullptr) {
+      unbind_attribute(i);
+    }
   }
 }
 

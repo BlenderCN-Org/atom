@@ -45,7 +45,7 @@ def options(ctx):
     """Define build options
     """
     ctx.load('compiler_c compiler_cxx qt4')
-    ctx.add_option('-t', '--type', action='store', default='normal', help='Build type debug/normal/release/profile')
+    ctx.add_option('-t', '--type', action='store', default='release', help='Build type debug/release/profile')
     ctx.add_option('--test', action='store', default='0', help='Build tests 0/1')
     ctx.add_option('--fonttool', action='store', default='0', help='Build fonttool 0/1')
 
@@ -158,7 +158,7 @@ def get_windows_params(type, ctx):
 
     if type == BuildType.DEBUG:
         ctx.env.append_unique('CXXFLAGS', ['/Zi', '/Od'])
-        ctx.env.append_unique('LINKFLAGS', ['/debug'])
+        ctx.env.append_unique('LINKFLAGS', ['/DEBUG'])
     else:
         ctx.env.append_unique('CXXFLAGS', ['/O2', '/Z7'])
 
@@ -204,7 +204,7 @@ def check_required_windows_libs(ctx):
     ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h',
         lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
     ctx.check_cxx(uselib_store='vorbisfile', header_name='vorbis/vorbisfile.h',
-        lib=['libvorbisfile'])
+        lib=['libvorbis', 'libvorbisfile'])
     ctx.check_cxx(uselib_store='ogg', header_name='ogg/ogg.h',
         lib=['libogg'])
     ctx.check_cxx(uselib_store='png', header_name='png.h',

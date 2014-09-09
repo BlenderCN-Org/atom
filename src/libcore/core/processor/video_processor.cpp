@@ -45,6 +45,10 @@ void VideoProcessor::render(const Camera &camera)
   my_vs.set_blending(BlendOperation::SRC_ALPHA, BlendOperation::ONE_MINUS_SRC_ALPHA);
 
   for (RenderComponent *component : my_components) {
+    if (!component->is_enabled()) {
+      continue;
+    }
+
     Entity &entity = component->entity();
 
     const MaterialResourcePtr &material = component->material();

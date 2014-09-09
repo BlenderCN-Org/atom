@@ -121,31 +121,20 @@ void PhysicsProcessor::debug_render()
     return;
   }
 
-  MaterialResourcePtr material = my_rs.get_material("wireframe");
+  MaterialResourcePtr material = my_rs.get_material("lines");
 
   Mesh mesh;
 
   uptr<VideoBuffer> vertex_buffer(new VideoBuffer(my_vs));
-  uptr<VideoBuffer> index_buffer(new VideoBuffer(my_vs));
-
-  vertex_buffer->set_data(lines.data(), lines.size());
-
-  std::vector<u32> indices;
-  indices.reserve(lines.size());
-
-  for (u32 i = 0; i < lines.size(); ++i) {
-    indices.push_back(i);
-  }
-
-  index_buffer->set_bytes(indices.data(), indices.size() * sizeof(u32));
+  vertex_buffer->set_bytes(lines.data(), lines.size() * sizeof(Vec3f));
 
   Uniforms &u = my_vs.get_uniforms();
   u.transformations.model = Mat4f();
   u.model = Mat4f();
+  u.mvp = u.transformations.model_view_projection();
   RenderContext context = { u, my_vs };
 
   mesh.vertex = std::move(vertex_buffer);
-  mesh.surface = std::move(index_buffer);
 
   material->material().draw_mesh(context, mesh);
 }

@@ -21,6 +21,7 @@ void RenderComponent::deactivate()
 uptr<Component> RenderComponent::clone() const
 {
   uptr<RenderComponent> component(new RenderComponent());
+  component->set_enabled(is_enabled());
   return std::move(component);
 }
 
@@ -28,6 +29,7 @@ RenderComponent::RenderComponent()
   : Component(ComponentType::RENDER)
   , my_material(this, "")
   , my_mesh(this, "")
+  , my_is_enabled(true)
 {
 }
 

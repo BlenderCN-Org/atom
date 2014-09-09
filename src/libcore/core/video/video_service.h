@@ -23,11 +23,14 @@ struct DrawCommand {
   DrawType     draw;
 
   DrawCommand()
-    : attributes{ nullptr }
-    , indices(nullptr)
+    : indices(nullptr)
     , program(nullptr)
     , draw(DrawType::NONE)
   {
+    for (u32 i = 0; i < MAX_ATTRIBUTES; ++i) {
+      attributes[i] = nullptr;
+      types[i] = Type::UNKNOWN;
+    }
     // empty
   }
 };

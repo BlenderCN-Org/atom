@@ -2,6 +2,7 @@ build/
 thirdparty/
 doxygen/
 __pycache__/
+cache/
 *.trace
 *.swp
 *.o

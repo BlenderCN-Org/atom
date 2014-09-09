@@ -291,9 +291,11 @@ String MaterialLoader::get_material_filename(const String &name)
 
 MaterialLoader::MaterialLoader()
 {
-  material_creators.push_back(MaterialCreator("flat"  , FlatMaterial::create));
+  material_creators.push_back(MaterialCreator("lines"    , LinesMaterial::create));
+  material_creators.push_back(MaterialCreator("flat"     , FlatMaterial::create));
+  material_creators.push_back(MaterialCreator("wireframe", WireframeMaterial::create));
   material_creators.push_back(MaterialCreator("phong" , PhongMaterial::create));
-  material_creators.push_back(MaterialCreator("skin"  , SkinMaterial::create));
+  material_creators.push_back(MaterialCreator("flat_skin"  , FlatSkinMaterial::create));
 }
 
 MaterialLoader::~MaterialLoader()

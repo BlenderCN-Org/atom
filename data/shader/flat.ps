@@ -1,10 +1,14 @@
 #version 410
 
+uniform vec3 sun_dir;
 uniform vec3 color;
+uniform vec3 ambient;
 
+in vec3 normal;
 out vec4 output;
 
 void main(void)
 {
-  output = vec4(color, 1);
+  float d = max(0, dot(sun_dir, normal));
+  output = vec4(color * d + ambient, 1);
 }
