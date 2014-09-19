@@ -43,12 +43,6 @@ bool check_gl_limits()
     return false;
   }
 
-  //QQQ
-//  if (!GLEW_ARB_shading_language_420pack) {
-//    error("ARB_shading_language_420pack not present");
-//    return false;
-//  }
-
   GLint gl_max_vertex_uniform_components = 0;
   GLint gl_max_geometry_uniform_components = 0;
   GLint gl_max_fragment_uniform_components = 0;

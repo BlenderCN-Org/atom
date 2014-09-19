@@ -68,9 +68,81 @@ Vec4f plane_from_vertices(
 //}
 
 
-f32 intersect(const Slice<Vec3f> &vertices, const Slice<u32> &indices, const Ray &ray, u32 &index)
+f32 intersect(const Ray &ray, const Slice<Vec3f> &vertices, const Slice<u32> &indices, u32 &index)
 {
   return -1;
+}
+
+bool intersect(const Ray &ray, const BoundingBox &box, f32 &tnear, f32 &tfar)
+{
+  f32 tmin, tmax, tymin, tymax, tzmin, tzmax;
+  // division here is used to handle -0, -inf correctly
+  f32 divx = 1 / ray.dir.x;
+  f32 divy = 1 / ray.dir.y;
+
+  if (divx >= 0) {
+    tmin = (box.xmin - ray.origin.x) * divx;
+    tmax = (box.xmax - ray.origin.x) * divx;
+  } else {
+    tmin = (box.xmax - ray.origin.x) * divx;
+    tmax = (box.xmin - ray.origin.x) * divx;
+  }
+  // y
+  if (divy >= 0) {
+    tymin = (box.ymin - ray.origin.y) * divy;
+    tymax = (box.ymax - ray.origin.y) * divy;
+  } else {
+    tymin = (box.ymax - ray.origin.y) * divy;
+    tymax = (box.ymin - ray.origin.y) * divy;
+  }
+
+  if ((tmin > tymax) || (tmax < tymin)) {
+    return false;
+  }
+  // z
+  f32 divz = 1 / ray.dir.z;
+
+  if (divz >= 0) {
+    tzmin = (box.zmin - ray.origin.z) * divz;
+    tzmax = (box.zmax - ray.origin.z) * divz;
+  } else {
+    tzmin = (box.zmax - ray.origin.z) * divz;
+    tzmax = (box.zmin - ray.origin.z) * divz;
+  }
+
+  tmin = max(tmin, tymin);
+  tmax = min(tmax, tymax);
+
+  if ((tmin > tzmax) || (tmax < tzmin)) {
+    return false;
+  }
+
+  tmin = max(tmin, tzmin);
+  tmax = min(tmax, tzmax);
+
+  tnear = tmin;
+  tfar = tmax;
+  return true;
+}
+
+f32 intersect(const Ray &ray, const BoundingBox &box)
+{
+  f32 tmin, tmax;
+  if (!intersect(ray, box, tmin, tmax)) {
+    return -1;
+  }
+
+  return tmin >= 0 ? tmin : -1;
+}
+
+void BoundingBox::extend(const Vec3f &v)
+{
+  xmin = min(v.x, xmin);
+  xmax = max(v.x, xmax);
+  ymin = min(v.y, ymin);
+  ymax = max(v.y, ymax);
+  zmin = min(v.z, zmin);
+  zmax = max(v.z, zmax);
 }
 
 }

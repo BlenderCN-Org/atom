@@ -63,8 +63,8 @@ public:
       my_is_initialized = true;
       Mesh *mesh = my_mesh_resource->data();
 
-      uptr<VideoBuffer> mesh_indices(new VideoBuffer(core().video_service()));
-      uptr<VideoBuffer> mesh_vertices(new VideoBuffer(core().video_service()));
+      uptr<VideoBuffer> mesh_indices(new VideoBuffer(core().video_service(), VideoBufferUsage::STATIC_DRAW));
+      uptr<VideoBuffer> mesh_vertices(new VideoBuffer(core().video_service(), VideoBufferUsage::DYNAMIC_DRAW));
 
       mesh_indices->set_bytes(index_array->data.get(), index_array->size);
 
@@ -115,7 +115,7 @@ public:
       const Vec3f v3 = (m3 * v * weight[3]).to_vec3();
       my_vertices.push_back(v0 + v1 + v2 + v3);
 
-      my_mesh_vertices->set_data(my_vertices.data(), my_vertices.size() * sizeof(Vec3f));
+      my_mesh_vertices->set_data(my_vertices.data(), my_vertices.size());
     }
   }
 };
@@ -142,7 +142,7 @@ public:
   {
     ++my_tick;
     f32 angle1 = my_tick / 10.0f;
-    f32 angle2 = sin(angle1) / 3;
+    f32 angle2 = sin(angle1) / 30;
 
     AxisAnglef aa;
     aa.axis = Vec3f(0, 0, 1);
@@ -212,6 +212,7 @@ uptr<Entity> create_monster(World &world, Core &core)
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<RenderComponent> render(new RenderComponent());
   uptr<ScriptComponent> script(new MonsterScript());
+  entity->set_bounding_box(BoundingBox(-20, 20, -20, 20, 0, 20));
   entity->add_component(std::move(model));
   entity->add_component(std::move(material));
   entity->add_component(std::move(mesh));
@@ -290,14 +291,6 @@ std::vector<EntityCreator> create_object_creators(Core &)
   creators.push_back(EntityCreator("ManualMonster", create_manual_monster));
   creators.push_back(EntityCreator("Ground", create_ground));
   creators.push_back(EntityCreator("Box", create_box));
-//  creators.push_back(EntityCreator("Box", game::create_box));
-//  creators.push_back(EntityCreator("Static Box", game::create_static_box));
-//  creators.push_back(EntityCreator("Platform", game::create_simple_static_platform));
-//  creators.push_back(EntityCreator("Moveable", game::MovingPlatform::create));
-//  creators.push_back(EntityCreator("FallingPlatform", game::FallingPlatform::create));
-//  creators.push_back(EntityCreator("Sticker", game::create_sticker));
-//  creators.push_back(EntityCreator("Automatic Camera", game::create_automatic_camera));
-//  creators.push_back(EntityCreator("Trampoline", game::Trampoline::create));
   return creators;
 }
 

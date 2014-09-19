@@ -13,10 +13,13 @@ void MonsterScript::update()
 {
   f32 t = (sin(world().time()) + 1) / 2;  // t = <0, 1>
   f32 t1 = sin(world().time());
-  f32 femur = t / 5;
+
+  entity().set_transform(Mat4f::rotation_z(t));
+
+//  f32 femur = t / 5;
   f32 tibia= t / 3;
   f32 radius = t / 3;
-  f32 humerus = t / 3;
+//  f32 humerus = t / 3;
 
 //  my_skeleton->find_bone("femur.R")->transform = Quatf::from_axis_angle(Vec3f::axis_y(), femur);
   my_skeleton->find_bone("head")->transform = Quatf::from_axis_angle(Vec3f::z_axis(), t1 / 3);

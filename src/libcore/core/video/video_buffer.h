@@ -7,6 +7,11 @@
 
 namespace atom {
 
+enum class VideoBufferUsage {
+  STATIC_DRAW,
+  DYNAMIC_DRAW
+};
+
 /**
  * OpenGL buffer object, tato trieda v konstruktore vytvori obecny OpenGL buffer.
  * Umoznuje aj nahravanie dat.
@@ -14,10 +19,11 @@ namespace atom {
 class VideoBuffer : NonCopyable {
   VideoService    &my_vs;
   u32              my_size;       ///< velkost dat v bytoch
+  VideoBufferUsage my_usage;
   GLuint           my_gl_buffer;
 
 public:
-  explicit VideoBuffer(VideoService &vs);
+  explicit VideoBuffer(VideoService &vs, VideoBufferUsage usage);
 
   VideoBuffer(VideoBuffer &&buffer);
 
@@ -45,6 +51,9 @@ public:
   void set_data(const Vec3f *array, size_t count);
 
   void set_data(const Vec3fArray &array);
+  
+private:
+  static GLenum get_gl_usage(VideoBufferUsage usage);
 };
 
 }

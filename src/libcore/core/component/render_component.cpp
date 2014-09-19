@@ -2,7 +2,7 @@
 #include "../system/resources.h"
 #include "../video/mesh_tree_node.h"
 #include "../world/world.h"
-#include "../processor/video_processor.h"
+#include "../processor/render_processor.h"
 #include "mesh_component.h"
 #include "material_component.h"
 

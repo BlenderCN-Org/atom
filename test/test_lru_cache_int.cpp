@@ -1,11 +1,10 @@
 #include <core/lru_cache.h>
+#include <core/platform.h>
 #include <gtest/gtest.h>
 #include <random>
-#include <limits>
 #include <array>
 
-using namespace atom;
-using namespace std;
+namespace atom {
 
 const int MAX_SIZE = 100;
 
@@ -13,7 +12,7 @@ class LRUCacheTestInt : public testing::Test {
 public:
   LRUCacheTestInt()
     : my_cache(MAX_SIZE)
-    , my_dist(0, numeric_limits<int>::max())
+    , my_dist(0, I32_MAX)
   {}
 
   int random_int()
@@ -28,8 +27,8 @@ protected:
   LRUCache<int, int> my_cache;
 
 private:
-  uniform_int_distribution<int> my_dist;
-  mt19937 my_gen;
+  std::uniform_int_distribution<i32> my_dist;
+  std::mt19937 my_gen;
 };
 
 TEST_F(LRUCacheTestInt, Emptyness)
@@ -38,8 +37,8 @@ TEST_F(LRUCacheTestInt, Emptyness)
 
   for (int i = 0; i < 1000; ++i) {
     auto iter = my_cache.find(random_int());
-    EXPECT_TRUE(end(my_cache) == iter);
-    EXPECT_TRUE(begin(my_cache) == iter);
+    EXPECT_TRUE(my_cache.end() == iter);
+    EXPECT_TRUE(my_cache.begin() == iter);
     EXPECT_EQ(0, my_cache.size());
   }
 }
@@ -50,12 +49,12 @@ TEST_F(LRUCacheTestInt, Fullness)
 
   my_cache.insert(1, 1);
   EXPECT_EQ(1, my_cache.size());
-  EXPECT_TRUE(begin(my_cache) == my_cache.find(1));
-  EXPECT_FALSE(end(my_cache) == my_cache.find(1));
+  EXPECT_TRUE(my_cache.begin() == my_cache.find(1));
+  EXPECT_FALSE(my_cache.end() == my_cache.find(1));
 
   // napln cache samymi 5
   for (int i = 0; i < 10 * MAX_SIZE; ++i) {
-    EXPECT_FALSE(end(my_cache) == my_cache.insert(random_int(), 5));
+    EXPECT_FALSE(my_cache.end() == my_cache.insert(random_int(), 5));
     EXPECT_GT(MAX_SIZE + 1, my_cache.size());
   }
 
@@ -68,30 +67,30 @@ TEST_F(LRUCacheTestInt, Fullness)
   for (int i = 0; i < 10 * MAX_SIZE; ++i) {
     int key = random_int();
     if (key < MAX_SIZE)
-      EXPECT_FALSE(end(my_cache) == my_cache.find(key));
+      EXPECT_FALSE(my_cache.end() == my_cache.find(key));
     else
-      EXPECT_TRUE(end(my_cache) == my_cache.find(key));
+      EXPECT_TRUE(my_cache.end() == my_cache.find(key));
   }
 
-  array<int, 10> test_keys;
-  array<int, 10> test_values;
+  std::array<int, 10> test_keys;
+  std::array<int, 10> test_values;
 
-  for (int i = 0; i < test_keys.size(); ++i) {
+  for (u32 i = 0; i < test_keys.size(); ++i) {
     test_keys[i] = random_int();
     test_values[i] = random_int();
 
-    EXPECT_TRUE(end(my_cache) != my_cache.insert(test_keys[i], test_values[i]));
+    EXPECT_TRUE(my_cache.end() != my_cache.insert(test_keys[i], test_values[i]));
   }
 
   ASSERT_EQ(MAX_SIZE, my_cache.size());
 
   // over vlozene hodnoty
-  for (int i = 0; i < test_keys.size(); ++i) {
-    ASSERT_TRUE(end(my_cache) != my_cache.find(test_keys[i]));
+  for (u32 i = 0; i < test_keys.size(); ++i) {
+    ASSERT_TRUE(my_cache.end() != my_cache.find(test_keys[i]));
     EXPECT_TRUE(test_values[i] == *my_cache.find(test_keys[i]));
   }
 
-  ASSERT_FALSE(begin(my_cache) == end(my_cache));
+  ASSERT_FALSE(my_cache.begin() == my_cache.end());
 }
 
 TEST_F(LRUCacheTestInt, IteratorTest)
@@ -100,12 +99,14 @@ TEST_F(LRUCacheTestInt, IteratorTest)
 
   for (int i = 0; i < 1000; ++i) {
     auto iter = my_cache.find(random_int());
-    EXPECT_TRUE(end(my_cache) == iter);
-    EXPECT_TRUE(begin(my_cache) == iter);
+    EXPECT_TRUE(my_cache.end() == iter);
+    EXPECT_TRUE(my_cache.begin() == iter);
     EXPECT_EQ(0, my_cache.size());
   }
 
   my_cache.clear();
 
-  ASSERT_TRUE(begin(my_cache) == end(my_cache));
+  ASSERT_TRUE(my_cache.begin() == my_cache.end());
+}
+
 }

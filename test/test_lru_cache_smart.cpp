@@ -1,11 +1,11 @@
 #include <core/lru_cache.h>
+#include <core/platform.h>
 #include <gtest/gtest.h>
 #include <random>
 #include <limits>
 #include <array>
 
-using namespace atom;
-using namespace std;
+namespace atom {
 
 /// @todo dopisat test s vyuzitim chytrych ukazovatelov (na test move semantiky)
 
@@ -15,7 +15,7 @@ class LRUCacheTestSmart : public testing::Test {
 public:
   LRUCacheTestSmart()
     : my_cache(MAX_SIZE)
-    , my_dist(0, numeric_limits<int>::max())
+    , my_dist(0, I32_MAX)
   {}
 
   int random_key()
@@ -30,11 +30,13 @@ protected:
   LRUCache<int, int> my_cache;
 
 private:
-  uniform_int_distribution<int> my_dist;
-  mt19937 my_gen;
+  std::uniform_int_distribution<i32> my_dist;
+  std::mt19937 my_gen;
 };
 
 TEST_F(LRUCacheTestSmart, Emptyness)
 {
   ASSERT_EQ(0, my_cache.size());
+}
+
 }

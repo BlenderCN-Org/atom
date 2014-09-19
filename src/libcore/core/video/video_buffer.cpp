@@ -2,9 +2,10 @@
 
 namespace atom {
 
-VideoBuffer::VideoBuffer(VideoService &vs)
+VideoBuffer::VideoBuffer(VideoService &vs, VideoBufferUsage usage)
   : my_vs(vs)
   , my_size(0)
+  , my_usage(usage)
   , my_gl_buffer(0)
 {
   glGenBuffers(1, &my_gl_buffer);
@@ -13,6 +14,7 @@ VideoBuffer::VideoBuffer(VideoService &vs)
 VideoBuffer::VideoBuffer(VideoBuffer &&buffer)
   : my_vs(buffer.my_vs)
   , my_size(buffer.my_size)
+  , my_usage(buffer.my_usage)
   , my_gl_buffer(buffer.my_gl_buffer)
 {
   buffer.my_size = 0;
@@ -31,7 +33,7 @@ void VideoBuffer::set_bytes(const void *data, u32 size)
   // skopiruj data do OpenGL
   my_size = size;
   my_vs.bind_array_buffer(*this);
-  glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, size, data, get_gl_usage(my_usage));
   my_vs.unbind_array_buffer();
 }
 
@@ -53,6 +55,21 @@ void VideoBuffer::set_data(const Vec3f *array, size_t count)
 void VideoBuffer::set_data(const Vec3fArray &array)
 {
   set_data(array.data(), array.size());
+}
+
+GLenum VideoBuffer::get_gl_usage(VideoBufferUsage usage)
+{
+  switch (usage) {
+    case VideoBufferUsage::DYNAMIC_DRAW:
+      return GL_DYNAMIC_DRAW;
+
+    case VideoBufferUsage::STATIC_DRAW:
+      return GL_STATIC_DRAW;
+
+    default:
+      log::error("Unknown video buffer usage %i", usage);
+      return GL_STATIC_DRAW;
+  }
 }
 
 }

@@ -4,20 +4,16 @@
 #include "../foundation.h"
 #include "processor.h"
 
-// Bullet forward declarations
-class btDefaultCollisionConfiguration;
-class btCollisionDispatcher;
-struct btDbvtBroadphase;
-class btSequentialImpulseConstraintSolver;
-class btDiscreteDynamicsWorld;
-
 namespace atom {
 
 class BoxColliderComponent;
 class SphereColliderComponent;
 class MeshColliderComponent;
 
-class PhysicsDebugDrawer;
+
+//
+// PhysicsProcessor
+//
 
 class PhysicsProcessor : public Processor {
   VideoService                         &my_vs;
@@ -28,7 +24,6 @@ class PhysicsProcessor : public Processor {
   uptr<btDbvtBroadphase>                my_broadphase;
   uptr<btSequentialImpulseConstraintSolver> my_solver;
   uptr<btDiscreteDynamicsWorld>         my_world;
-  uptr<PhysicsDebugDrawer>              my_debug_drawer;
   std::vector<RigidBodyComponent *>     my_bodies;
 
 public:
@@ -41,10 +36,10 @@ public:
 
   void start() override;
 
-  void debug_render();
-
   void register_rigid_body(RigidBodyComponent *rigid_body);
   void unregister_rigid_body(RigidBodyComponent *rigid_body);
+
+  btDiscreteDynamicsWorld& bt_world() const;
 };
 
 }

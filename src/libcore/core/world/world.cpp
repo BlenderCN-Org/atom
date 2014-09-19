@@ -2,9 +2,10 @@
 
 #include <algorithm>
 #include "update_context.h"
-#include "../processor/video_processor.h"
+#include "../processor/render_processor.h"
 #include "../processor/physics_processor.h"
 #include "../processor/script_processor.h"
+#include "../processor/debug_processor.h"
 
 namespace atom {
 
@@ -51,11 +52,12 @@ void World::remove_entity(const sptr<Entity> &entity)
 
 sptr<Entity> World::find_entity(const Vec2f &point) const
 {
-  for (const sptr<Entity> &entity : my_entities) {
-    if (contains(entity->bounding_box(), point)) {
-      return entity;
-    }
-  }
+  not_implemented();
+//  for (const sptr<Entity> &entity : my_entities) {
+//    if (contains(entity->bounding_box(), point)) {
+//      return entity;
+//    }
+//  }
 
   return nullptr;
 }
@@ -72,28 +74,16 @@ sptr<Entity> World::find_entity(const String &id) const
 void World::wake_up()
 {
   my_is_live = true;
-//  for (const sptr<Entity> &entity : my_entities) {
-//    entity->wake_up();
-//  }
   my_processors.physics->start();
   my_processors.script->start();
+  my_processors.debug->start();
 }
 
 void World::step()
 {
-  for (const sptr<Entity> &entity : my_entities) {
-    entity->update_bounding_box();
-  }
-
-  // @todo update entity bounding box
-//  if (my_is_live)   {
-//    for (const sptr<Entity> &entity : my_entities) {
-//      entity->update();
-//    }
-//  }
-
   my_processors.physics->poll();
   my_processors.script->poll();
+  my_processors.debug->poll();
 
   if (my_is_live) {
     ++my_tick;
@@ -103,6 +93,11 @@ void World::step()
 const EntityVector& World::objects() const
 {
   return my_entities;
+}
+
+Slice<sptr<Entity> > World::all_entities() const
+{
+  return Slice<sptr<Entity>>(my_entities.data(), my_entities.size());
 }
 
 void World::clear()
@@ -132,7 +127,7 @@ sptr<World> World::clone() const
   return world;
 }
 
-const WorldProcessorsRef &World::processors() const
+const WorldProcessorsRef& World::processors() const
 {
   assert(my_processors_ref != nullptr);
   return *my_processors_ref;
@@ -153,19 +148,18 @@ void World::set_camera(const Camera &camera)
   my_camera = camera;
 }
 
-void World::debug_draw()
-{
-  log::warning("No debug draw");
-}
-
 void World::init_processors()
 {
-  my_processors.video.reset(new VideoProcessor(my_core.video_service(), my_core.resource_service()));
-  my_processors.physics.reset(new PhysicsProcessor(my_core.video_service(), my_core.resource_service()));
+  my_processors.video.reset(new RenderProcessor(my_core.video_service(),
+    my_core.resource_service()));
+  my_processors.physics.reset(new PhysicsProcessor(my_core.video_service(),
+    my_core.resource_service()));
   my_processors.script.reset(new ScriptProcessor());
+  my_processors.debug.reset(new DebugProcessor(my_core.video_service(),
+    my_core.resource_service(), *this));
 
-  my_processors_ref.reset(new WorldProcessorsRef(*my_processors.video, *my_processors.physics,
-    *my_processors.script));
+  my_processors_ref.reset(new WorldProcessorsRef(*my_processors.video,
+    *my_processors.physics, *my_processors.script, *my_processors.debug));
 }
 
 }

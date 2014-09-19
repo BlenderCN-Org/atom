@@ -1,0 +1,7 @@
+src/libcore
+src/libgame
+src/editor
+src/runner
+/usr/include/qt4/QtCore
+/usr/include/qt4/QtGui
+/usr/include/qt4/QtOpenGL

@@ -9,7 +9,7 @@ namespace atom {
 
 typedef std::vector<RenderComponent *> RenderComponentArray;
 
-class VideoProcessor : private NonCopyable {
+class RenderProcessor : private NonCopyable {
   VideoService        &my_vs;
   ResourceService     &my_rs;
   GBuffer              my_gbuffer;
@@ -17,8 +17,8 @@ class VideoProcessor : private NonCopyable {
   RenderComponentArray my_components;
 
 public:
-  VideoProcessor(VideoService &vs, ResourceService &rs);
-  ~VideoProcessor();
+  RenderProcessor(VideoService &vs, ResourceService &rs);
+  ~RenderProcessor();
 
   void set_resolution(int width, int height);
 

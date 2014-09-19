@@ -17,10 +17,7 @@ cache/
 *.blend1
 gmon.out
 moc*cxx
-atom.config
-atom.creator*
-atom.files
-atom.includes
+atom.creator.*
 *.patch
 .waf-*
 waf3*

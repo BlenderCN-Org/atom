@@ -9,6 +9,7 @@ Zavislosti:
 
 TODO:
  - pridat do ScriptComponent metodu init/on_init
+ - pridat do Processoru pristup na Core Service-s
  - delete Vec2Array... or replace by Slice
  - allow Entity without ModelComponent, just MeshComponent
  - proper clone method, Component attributes are not copied

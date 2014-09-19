@@ -47,7 +47,8 @@ inline GLenum framebuffer_target_to_gl(FramebufferTarget target)
   return static_cast<GLenum>(target);
 }
 
-const u32 TEXTURE_UNIT_COUNT = 8; ///QQQ ziskat z opengl a este pridat sampler_count
+///QQQ ziskat hodnotu z opengl a este pridat sampler_count
+const u32 TEXTURE_UNIT_COUNT = 8;
 const u32 TEXTURE_SAMPLER_COUNT = 8;
 
 enum class DrawFace {

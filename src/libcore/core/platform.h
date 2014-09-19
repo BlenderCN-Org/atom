@@ -38,15 +38,20 @@ static_assert(sizeof(f64) == 8, "Incorrect size of f64");
 //static_assert(sizeof(GLint) == sizeof(int32_t), "Pravdepodobne GLint by mal mat 32 bitov, rovnako ako int32_t");
 //static_assert(sizeof(GLuint) == sizeof(uint32_t), "Pravdepodobne GLint by mal mat 32 bitov, rovnako ako int32_t");
 
-const i8   I8_MAX =  127;
-const i16 I16_MAX =  32767;
-const i32 I32_MAX =  2147483647;
-const i64 I64_MAX =  9223372036854775807L;
+const i8   I8_MAX = 127;
+const i16 I16_MAX = 32767;
+const i32 I32_MAX = 2147483647;
+const i64 I64_MAX = 9223372036854775807L;
+const f32 F32_MAX = 1e37;
+const f64 F64_MAX = 1e37;
+
 
 const i8  I8_MIN  = -I8_MAX  - 1;
 const i16 I16_MIN = -I16_MAX - 1;
 const i32 I32_MIN = -I32_MAX - 1;
 const i64 I64_MIN = -I64_MAX - 1;
+const f32 F32_MIN = 1e-37;
+const f64 F64_MIN = 1e-37;
 
 static_assert(I8_MIN  < I8_MAX , "Min has to be smaller than max");
 static_assert(I16_MIN < I16_MAX, "Min has to be smaller than max");

@@ -1,10 +1,8 @@
 #include <gtest/gtest.h>
-#include <core/math/mat.h>
-#include <core/math/quaternion.h>
+#include <core/math/math.h>
 #include <core/utils/utils.h>
 
-using namespace atom;
-using namespace atom::utils;
+namespace atom {
 
 constexpr float ERROR = 0.001f;
 
@@ -245,4 +243,6 @@ TEST(QuaternionTest, QuaternionRotation)
   EXPECT_VEC3F_NEAR(Quatf(z_axis), rotate(qrz, z_axis));
 
   /// @todo test other rotations
+}
+
 }

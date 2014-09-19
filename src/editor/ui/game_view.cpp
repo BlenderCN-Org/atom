@@ -5,8 +5,9 @@
 #include <core/math/camera.h>
 #include <core/math/math.h>
 #include <core/system/resource_service.h>
-#include <core/processor/video_processor.h>
+#include <core/processor/render_processor.h>
 #include <core/processor/physics_processor.h>
+#include <core/processor/debug_processor.h>
 #include <core/video/draw_service.h>
 #include <core/utils/utils.h>
 #include <core/world/world.h>
@@ -21,7 +22,7 @@ namespace editor {
 
 GameView::GameView(const QGLFormat &format, QWidget *parent)
   : QGLWidget(format, parent)
-  , my_state(State::NORMAL)
+  , my_state(GameViewState::NORMAL)
   , my_navigation(true)
 {
   makeCurrent();
@@ -100,7 +101,7 @@ void GameView::dropEvent(QDropEvent *event)
       log::debug(DEBUG_EDITOR, "Drop event %s", object_type.toLatin1().data());
 
       bool ok = false;
-      int index = object_type.toLatin1().toInt(&ok);
+      u32 index = object_type.toLatin1().toInt(&ok);
 
       if (index >= application().core().entity_creators().size()) {
         log::warning("Invalid object index %i, max index is %i", index,
@@ -145,7 +146,7 @@ void GameView::mouseMoveEvent(QMouseEvent *event)
   event->accept();
   QPoint delta = event->pos() - my_last_mouse_pos;
 
-  if (my_state == State::LOOKING) {
+  if (my_state == GameViewState::LOOKING) {
     if (delta == my_ignore_mouse_move) {
       return;
     }
@@ -155,6 +156,8 @@ void GameView::mouseMoveEvent(QMouseEvent *event)
 
     my_ignore_mouse_move = event->pos() - mapFromGlobal(my_cursor_pos);
     QCursor::setPos(my_cursor_pos);
+
+    find_entity_in_center();
   }
 }
 
@@ -165,7 +168,7 @@ void GameView::mousePressEvent(QMouseEvent *event)
   my_last_mouse_pos = event->pos();
 
   if (event->button() == Qt::RightButton) {
-    if (my_state == State::NORMAL) {
+    if (my_state == GameViewState::NORMAL) {
       switch_state_to_looking();
     }
   }
@@ -212,8 +215,7 @@ void GameView::paintGL()
 
   core.video_service().disable_depth_test();
 
-
-  my_world->processors().physics.debug_render();
+  my_world->processors().debug.draw();
 
   core.video_service().enable_depth_test();
 
@@ -261,25 +263,55 @@ Vec2f GameView::widget_to_world(const QPoint &pos) const
 
 void GameView::switch_state_to_normal()
 {
-  if (my_state == State::NORMAL) {
+  if (my_state == GameViewState::NORMAL) {
     return;
   }
 
   releaseMouse();
   QCursor::setPos(my_cursor_pos);
-  my_state = State::NORMAL;
+  my_state = GameViewState::NORMAL;
 
 }
 
 void GameView::switch_state_to_looking()
 {
-  if (my_state == State::LOOKING) {
+  if (my_state == GameViewState::LOOKING) {
     return;
   }
 
   my_cursor_pos = QCursor::pos();
   grabMouse(QCursor(Qt::BlankCursor));
-  my_state = State::LOOKING;
+  my_state = GameViewState::LOOKING;
+}
+
+void GameView::find_entity_in_center()
+{
+  Slice<sptr<Entity>> entities = my_world->all_entities();
+  f32 tnearest = F32_MAX;
+
+  Entity *nearest = nullptr;
+
+
+  for (const sptr<Entity> entity : entities) {
+    const BoundingBox &box = entity->bounding_box();
+    Mat4f transform = entity->transform().inverted();
+    Vec3f origin = transform * my_camera.get_position();
+    Vec3f dir = transform * my_camera.get_front();
+    Ray ray(origin, dir);
+
+    f32 t = intersect(ray, box);
+
+    if (t >= 0 && t < tnearest) {
+      tnearest = t;
+      nearest = entity.get();
+    }
+  }
+
+  static int count = 0;
+
+  if (nearest != nullptr) {
+    log::info("Neareset entity %i, id %s", count++, nearest->id().c_str());
+  }
 }
 
 }

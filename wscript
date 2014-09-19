@@ -10,7 +10,7 @@ Usage:
  waf configure build
  waf configure -t debug --test=1 build
  waf configure -t release --fonttool=1
- CXX=clang waf configure build
+ CC=clang CXX=clang++ waf configure build
  ...
 
 Notes:
@@ -45,9 +45,9 @@ def options(ctx):
     """Define build options
     """
     ctx.load('compiler_c compiler_cxx qt4')
-    ctx.add_option('-t', '--type', action='store', default='release', help='Build type debug/release/profile')
-    ctx.add_option('--test', action='store', default='0', help='Build tests 0/1')
-    ctx.add_option('--fonttool', action='store', default='0', help='Build fonttool 0/1')
+    ctx.add_option('-t', '--type', action='store', default='debug', help='build type debug/release/profile')
+    ctx.add_option('--test', action='store', default='0', help='build and run tests 0/1')
+    ctx.add_option('--fonttool', action='store', default='0', help='build fonttool 0/1')
 
 
 def configure(ctx):
@@ -56,6 +56,11 @@ def configure(ctx):
     Configure compile flags for 'core' lib (CORE), ???
     """
     ctx.load('compiler_c compiler_cxx qt4')
+
+    # suppress 'deprecated register storage class' warning under clang
+    if 'clang++' in ctx.env.CXX:
+        ctx.env.append_unique('CCFLAGS', '-Wno-deprecated-register')
+        ctx.env.append_unique('CXXFLAGS', '-Wno-deprecated-register')
 
     type = BuildType.DEBUG
 
@@ -68,10 +73,10 @@ def configure(ctx):
 
 
     if str_to_bool(ctx.options.test):
-        ctx.env.append_unique('MY_BUILD_TESTS', ['1'])
+        ctx.env.append_unique('ATOM_BUILD_TESTS', ['1'])
 
     if ctx.options.fonttool != '0':
-        ctx.env.append_unique('MY_BUILD_FONTTOOL', ['1'])
+        ctx.env.append_unique('ATOM_BUILD_FONTTOOL', ['1'])
 
     if is_linux():
         get_linux_params(type, ctx)
@@ -100,10 +105,10 @@ def build(ctx):
     #build_starter(ctx)
     build_editor(ctx)
 
-    if 'MY_BUILD_FONTTOOL' in ctx.env:
+    if 'ATOM_BUILD_FONTTOOL' in ctx.env:
         build_fonttool(ctx)
 
-    if 'MY_BUILD_TESTS' in ctx.env:
+    if 'ATOM_BUILD_TESTS' in ctx.env:
         build_tests(ctx)
 
 
@@ -189,7 +194,7 @@ def check_required_linux_libs(ctx):
     ctx.check_cxx(uselib_store='pthread', header_name='pthread.h',
         lib=['pthread'])
 
-    if 'MY_BUILD_TESTS' in ctx.env:
+    if 'ATOM_BUILD_TESTS' in ctx.env:
         ctx.check_cxx(uselib_store='gtest', header_name='gtest/gtest.h', lib=['gtest_main', 'gtest'], use=['pthread'])
 
 
@@ -219,7 +224,7 @@ def check_required_windows_libs(ctx):
 #------------------------------------------------------------------------------
 
 def build_flext_lib(ctx):
-    """Build small flextGL library"""
+    """build small flextGL library"""
     #filter = 'src/**/crate.cpp'
     ctx.stlib(
       name='flext',
@@ -291,11 +296,12 @@ def build_fonttool(ctx):
 
 def build_tests(ctx):
     ctx.program(
-      name='test',
-      target='test',
+      name='test_libcore',
+      target='test_libcore',
       features='test',
-      source=ctx.path.ant_glob('src/tests/**/*.cpp'),
-      includes=['src'],
+      source=ctx.path.ant_glob('test/**/*.cpp'),
+      includes=['src/libcore'],
+      lib=['GL'],
       use=['core', 'gtest', 'pthread']
     )
     from waflib.Tools import waf_unit_test
@@ -310,7 +316,7 @@ def build_tests(ctx):
 
 
 def str_to_bool(value):
-    """Convert string value to bool
+    """convert string value to bool
 
     :type value: str
     :param value: '1' means True, other values means False

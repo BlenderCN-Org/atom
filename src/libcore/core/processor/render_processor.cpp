@@ -1,4 +1,4 @@
-#include "video_processor.h"
+#include "render_processor.h"
 
 #include <algorithm>
 #include "../system/resource_service.h"
@@ -10,29 +10,29 @@
 
 namespace atom {
 
-VideoProcessor::VideoProcessor(VideoService &vs, ResourceService &rs)
+RenderProcessor::RenderProcessor(VideoService &vs, ResourceService &rs)
   : my_vs(vs)
   , my_rs(rs)
   , my_gbuffer(vs)
 {
 }
 
-VideoProcessor::~VideoProcessor()
+RenderProcessor::~RenderProcessor()
 {
   // empty
 }
 
-void VideoProcessor::set_resolution(int width, int height)
+void RenderProcessor::set_resolution(int width, int height)
 {
   my_gbuffer.set_resolution(width, height);
 }
 
-MeshTree* VideoProcessor::mesh_tree()
+MeshTree* RenderProcessor::mesh_tree()
 {
   return &my_mesh_tree;
 }
 
-void VideoProcessor::render(const Camera &camera)
+void RenderProcessor::render(const Camera &camera)
 {
   //  my_pc.start("Rendering");
   GL_ERROR_GUARD;
@@ -80,18 +80,18 @@ void VideoProcessor::render(const Camera &camera)
   //  my_pc.stop("Rendering");
 }
 
-GBuffer& VideoProcessor::get_gbuffer()
+GBuffer& RenderProcessor::get_gbuffer()
 {
   return my_gbuffer;
 }
 
-void VideoProcessor::register_component(RenderComponent *component)
+void RenderProcessor::register_component(RenderComponent *component)
 {
   assert(component != nullptr);
   my_components.push_back(component);
 }
 
-void VideoProcessor::unregister_component(RenderComponent *component)
+void RenderProcessor::unregister_component(RenderComponent *component)
 {
   assert(component != nullptr);
   my_components.erase(std::remove(my_components.begin(), my_components.end(),

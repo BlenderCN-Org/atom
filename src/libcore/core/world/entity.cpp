@@ -14,12 +14,13 @@ META_DEFINE_FIELDS(Entity) {
 
 META_DEFINE_ROOT_CLASS(Entity, "Entity");
 
-Entity::Entity(World &world, Core &core, f32 width, f32 height)
+Entity::Entity(World &world, Core &core)
   : my_world(world)
   , my_core(core)
+  , my_bounding_box(-1, 1, -1, 1, -1, 1)
 {
   META_INIT();
-  init(width, height);
+  init();
 }
 
 Entity::~Entity()
@@ -29,6 +30,7 @@ Entity::~Entity()
 uptr<Entity> Entity::clone(World &world) const
 {
   uptr<Entity> entity(new Entity(world, core()));
+  entity->set_bounding_box(my_bounding_box);
 
   for (const uptr<Component> &component : my_components) {
     uptr<Component> duplicate = component->duplicate();
@@ -69,12 +71,6 @@ void Entity::set_id(const String &id)
   my_id = id;
 }
 
-void Entity::set_size(f32 width, f32 height)
-{
-  my_width = width;
-  my_height = height;
-}
-
 const Mat4f& Entity::transform() const
 {
   return my_transform;
@@ -83,14 +79,26 @@ const Mat4f& Entity::transform() const
 void Entity::set_transform(const Mat4f &transform)
 {
   my_transform = transform;
+  update_aabb();
 }
 
-void Entity::update_bounding_box()
+const BoundingBox& Entity::bounding_box() const
 {
-//  my_bounding_box = BoundingBox::from_params(my_position, my_width, my_height);
+  return my_bounding_box;
 }
 
-const String &Entity::class_name() const
+void Entity::set_bounding_box(const BoundingBox &box)
+{
+  my_bounding_box = box;
+  update_aabb();
+}
+
+const BoundingBox& Entity::aabb() const
+{
+  return my_aabb;
+}
+
+const String& Entity::class_name() const
 {
   return my_class;
 }
@@ -103,16 +111,6 @@ void Entity::set_class_name(const String &class_name)
 World& Entity::world() const
 {
   return my_world;
-}
-
-BoundingBox Entity::bounding_box() const
-{
-  return my_bounding_box;
-}
-
-bool Entity::is_live() const
-{
-  return my_state == State::RUNNING;
 }
 
 Core& Entity::core() const
@@ -142,14 +140,35 @@ Component* Entity::find_component(ComponentType type, const String &name)
   return found != my_components.end() ? found->get() : nullptr;
 }
 
-void Entity::init(f32 width, f32 height, const Vec3f &position, f32 rotation)
+void Entity::init(const Vec3f &position, f32 rotation)
 {
   my_state = State::NEW;
-  my_width = width;
-  my_height = height;
   my_class = "Base class";
   my_transform = Mat4f();
   META_INIT();
+}
+
+void Entity::update_aabb()
+{
+  my_aabb = BoundingBox();
+  const BoundingBox &box = my_bounding_box;
+  Vec3f xmin_ymin_zmin = Vec3f(box.xmin, box.ymin, box.zmin);
+  Vec3f xmax_ymin_zmin = Vec3f(box.xmax, box.ymin, box.zmin);
+  Vec3f xmin_ymax_zmin = Vec3f(box.xmin, box.ymax, box.zmin);
+  Vec3f xmax_ymax_zmin = Vec3f(box.xmax, box.ymax, box.zmin);
+  Vec3f xmin_ymin_zmax = Vec3f(box.xmin, box.ymin, box.zmax);
+  Vec3f xmax_ymin_zmax = Vec3f(box.xmax, box.ymin, box.zmax);
+  Vec3f xmin_ymax_zmax = Vec3f(box.xmin, box.ymax, box.zmax);
+  Vec3f xmax_ymax_zmax = Vec3f(box.xmax, box.ymax, box.zmax);
+
+  my_aabb.extend(my_transform * xmin_ymin_zmin);
+  my_aabb.extend(my_transform * xmax_ymin_zmin);
+  my_aabb.extend(my_transform * xmin_ymax_zmin);
+  my_aabb.extend(my_transform * xmax_ymax_zmin);
+  my_aabb.extend(my_transform * xmin_ymin_zmax);
+  my_aabb.extend(my_transform * xmax_ymin_zmax);
+  my_aabb.extend(my_transform * xmin_ymax_zmax);
+  my_aabb.extend(my_transform * xmax_ymax_zmax);
 }
 
 }

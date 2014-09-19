@@ -12,8 +12,25 @@ const f32 CAMERA_VIEW_WIDTH =  100;
 const f32 CAMERA_VIEW_XMIN  = -CAMERA_VIEW_WIDTH / 2.0f;
 const f32 CAMERA_VIEW_XMAX  =  CAMERA_VIEW_WIDTH / 2.0f;
 
+enum class GameViewState {
+  NORMAL,
+  LOOKING ///< RMB down + mouse move
+};
+
 class GameView : public QGLWidget {
   Q_OBJECT
+
+  GameViewState      my_state;
+  bool               my_navigation;
+  Mat4f              my_projection;
+  BasicCamera        my_camera;
+  QPoint             my_last_mouse_pos;
+  sptr<World>        my_world;
+  sptr<Entity>       my_current_object;
+  sptr<MeshTreeNode> my_origin_node;
+  Vec2f              my_drag_start_pos;
+  QPoint             my_cursor_pos;
+  QPoint             my_ignore_mouse_move;
 public:
   GameView(const QGLFormat &format, QWidget *parent = nullptr);
   ~GameView();
@@ -50,11 +67,6 @@ private slots:
   void unload();
 
 private:
-  enum class State {
-    NORMAL,
-    LOOKING ///< RMB down + mouse move
-  };
-
   Core& core();
 
   Vec2f widget_to_world(const QPoint &pos) const;
@@ -63,18 +75,7 @@ private:
 
   void switch_state_to_looking();
 
-private:
-  State              my_state;
-  bool               my_navigation;
-  Mat4f              my_projection;
-  BasicCamera        my_camera;
-  QPoint             my_last_mouse_pos;
-  sptr<World>        my_world;
-  sptr<Entity>       my_current_object;
-  sptr<MeshTreeNode> my_origin_node;
-  Vec2f              my_drag_start_pos;
-  QPoint             my_cursor_pos;
-  QPoint             my_ignore_mouse_move;
+  void find_entity_in_center();
 };
 
 }

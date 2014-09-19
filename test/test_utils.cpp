@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <core/utils/utils.h>
 
-using namespace atom;
+namespace atom {
 
 constexpr char DELIM = ':';
 
@@ -42,4 +42,6 @@ TEST(SplitStringTest, SplitComplexDelimEndedString)
   ASSERT_EQ("Foo", tokens[1]);
   ASSERT_EQ("Hi", tokens[2]);
   ASSERT_EQ("", tokens[3]);
+}
+
 }

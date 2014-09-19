@@ -29,9 +29,17 @@ typedef std::vector<GenericSlot *> SlotArray;
  *  - detach
  *  - duplicate
  *
+ *  - (v)init
  *  - (v)activate
  *  - (v)deactivate
+ *  - (v)terminate
  *  - (v)clone
+ * 
+ * Lifecycle:
+ *  - init (Entity has been put into world)
+ *  - activate (World has been activated)
+ *  - deactivate (World has been deactivated, finished)
+ *  - terminate (Entity is going to be removed from World)
  *
  * Properties of component:
  *  - constructor with no parameters

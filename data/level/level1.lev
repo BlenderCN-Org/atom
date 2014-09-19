@@ -1,7 +1,7 @@
 {
     "entities": [
         {
-            "id": "",
+            "id": "testobject",
             "class": "TestObject",
             "transform": [
                 1,
@@ -23,7 +23,7 @@
             ]
         },
         {
-            "id": "",
+            "id": "monster",
             "class": "Monster",
             "transform": [
                 1,
@@ -45,7 +45,7 @@
             ]
         },
         {
-        "id": "",
+        "id": "manualmonster",
         "class": "ManualMonster",
         "transform": [
         1,
@@ -89,7 +89,7 @@
             ]
         },
         {
-            "id": "",
+            "id": "box",
             "class": "Box",
             "transform": [
                 1,

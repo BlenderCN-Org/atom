@@ -103,12 +103,88 @@ T lerp(T x, T min, T max)
 struct Ray {
   Vec3f origin;
   Vec3f dir;
+
+  Ray() = default;
+
+  Ray(const Vec3f &o, const Vec3f &d)
+    : origin(o)
+    , dir(d)
+  {
+  }
 };
 
 /**
  * Calculate nearest intersection of ray and triangle mesh.
  */
-f32 intersect(const Slice<Vec3f> &vertices, const Slice<u32> &indices,
-  const Ray &ray, u32 &index);
+f32 intersect(const Ray &ray, const Slice<Vec3f> &vertices,
+  const Slice<u32> &indices, u32 &index);
+
+
+struct BoundingBox {
+  f32 xmin;
+  f32 xmax;
+  f32 ymin;
+  f32 ymax;
+  f32 zmin;
+  f32 zmax;
+
+  BoundingBox()
+    : xmin(1)
+    , xmax(-1)
+    , ymin(1)
+    , ymax(-1)
+    , zmin(1)
+    , zmax(-1)
+  {
+  }
+
+  BoundingBox(f32 x0, f32 x1, f32 y0, f32 y1, f32 z0, f32 z1)
+    : xmin(x0)
+    , xmax(x1)
+    , ymin(y0)
+    , ymax(y1)
+    , zmin(z0)
+    , zmax(z1)
+  {
+  }
+
+  bool is_null() const
+  {
+    return xmin > xmax;
+  }
+
+  void extend(const Vec3f &v);
+};
+
+/**
+ * Get intersection of a line (infinite endpoints) and box.
+ * @param[out] tnear nearest intersect point (on intersect)
+ * @param[out] tfar
+ * @return true when line intersects the box
+ */
+bool intersect(const Ray &ray, const BoundingBox &box, f32 &tnear, f32 &tfar);
+
+/**
+ * Get neareset intersection. Ray starts at origin (t=0) and extends to infinity.
+ *
+ * @return >=0 nearest intersection, negative value means no intersection
+ */
+f32 intersect(const Ray &ray, const BoundingBox &box);
+
+//bool contains(const BoundingBox &box, const Vec2f &point)
+//{
+//  return (point.x >= box.left) && (point.x <= box.right) &&
+//         (point.y >= box.bottom) && (point.y <= box.top);
+//}
+
+//bool collide(const BoundingBox &a, const BoundingBox &b)
+//{
+//  if (a.left > b.right || a.top < b.bottom || a.right < b.left || a.bottom > b.top) {
+//    return false;
+//  }
+
+//  return true;
+//}
+
 
 }

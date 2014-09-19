@@ -12,7 +12,7 @@ namespace atom {
 
 DrawService::DrawService(VideoService &vs, ResourceService &rs)
   : my_vs(vs)
-  , my_cross_vertices(vs)
+  , my_cross_vertices(vs, VideoBufferUsage::STATIC_DRAW)
 {
   init_cross();
 }
@@ -35,10 +35,10 @@ void DrawService::draw_primitive_rect(
     uv[0], uv[2], uv[3]
   };
 
-  VideoBuffer vertex_buffer(my_vs);
+  VideoBuffer vertex_buffer(my_vs, VideoBufferUsage::STATIC_DRAW);
   vertex_buffer.set_data(triangle_vertices, 6);
 
-  VideoBuffer uv_buffer(my_vs);
+  VideoBuffer uv_buffer(my_vs, VideoBufferUsage::STATIC_DRAW);
   uv_buffer.set_data(triangle_uv, 6);
 
   my_vs.bind_attribute(0, vertex_buffer, Type::VEC3F);

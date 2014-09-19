@@ -353,27 +353,27 @@ void MeshLoader::load_mesh_from_model(ResourceService &rs, const Model &model, M
   const ElementArray *bone_weight = model.find_array("bone_weight", Type::F32);
 
   if (vertices != nullptr) {
-    mesh.vertex.reset(new VideoBuffer(rs.video_service()));
+    mesh.vertex.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));
     mesh.vertex->set_bytes(vertices->data.get(), vertices->size);
   }
 
   if (normals != nullptr) {
-    mesh.normal.reset(new VideoBuffer(rs.video_service()));
+    mesh.normal.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));
     mesh.normal->set_bytes(normals->data.get(), normals->size);
   }
 
   if (indices != nullptr) {
-    mesh.surface.reset(new VideoBuffer(rs.video_service()));
+    mesh.surface.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));
     mesh.surface->set_bytes(indices->data.get(), indices->size);
   }
 
   if (bone_weight != nullptr) {
-    mesh.bone_weight.reset(new VideoBuffer(rs.video_service()));
+    mesh.bone_weight.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));
     mesh.bone_weight->set_bytes(bone_weight->data.get(), bone_weight->size);
   }
 
   if (bone_index != nullptr) {
-    mesh.bone_index.reset(new VideoBuffer(rs.video_service()));
+    mesh.bone_index.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));
     mesh.bone_index->set_bytes(bone_index->data.get(), bone_index->size);
   }
 }

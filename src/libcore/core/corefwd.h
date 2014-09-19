@@ -3,6 +3,10 @@
 #include "ptr.h"
 #include "platform.h"
 
+/**
+ * This file contains forward declarations of all engine classes/structs plus
+ * some useful forward declaration from 3rd party libraries (at the end of file).
+ */
 namespace atom {
 
 // video
@@ -119,9 +123,10 @@ class GenericSlot;
 // component utils
 class AbstractLink;
 
-class VideoProcessor;
+class RenderProcessor;
 class PhysicsProcessor;
 class ScriptProcessor;
+class DebugProcessor;
 
 // math
 class TransformationStack;
@@ -129,3 +134,15 @@ struct Transformations;
 struct Camera;
 
 }
+
+
+//
+// 3rd party forward declarations
+//
+
+// Bullet physics forward declarations
+class btDefaultCollisionConfiguration;
+class btCollisionDispatcher;
+struct btDbvtBroadphase;
+class btSequentialImpulseConstraintSolver;
+class btDiscreteDynamicsWorld;

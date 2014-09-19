@@ -1,2 +1,2 @@
-#include "main.cpp"
+#include "game.cpp"
 #include "monster.cpp"

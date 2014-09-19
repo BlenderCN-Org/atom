@@ -131,11 +131,6 @@ void Core::do_init(InitMode mode)
     return;
   }
 
-//  GLenum result = glewInit();QQQ
-//  if (result != GLEW_OK) {
-//    error("Can't initialize GLEW: %s\n", glewGetErrorString(result));
-//  }
-
   init_services();
 
   my_is_initialized = true;

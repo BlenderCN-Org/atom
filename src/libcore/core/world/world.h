@@ -17,21 +17,25 @@ typedef std::vector<sptr<Entity>> EntityVector;
 
 /// processory pre jednotlive komponenty
 struct WorldProcessors {
-  uptr<VideoProcessor>   video;
+  uptr<RenderProcessor>  video;
   uptr<PhysicsProcessor> physics;
-  uptr<ScriptProcessor> script;
+  uptr<ScriptProcessor>  script;
+  uptr<DebugProcessor>   debug;
 };
 
 /// referencie na processory, umoznuju pohodlny pristup pomocou jednej metody processors()
 struct WorldProcessorsRef {
-  VideoProcessor   &video;
+  RenderProcessor  &video;
   PhysicsProcessor &physics;
-  ScriptProcessor &script;
+  ScriptProcessor  &script;
+  DebugProcessor   &debug;
 
-  WorldProcessorsRef(VideoProcessor &vp, PhysicsProcessor &pp, ScriptProcessor &sp)
+  WorldProcessorsRef(RenderProcessor &vp, PhysicsProcessor &pp,
+    ScriptProcessor &sp, DebugProcessor &dp)
     : video(vp)
     , physics(pp)
     , script(sp)
+    , debug(dp)
   {
     // empty
   }
@@ -60,6 +64,8 @@ public:
 //  MeshTree& mesh_tree();
 
   const EntityVector& objects() const;
+
+  Slice<sptr<Entity>> all_entities() const;
 
   void clear();
 
