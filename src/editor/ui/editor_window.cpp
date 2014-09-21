@@ -11,10 +11,11 @@
 #include <core/audio/audio_service.h>
 #include <core/system/resource_service.h>
 #include <core/utils/json_utils.h>
+#include <core/processor/debug_processor.h>
+#include "ui_editor_window.h"
 #include "../log.h"
 #include "../ui/game_view.h"
 #include "../ui/entity_list.h"
-#include "ui_editor_window.h" //QQQ
 #include "../editor_application.h"
 #include "../ui_utils.h"
 
@@ -303,6 +304,11 @@ void EditorWindow::switch_mode(EditorWindow::Mode mode)
       my_ui->undo_view_dock->setVisible(my_dock_visibility.undo_view);
 
       my_game_view->set_world(application().world());
+
+      if (my_clone != nullptr) {
+        my_clone->deactivate();
+      }
+
       my_clone.reset();
       my_game_view->setMouseTracking(false);
       my_game_view->releaseMouse();
@@ -328,7 +334,7 @@ void EditorWindow::switch_mode(EditorWindow::Mode mode)
       my_ui->undo_view_dock->setVisible(false);
 
       my_clone = application().world()->clone();
-      my_clone->wake_up();
+      my_clone->activate();
 //      my_clone->set_camera(camera);
       my_game_view->set_world(my_clone);
 //      my_game_view->set_navigation(false);
@@ -357,9 +363,9 @@ void EditorWindow::switch_mode(EditorWindow::Mode mode)
 
 void EditorWindow::init_menu_view()
 {
-  my_ui->menu_view->addAction(my_ui->entity_list_dock->toggleViewAction());
-  my_ui->menu_view->addAction(my_ui->entity_edit_dock->toggleViewAction());
-  my_ui->menu_view->addAction(my_ui->undo_view_dock->toggleViewAction());
+  my_ui->menu_panels->addAction(my_ui->entity_list_dock->toggleViewAction());
+  my_ui->menu_panels->addAction(my_ui->entity_edit_dock->toggleViewAction());
+  my_ui->menu_panels->addAction(my_ui->undo_view_dock->toggleViewAction());
 }
 
 void EditorWindow::init_game_view()
@@ -495,7 +501,6 @@ bool EditorWindow::eventFilterMouseMove(QMouseEvent &event)
   application().core().input_service().push_event(
     make_mouse_event(delta.x() / 100.0f, -delta.y() / 100.0f));
 
-  //QQQ send mouse event to the engine
   center_cursor(*my_game_view);
   return true;
 }
@@ -511,6 +516,21 @@ void EditorWindow::on_action_run_triggered()
   } else {
     log::error("Unknown editor mode");
   }
+}
+
+void EditorWindow::on_action_show_physics_triggered(bool checked)
+{
+  application().world()->processors().debug.set_debug(DebugCategory::PHYSICS, checked);
+}
+
+void EditorWindow::on_action_show_bounding_box_triggered(bool checked)
+{
+  application().world()->processors().debug.set_debug(DebugCategory::BOUNDING_BOX, checked);
+}
+
+void EditorWindow::on_action_show_aabb_triggered(bool checked)
+{
+  application().world()->processors().debug.set_debug(DebugCategory::AABB, checked);
 }
 
 void EditorWindow::load()

@@ -123,6 +123,7 @@ class GenericSlot;
 // component utils
 class AbstractLink;
 
+class Processor;
 class RenderProcessor;
 class PhysicsProcessor;
 class ScriptProcessor;

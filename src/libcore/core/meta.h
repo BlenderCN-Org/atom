@@ -3,8 +3,6 @@
 #include <cstddef>
 #include "platform.h"
 
-//QQQ komentar pre meta a types
-
 namespace atom {
 
 //

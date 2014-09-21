@@ -41,12 +41,32 @@ struct WorldProcessorsRef {
   }
 };
 
+enum class WorldState {
+  UNITIALIZED,
+  INITIALIZED,
+  ACTIVATED,
+  DEACTIVATED,
+  TERMINATED
+};
+
 class World {
+  Core                     &my_core;
+  WorldState                my_state;
+  bool                      my_is_live;
+  uint64_t                  my_tick;
+  Camera                    my_camera;
+  std::vector<Processor *>  my_processor_table;
+  WorldProcessors           my_processors;
+  uptr<WorldProcessorsRef>  my_processors_ref;
+  std::vector<sptr<Entity>> my_entities;
+
 public:
   static sptr<World> create(Core &core);
 
   World(Core &core);
   ~World();
+
+  Core& core() const;
 
   void add_entity(const sptr<Entity> &object);
 
@@ -56,7 +76,11 @@ public:
 
   sptr<Entity> find_entity(const String &id) const;
 
-  void wake_up();
+  bool is_activte() const;
+
+  void activate();
+
+  void deactivate();
 
   /// vykonaj jeden simulacny krok (1 krok = 1s / FPS)
   void step();
@@ -87,20 +111,19 @@ public:
 
   void post_at_time(sptr<Runnable> runnable, double time);
 
+  void register_processor(Processor *processor);
+
+  void unregister_processor(Processor *processor);
+
 private:
   /**
    * Inicializuj jednotlive procesory (a inicializuj referencie na ne).
    */
   void init_processors();
 
-private:
-  Core                     &my_core;
-  bool                      my_is_live;
-  uint64_t                  my_tick;
-  Camera                    my_camera;
-  WorldProcessors           my_processors;
-  uptr<WorldProcessorsRef>  my_processors_ref;
-  std::vector<sptr<Entity>> my_entities;
+  void init();
+
+  void terminate();
 };
 
 }

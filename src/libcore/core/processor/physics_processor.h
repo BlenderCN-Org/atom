@@ -15,9 +15,7 @@ class MeshColliderComponent;
 // PhysicsProcessor
 //
 
-class PhysicsProcessor : public Processor {
-  VideoService                         &my_vs;
-  ResourceService                      &my_rs;
+class PhysicsProcessor : public NullProcessor {
   bool                                  my_is_running;
   uptr<btDefaultCollisionConfiguration> my_configuration;
   uptr<btCollisionDispatcher>           my_dispatcher;
@@ -27,14 +25,14 @@ class PhysicsProcessor : public Processor {
   std::vector<RigidBodyComponent *>     my_bodies;
 
 public:
-  PhysicsProcessor(VideoService &vs, ResourceService &rs);
+  PhysicsProcessor(World &world);
   ~PhysicsProcessor();
 
   uptr<BoxColliderComponent> create_box_collider();
 
-  void poll() override;
+  void activate() override;
 
-  void start() override;
+  void poll() override;
 
   void register_rigid_body(RigidBodyComponent *rigid_body);
   void unregister_rigid_body(RigidBodyComponent *rigid_body);

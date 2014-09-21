@@ -136,7 +136,7 @@ void VideoService::draw(const DrawCommand &command)
   } else {
     log::warning("DrawCommand is missing primitive type");
   }
-  
+
   for (u32 i = 0; i < MAX_ATTRIBUTES; ++i) {
     if (command.attributes[i] != nullptr) {
       unbind_attribute(i);
@@ -244,9 +244,9 @@ void VideoService::bind_attribute(u32 index, const VideoBuffer &buffer, Type typ
       glVertexAttribPointer(index, 4, GL_FLOAT, GL_FALSE, 0, 0);
       break;
 
-      //QQQ bacha na int, int vyzaduje volanie glVertexAttribIPointer!!!
     case Type::U32:
-//      glVertexAttribIPointer(index, 1, GL_UNSIGNED_INT, GL_FALSE, 0, 0);
+      // glVertexAttribPointer is intended for float attributes
+      // glVertexAttribIPointer is intended for integer attributes
       glVertexAttribIPointer(index, 1, GL_UNSIGNED_INT, 0, 0);
       break;
 

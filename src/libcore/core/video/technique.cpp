@@ -265,7 +265,7 @@ bool Technique::get_shader_uniform_info(GLuint gl_program, GLuint index,
     return false;
   }
 
-  log::info("Uniform info %s, type=%i, size=%i", name, type, size);
+//  log::info("Uniform info %s, type=%i, size=%i", name, type, size);
   uniform.type = uniform_type;
   uniform.name = name;
   uniform.gl_location = location;

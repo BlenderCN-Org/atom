@@ -6,6 +6,7 @@
 #include "../processor/physics_processor.h"
 #include "../processor/script_processor.h"
 #include "../processor/debug_processor.h"
+#include "../utils/utils.h"
 
 namespace atom {
 
@@ -16,15 +17,23 @@ sptr<World> World::create(Core &core)
 
 World::World(Core &core)
   : my_core(core)
+  , my_state(WorldState::UNITIALIZED)
   , my_is_live(false)
   , my_tick(0)
 {
   init_processors();
+  init();
 }
 
 World::~World()
 {
   clear();
+  terminate();
+}
+
+Core& World::core() const
+{
+  return my_core;
 }
 
 void World::add_entity(const sptr<Entity> &entity)
@@ -71,12 +80,25 @@ sptr<Entity> World::find_entity(const String &id) const
   return found != my_entities.end() ? *found : nullptr;
 }
 
-void World::wake_up()
+bool World::is_activte() const
 {
+  return my_state == WorldState::ACTIVATED;
+}
+
+void World::activate()
+{
+  for (Processor *p : my_processor_table) {
+    p->activate();
+  }
+
   my_is_live = true;
-  my_processors.physics->start();
-  my_processors.script->start();
-  my_processors.debug->start();
+}
+
+void World::deactivate()
+{
+  for (Processor *p : my_processor_table) {
+    p->deactivate();
+  }
 }
 
 void World::step()
@@ -148,18 +170,47 @@ void World::set_camera(const Camera &camera)
   my_camera = camera;
 }
 
+void World::register_processor(Processor *processor)
+{
+  my_processor_table.push_back(processor);
+}
+
+void World::unregister_processor(Processor *processor)
+{
+  utils::erase_remove(my_processor_table, processor);
+}
+
 void World::init_processors()
 {
-  my_processors.video.reset(new RenderProcessor(my_core.video_service(),
-    my_core.resource_service()));
-  my_processors.physics.reset(new PhysicsProcessor(my_core.video_service(),
-    my_core.resource_service()));
-  my_processors.script.reset(new ScriptProcessor());
-  my_processors.debug.reset(new DebugProcessor(my_core.video_service(),
-    my_core.resource_service(), *this));
+  my_processors.video.reset(new RenderProcessor(*this));
+  my_processors.physics.reset(new PhysicsProcessor(*this));
+  my_processors.script.reset(new ScriptProcessor(*this));
+  my_processors.debug.reset(new DebugProcessor(*this));
 
   my_processors_ref.reset(new WorldProcessorsRef(*my_processors.video,
-    *my_processors.physics, *my_processors.script, *my_processors.debug));
+                                                 *my_processors.physics, *my_processors.script, *my_processors.debug));
+}
+
+void World::init()
+{
+  assert(my_state == WorldState::UNITIALIZED && "Invalid world state");
+
+  for (Processor *processor : my_processor_table) {
+    processor->init();
+  }
+
+  my_state = WorldState::INITIALIZED;
+}
+
+void World::terminate()
+{
+  assert(my_state == WorldState::DEACTIVATED || my_state == WorldState::INITIALIZED);
+
+  for (Processor *processor : my_processor_table) {
+    processor->terminate();
+  }
+
+  my_state = WorldState::TERMINATED;
 }
 
 }

@@ -16,9 +16,8 @@ namespace atom {
 // PhysicsProcessor
 //
 
-PhysicsProcessor::PhysicsProcessor(VideoService &vs, ResourceService &rs)
-  : my_vs(vs)
-  , my_rs(rs)
+PhysicsProcessor::PhysicsProcessor(World &world)
+  : NullProcessor(world)
   , my_is_running(false)
   , my_configuration(new btDefaultCollisionConfiguration())
   , my_dispatcher(new btCollisionDispatcher(my_configuration.get()))
@@ -37,6 +36,12 @@ PhysicsProcessor::~PhysicsProcessor()
 
 }
 
+void PhysicsProcessor::activate()
+{
+  assert(my_is_running == false);
+  my_is_running = true;
+}
+
 void PhysicsProcessor::poll()
 {
   if (!my_is_running) {
@@ -45,12 +50,6 @@ void PhysicsProcessor::poll()
 
   // perform simulation step
   my_world->stepSimulation(1.0f / FPS, 10);
-}
-
-void PhysicsProcessor::start()
-{
-  assert(my_is_running == false);
-  my_is_running = true;
 }
 
 void PhysicsProcessor::register_rigid_body(RigidBodyComponent *rigid_body)

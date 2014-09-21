@@ -2,7 +2,7 @@
 
 int main(int argc, char **argv)
 {
-  QCoreApplication::setOrganizationName("mm");
+  QCoreApplication::setOrganizationName("atom");
   QCoreApplication::setApplicationName("Editor");
   atom::editor::EditorApplication app(argc, argv);
   // initialize the engine (init video, audio, ..., load game lib, show main window)

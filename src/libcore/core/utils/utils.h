@@ -83,6 +83,12 @@ const T& max(const T& a, const T& b)
 #define to_size(value) (static_cast<std::size_t>(value))
 
 template<typename T>
+int to_u32(T value)
+{
+  return static_cast<u32>(value);
+}
+
+template<typename T>
 int to_int(T value)
 {
   return static_cast<int>(value);
@@ -159,13 +165,22 @@ bool load_file_into_string(const String &filename, String &dst);
 //void save_world_to_file(const sptr<World> &world, const String &filename);
 //sptr<World> load_world_from_file(const String &filename, Core &core);
 
+template<typename T>
+void erase_remove(T &container, const typename T::value_type &elem)
+{
+  typename T::iterator removed = std::remove(container.begin(), container.end(), elem);
+  container.erase(removed, container.end());
 }
+
+}
+
 
 template<typename T>
 const char* to_cstring(const T &v)
 {
   return to_string(v).c_str();
 }
+
 
 namespace log {
 
@@ -180,6 +195,7 @@ inline void print(const T& value)
 }
 
 }
+
 
 void error(const char *format, ...);
 }

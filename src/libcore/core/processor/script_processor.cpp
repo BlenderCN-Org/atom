@@ -5,8 +5,9 @@
 
 namespace atom {
 
-ScriptProcessor::ScriptProcessor()
-  : my_is_started(false)
+ScriptProcessor::ScriptProcessor(World &world)
+  : NullProcessor(world)
+  , my_is_started(false)
 {
 }
 
@@ -23,6 +24,11 @@ void ScriptProcessor::unregister_script(ScriptComponent *component)
     my_scripts.end());
 }
 
+void ScriptProcessor::activate()
+{
+  my_is_started = true;
+}
+
 void ScriptProcessor::poll()
 {
   if (!my_is_started) {
@@ -32,11 +38,6 @@ void ScriptProcessor::poll()
   for (ScriptComponent *script : my_scripts) {
     script->update();
   }
-}
-
-void ScriptProcessor::start()
-{
-  my_is_started = true;
 }
 
 }

@@ -10,10 +10,9 @@
 
 namespace atom {
 
-RenderProcessor::RenderProcessor(VideoService &vs, ResourceService &rs)
-  : my_vs(vs)
-  , my_rs(rs)
-  , my_gbuffer(vs)
+RenderProcessor::RenderProcessor(World &world)
+  : NullProcessor(world)
+  , my_gbuffer(world.core().video_service())
 {
 }
 
@@ -36,13 +35,16 @@ void RenderProcessor::render(const Camera &camera)
 {
   //  my_pc.start("Rendering");
   GL_ERROR_GUARD;
-  Uniforms &u = my_vs.get_uniforms();
-  RenderContext context = { u, my_vs };
+
+  VideoService &vs = core().video_service();
+
+  Uniforms &u = vs.get_uniforms();
+  RenderContext context = { u, vs };
 
   u.transformations.view = camera.view;
   u.transformations.projection = camera.projection;
 
-  my_vs.set_blending(BlendOperation::SRC_ALPHA, BlendOperation::ONE_MINUS_SRC_ALPHA);
+  vs.set_blending(BlendOperation::SRC_ALPHA, BlendOperation::ONE_MINUS_SRC_ALPHA);
 
   for (RenderComponent *component : my_components) {
     if (!component->is_enabled()) {
@@ -73,7 +75,7 @@ void RenderProcessor::render(const Camera &camera)
     }
 
 //    my_vs.set_draw_face(DrawFace::BOTH);
-    my_vs.set_draw_face(material->material().face);
+    vs.set_draw_face(material->material().face);
     material->material().draw_mesh(context, mesh->mesh());
   }
 

@@ -6,19 +6,19 @@
 
 namespace atom {
 
-class ScriptProcessor : public Processor {
+class ScriptProcessor : public NullProcessor {
   bool                           my_is_started;
   std::vector<ScriptComponent *> my_scripts;
 
 public:
-  ScriptProcessor();
+  explicit ScriptProcessor(World &world);
 
   void register_script(ScriptComponent *component);
   void unregister_script(ScriptComponent *component);
 
-  void poll() override;
+  void activate() override;
 
-  void start() override;
+  void poll() override;
 };
 
 }

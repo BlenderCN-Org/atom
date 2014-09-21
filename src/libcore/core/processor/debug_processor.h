@@ -5,17 +5,17 @@
 
 namespace atom {
 
-enum class DebugCategory {
-  PHYSICS = 1,
-  BOUNDING_BOX = 2,
-  AABB = 4
-};
+namespace DebugCategory {
+  enum {
+    PHYSICS = 1,
+    BOUNDING_BOX = 2,
+    AABB = 4
+  };
+}
 
 class PhysicsDebugDrawer;
 
-class DebugProcessor : public Processor {
-  VideoService            &my_vs;
-  World                   &my_world;
+class DebugProcessor : public NullProcessor {
   u32                      my_debug_categories;
   uptr<PhysicsDebugDrawer> my_physics_drawer;
   MaterialResourcePtr      my_wireframe_material;
@@ -23,16 +23,16 @@ class DebugProcessor : public Processor {
   MaterialResourcePtr      my_aabb_material;
 
 public:
-  DebugProcessor(VideoService &vs, ResourceService &rs, World &world);
+  explicit DebugProcessor(World &world);
   ~DebugProcessor();
+
+  void activate() override;
 
   void poll() override;
 
-  void start() override;
-
   void draw();
 
-  void set_debug(DebugCategory category, bool enable);
+  void set_debug(u32 category, bool enable);
 
 
 private:

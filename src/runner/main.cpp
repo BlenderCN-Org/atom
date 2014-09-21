@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     Core &core = Core::init(InitMode::STANDALONE, entry_point());
 
     const EntryPoint *game_api = entry_point();
-    
+
     if (game_api == nullptr) {
       log::error("Can't find game entry point");
       return EXIT_FAILURE;
@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
 
     FrameProcessor fp(core);
     fp.set_post_frame_callback(update_gl_buffers);
-    //QQQ prekopat runnera
     fp.run(first_frame);
     first_frame = nullptr;
   } catch (std::exception &e) {

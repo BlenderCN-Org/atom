@@ -65,12 +65,12 @@ public:
 };
 
 
-DebugProcessor::DebugProcessor(VideoService &vs, ResourceService &rs, World &world)
-  : my_vs(vs)
-  , my_world(world)
+DebugProcessor::DebugProcessor(World &world)
+  : NullProcessor(world)
   , my_debug_categories(0)
   , my_physics_drawer(new PhysicsDebugDrawer())
 {
+  ResourceService &rs = core().resource_service();
   my_wireframe_material = rs.get_material("lines");
   my_bounding_box_material = rs.get_material("debug_bounding_box");
   my_aabb_material = rs.get_material("debug_aabb");
@@ -81,22 +81,41 @@ DebugProcessor::~DebugProcessor()
 
 }
 
-void DebugProcessor::poll()
+void DebugProcessor::activate()
 {
-  my_physics_drawer->clear();
-  my_world.processors().physics.bt_world().debugDrawWorld();
+  world().processors().physics.bt_world().setDebugDrawer(my_physics_drawer.get());
 }
 
-void DebugProcessor::start()
+void DebugProcessor::poll()
 {
-  my_world.processors().physics.bt_world().setDebugDrawer(my_physics_drawer.get());
+  if (my_debug_categories & DebugCategory::PHYSICS) {
+    my_physics_drawer->clear();
+    world().processors().physics.bt_world().debugDrawWorld();
+  }
 }
 
 void DebugProcessor::draw()
 {
-  draw_physics();
-  draw_bounding_box();
-  draw_aabb();
+  if (my_debug_categories & DebugCategory::PHYSICS) {
+    draw_physics();
+  }
+
+  if (my_debug_categories & DebugCategory::BOUNDING_BOX) {
+    draw_bounding_box();
+  }
+
+  if (my_debug_categories & DebugCategory::AABB) {
+    draw_aabb();
+  }
+}
+
+void DebugProcessor::set_debug(u32 category, bool enable)
+{
+  if (enable) {
+    my_debug_categories |= category;
+  } else {
+    my_debug_categories &= ~category;
+  }
 }
 
 void DebugProcessor::draw_physics()
@@ -108,14 +127,16 @@ void DebugProcessor::draw_physics()
 
   Mesh mesh;
 
-  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(my_vs, VideoBufferUsage::STATIC_DRAW));
+  VideoService &vs = core().video_service();
+
+  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
   vertex_buffer->set_bytes(lines.data(), lines.size() * sizeof(Vec3f));
 
-  Uniforms &u = my_vs.get_uniforms();
+  Uniforms &u = vs.get_uniforms();
   u.transformations.model = Mat4f();
   u.model = Mat4f();
   u.mvp = u.transformations.model_view_projection();
-  RenderContext context = { u, my_vs };
+  RenderContext context = { u, vs };
 
   mesh.vertex = std::move(vertex_buffer);
 
@@ -124,12 +145,12 @@ void DebugProcessor::draw_physics()
 
 void DebugProcessor::draw_bounding_box()
 {
-  auto entities = my_world.all_entities();
+  auto entities = world().all_entities();
   std::vector<Vec3f> lines;
   lines.reserve(entities.size() * 24);
 
 
-  for (const sptr<Entity> &entity : my_world.all_entities()) {
+  for (const sptr<Entity> &entity : world().all_entities()) {
     Mat4f transform = entity->transform();
     const BoundingBox &box = entity->bounding_box();
 
@@ -171,14 +192,15 @@ void DebugProcessor::draw_bounding_box()
   }
 
   Mesh mesh;
-  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(my_vs, VideoBufferUsage::STATIC_DRAW));
+  VideoService &vs = core().video_service();
+  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
   vertex_buffer->set_bytes(lines.data(), lines.size() * sizeof(Vec3f));
 
-  Uniforms &u = my_vs.get_uniforms();
+  Uniforms &u = vs.get_uniforms();
   u.transformations.model = Mat4f();
   u.model = Mat4f();
   u.mvp = u.transformations.model_view_projection();
-  RenderContext context = { u, my_vs };
+  RenderContext context = { u, vs };
 
   mesh.vertex = std::move(vertex_buffer);
   my_bounding_box_material->material().draw_mesh(context, mesh);
@@ -186,12 +208,12 @@ void DebugProcessor::draw_bounding_box()
 
 void DebugProcessor::draw_aabb()
 {
-  auto entities = my_world.all_entities();
+  auto entities = world().all_entities();
   std::vector<Vec3f> lines;
   lines.reserve(entities.size() * 24);
 
 
-  for (const sptr<Entity> &entity : my_world.all_entities()) {
+  for (const sptr<Entity> &entity : world().all_entities()) {
     const BoundingBox &box = entity->aabb();
 
     Vec3f v0 = Vec3f(box.xmin, box.ymin, box.zmin);
@@ -232,14 +254,15 @@ void DebugProcessor::draw_aabb()
   }
 
   Mesh mesh;
-  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(my_vs, VideoBufferUsage::STATIC_DRAW));
+  VideoService &vs = core().video_service();
+  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
   vertex_buffer->set_bytes(lines.data(), lines.size() * sizeof(Vec3f));
 
-  Uniforms &u = my_vs.get_uniforms();
+  Uniforms &u = vs.get_uniforms();
   u.transformations.model = Mat4f();
   u.model = Mat4f();
   u.mvp = u.transformations.model_view_projection();
-  RenderContext context = { u, my_vs };
+  RenderContext context = { u, vs };
 
   mesh.vertex = std::move(vertex_buffer);
   my_aabb_material->material().draw_mesh(context, mesh);

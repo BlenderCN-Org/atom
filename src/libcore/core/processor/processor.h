@@ -1,45 +1,69 @@
 #pragma once
 
-#include "../noncopyable.h"
+#include "../foundation.h"
 
 namespace atom {
 
 /// @todo replace start method with init/terminate & activate/deactivate
-class Processor : private NonCopyable {
-public:
+class Processor : NonCopyable {
+  World &my_world;
+
+protected:
+  explicit Processor(World &world);
   virtual ~Processor();
+
+  Core& core() const;
+
+  World& world() const;
+
+public:
+  virtual void init() = 0;
+
+  virtual void terminate() = 0;
+
+  virtual void activate() = 0;
+
+  virtual void deactivate() = 0;
 
   /**
    * Update/process processor state.
    */
   virtual void poll() = 0;
+};
 
-  /**
-   * Start/wake up all registered components.
-   */
-  virtual void start() = 0;
-
-  virtual void init()
+class NullProcessor : public Processor {
+protected:
+  NullProcessor(World &world)
+    : Processor(world)
   {
-    // empty, reimplemented in subclass, don't need to be called
+    // empty
   }
 
-  virtual void terminate()
+public:
+  void init() override
   {
-    // empty, reimplemented in subclass, don't need to be called
+    // empty
   }
 
-  virtual void activate()
+  void terminate() override
   {
-    // empty, reimplemented in subclass, don't need to be called
+    // empty
   }
 
-  virtual void deactivate()
+  void activate() override
   {
-    // empty, reimplemented in subclass, don't need to be called
+    // empty
   }
 
-private:
+  void deactivate() override
+  {
+    // empty
+  }
+
+  void poll() override
+  {
+    // empty
+  }
 };
 
 }

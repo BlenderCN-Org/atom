@@ -22,10 +22,10 @@
      <x>0</x>
      <y>0</y>
      <width>963</width>
-     <height>23</height>
+     <height>29</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_File">
+   <widget class="QMenu" name="menu_file">
     <property name="title">
      <string>&amp;File</string>
     </property>
@@ -46,11 +46,23 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <addaction name="actionGame"/>
-    <addaction name="actionStructure"/>
-    <addaction name="separator"/>
+    <widget class="QMenu" name="menu_panels">
+     <property name="title">
+      <string>Panels</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menu_entity">
+     <property name="title">
+      <string>Entity</string>
+     </property>
+     <addaction name="action_show_physics"/>
+     <addaction name="action_show_bounding_box"/>
+     <addaction name="action_show_aabb"/>
+    </widget>
+    <addaction name="menu_entity"/>
+    <addaction name="menu_panels"/>
    </widget>
-   <addaction name="menu_File"/>
+   <addaction name="menu_file"/>
    <addaction name="menu_edit"/>
    <addaction name="menu_view"/>
   </widget>
@@ -126,28 +138,36 @@
     <string>F5</string>
    </property>
   </action>
-  <action name="actionGame">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Game</string>
-   </property>
-  </action>
-  <action name="actionStructure">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Structure</string>
-   </property>
-  </action>
   <action name="action_open">
    <property name="text">
     <string>&amp;Open...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_show_physics">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Physics</string>
+   </property>
+  </action>
+  <action name="action_show_bounding_box">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bounding Box</string>
+   </property>
+  </action>
+  <action name="action_show_aabb">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>AABB</string>
    </property>
   </action>
  </widget>
