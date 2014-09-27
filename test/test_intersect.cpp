@@ -1,4 +1,4 @@
-#include <core/math/math.h>
+#include <core/math/intersect.h>
 #include <gtest/gtest.h>
 
 namespace atom {
@@ -99,10 +99,45 @@ TEST(RayTriangleIntersect, Hit)
   ASSERT_TRUE(isnan(intersect_triangle(hit, Vec3f(-1, -1, 0), Vec3f(1, -1, 0), Vec3f(0, 1, 0))));
 }
 
+
+TEST(RayTriangleIntersect, Hit2)
+{
+//  Ray hit(Vec3f(-0.9, -1.0f, 0.1), Vec3f(0, 1, 0));
+//  ASSERT_EQ(1.0f, intersect_triangle(hit, Vec3f(-1, 0, 1), Vec3f(1, 0, 1), Vec3f(1, 0, 3)));
+  Ray hit(Vec3f(0.5f, -2.0f, -0.1f), Vec3f(0, 1, 0));
+  const Vec3f v0(-1, 0, -1);
+  const Vec3f v1(1, 0, -1);
+  const Vec3f v2(1, 0, 1);
+  ASSERT_EQ(2.0f, intersect_triangle(hit, v0, v1, v2));
+  ASSERT_EQ(2.0f, intersect_triangle_slow(hit, v0, v1, v2));
+}
+
 TEST(RayTriangleIntersect, Miss)
 {
   Ray hit(Vec3f(0.0f, -1.0f, 0.0f), Vec3f(0, -1, 0));
   ASSERT_GT(0.0f, intersect_triangle(hit, Vec3f(-1, 0, -1), Vec3f(1, 0, -1), Vec3f(0, 0, 1)));
+}
+
+TEST(RayMeshIntersect, Hit)
+{
+  const Vec3f points[] = {
+    Vec3f(-1, 0, -1),
+    Vec3f( 1, 0, -1),
+    Vec3f( 1, 0,  1),
+    Vec3f(-1, 0,  1)
+  };
+
+  const u32 indices[] = { 0, 1, 2, 0, 2, 3 };
+
+  Ray hit0(Vec3f( 0.5f, -2.0f, -0.5f), Vec3f(0, 1, 0));
+  Ray hit1(Vec3f(-0.5f, -2.0f,  0.5f), Vec3f(0, 1, 0));
+  u32 triangle = U32_MAX;
+
+  ASSERT_EQ(2.0f, intersect_mesh(hit0, Slice<Vec3f>(points, 4), Slice<u32>(indices, 6), triangle));
+  ASSERT_EQ(0, triangle);
+
+  ASSERT_EQ(2.0f, intersect_mesh(hit1, Slice<Vec3f>(points, 4), Slice<u32>(indices, 6), triangle));
+  ASSERT_EQ(1, triangle);
 }
 
 }

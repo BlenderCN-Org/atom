@@ -11,6 +11,7 @@
 #include <core/video/draw_service.h>
 #include <core/utils/utils.h>
 #include <core/world/world.h>
+#include <core/math/intersect.h>
 #include "../editor_application.h"
 #include "../commands/entity_move.h"
 #include "../commands/entity_add.h"

@@ -284,3 +284,5 @@ tools/scripts/reduli.py
 tools/scripts/winconf.bat
 waf
 wscript
+src/libcore/core/math/intersect.h
+src/libcore/core/math/intersect.cpp
