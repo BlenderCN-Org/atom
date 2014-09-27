@@ -86,8 +86,12 @@ public:
   {
     pre_insert();
     // vracia pair<iterator, bool>
+    DictionaryValue v;
+    v.value = value;
+    v.prev = my_dict.end();
+    v.next = my_head;
     auto ret = my_dict.insert(std::make_pair(
-          key, DictionaryValue{value, std::end(my_dict), my_head}));
+          key, v));
     post_insert(ret.first);
     return IteratorWrapper(ret.first);
   }

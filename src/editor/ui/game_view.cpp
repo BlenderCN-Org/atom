@@ -299,7 +299,7 @@ void GameView::find_entity_in_center()
     Vec3f dir = transform * my_camera.get_front();
     Ray ray(origin, dir);
 
-    f32 t = intersect(ray, box);
+    f32 t = intersect_bounding_box(ray, box);
 
     if (t >= 0 && t < tnearest) {
       tnearest = t;

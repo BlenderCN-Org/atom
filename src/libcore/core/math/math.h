@@ -100,6 +100,11 @@ T lerp(T x, T min, T max)
   return min + x * (max - min);
 }
 
+
+//
+// Simple Ray structure, just origin & direction
+//
+
 struct Ray {
   Vec3f origin;
   Vec3f dir;
@@ -113,12 +118,10 @@ struct Ray {
   }
 };
 
-/**
- * Calculate nearest intersection of ray and triangle mesh.
- */
-f32 intersect(const Ray &ray, const Slice<Vec3f> &vertices,
-  const Slice<u32> &indices, u32 &index);
 
+//
+// Bounding box
+//
 
 struct BoundingBox {
   f32 xmin;
@@ -156,20 +159,30 @@ struct BoundingBox {
   void extend(const Vec3f &v);
 };
 
+f32 intersect_triangle(const Ray &ray, const Vec3f &v0, const Vec3f &v1, const Vec3f &v2);
+
+/**
+ * Calculate nearest intersection of ray and triangle mesh.
+ */
+f32 intersect_mesh(const Ray &ray, const Slice<Vec3f> &vertices,
+  const Slice<u32> &indices, u32 &index);
+
+
+
 /**
  * Get intersection of a line (infinite endpoints) and box.
  * @param[out] tnear nearest intersect point (on intersect)
  * @param[out] tfar
  * @return true when line intersects the box
  */
-bool intersect(const Ray &ray, const BoundingBox &box, f32 &tnear, f32 &tfar);
+bool intersect_bounding_box(const Ray &ray, const BoundingBox &box, f32 &tnear, f32 &tfar);
 
 /**
  * Get neareset intersection. Ray starts at origin (t=0) and extends to infinity.
  *
  * @return >=0 nearest intersection, negative value means no intersection
  */
-f32 intersect(const Ray &ray, const BoundingBox &box);
+f32 intersect_bounding_box(const Ray &ray, const BoundingBox &box);
 
 //bool contains(const BoundingBox &box, const Vec2f &point)
 //{

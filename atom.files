@@ -2,6 +2,10 @@
 ChangeLog.txt
 README
 RULES
+atom.config
+atom.creator
+atom.files
+atom.includes
 data/config
 data/image/README
 data/image/box.png

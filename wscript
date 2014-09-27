@@ -183,6 +183,8 @@ def check_required_linux_libs(ctx):
     """
     ctx.check_cxx(uselib_store='SDL', header_name='SDL/SDL.h',
         lib=['SDL'])
+    ctx.check_cxx(uselib_store='OpenGL', header_name='GL/gl.h',
+        lib=['GL'])
     ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h',
         lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
     ctx.check_cxx(uselib_store='vorbisfile', header_name='vorbis/vorbisfile.h',
@@ -206,6 +208,8 @@ def check_required_windows_libs(ctx):
     """
     ctx.check_cxx(uselib_store='SDL', header_name='SDL/SDL.h',
         lib=['SDL'])
+    ctx.check_cxx(uselib_store='OpenGL', header_name='GL/gl.h',
+        lib=['OpenGL32'])
     ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h',
         lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])
     ctx.check_cxx(uselib_store='vorbisfile', header_name='vorbis/vorbisfile.h',
@@ -214,6 +218,9 @@ def check_required_windows_libs(ctx):
         lib=['libogg'])
     ctx.check_cxx(uselib_store='png', header_name='png.h',
         lib=['libpng16'])
+
+    if 'ATOM_BUILD_TESTS' in ctx.env:
+        ctx.check_cxx(uselib_store='gtest', header_name='gtest/gtest.h', lib=['gtest_main', 'gtest'], use=['pthread'])
 
 
 
@@ -230,7 +237,8 @@ def build_flext_lib(ctx):
       name='flext',
       target = 'flext',
       source=ctx.path.ant_glob('src/flext/*.c'),
-      export_includes=['src/flext']
+      export_includes=['src/flext'],
+      use=['OpenGL']
     )
 
 
@@ -301,7 +309,6 @@ def build_tests(ctx):
       features='test',
       source=ctx.path.ant_glob('test/**/*.cpp'),
       includes=['src/libcore'],
-      lib=['GL'],
       use=['core', 'gtest', 'pthread']
     )
     from waflib.Tools import waf_unit_test

@@ -67,13 +67,60 @@ Vec4f plane_from_vertices(
 //    return nearest;
 //}
 
+u32 dominant_axis(const Vec3f &n)
+{
+  if (abs(n.x) > abs(n.y)) {
+    return abs(n.x) > abs(n.z) ? 0 : 2;
+  } else {
+    return abs(n.y > abs(n.z)) ? 1 : 2;
+  }
+}
 
-f32 intersect(const Ray &ray, const Slice<Vec3f> &vertices, const Slice<u32> &indices, u32 &index)
+f32 intersect_triangle(const Ray &ray, const Vec3f &v0, const Vec3f &v1, const Vec3f &v2)
+{
+  const f32 tmin = 0.001f;
+  const f32 tmax = F32_MAX;
+  Vec3f b = v2 - v0;
+  Vec3f c = v1 - v0;
+  Vec3f n = cross_product(c, b);
+  // calculate ray plane intersection
+  f32 t = -dot_product(ray.origin - v0, n) / dot_product(ray.dir, n);
+  // distance test
+  if (t <= tmin || t >= tmax) {
+    return -1;
+  }
+  // determine triangle largest 2d projection plane
+  u32 k = dominant_axis(n);
+  u32 u = (k + 1) % 3;
+  u32 v = (k + 2) % 3;
+  // calculate hitpoint
+  f32 hu = ray.origin[u] + t * ray.dir[u];
+  f32 hv = ray.origin[v] + t * ray.dir[v];
+  f32 bu = b[u];
+  f32 bv = b[v];
+  f32 cu = c[u];
+  f32 cv = c[v];
+  f32 div = bu * cv - bv * cu;
+  // calculate & check 2nd barycentric coeficient (1st is 1)
+  f32 beta = (bu * hv - bv * hu) / div;
+  if (beta < 0) {
+    return -1;
+  }
+  // calculate & check 3rd barycentric coeficient
+  f32 gamma = (cv * hu - cu * hv) / div;
+  if (gamma < 0 || beta + gamma > 1) {
+    return -1;
+  }
+  // hit
+  return t;
+}
+
+f32 intersect_mesh(const Ray &ray, const Slice<Vec3f> &vertices, const Slice<u32> &indices, u32 &index)
 {
   return -1;
 }
 
-bool intersect(const Ray &ray, const BoundingBox &box, f32 &tnear, f32 &tfar)
+bool intersect_bounding_box(const Ray &ray, const BoundingBox &box, f32 &tnear, f32 &tfar)
 {
   f32 tmin, tmax, tymin, tymax, tzmin, tzmax;
   // division here is used to handle -0, -inf correctly
@@ -125,10 +172,10 @@ bool intersect(const Ray &ray, const BoundingBox &box, f32 &tnear, f32 &tfar)
   return true;
 }
 
-f32 intersect(const Ray &ray, const BoundingBox &box)
+f32 intersect_bounding_box(const Ray &ray, const BoundingBox &box)
 {
   f32 tmin, tmax;
-  if (!intersect(ray, box, tmin, tmax)) {
+  if (!intersect_bounding_box(ray, box, tmin, tmax)) {
     return -1;
   }
 

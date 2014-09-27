@@ -3,7 +3,7 @@
 
 namespace atom {
 
-constexpr char DELIM = ':';
+const char DELIM = ':';
 
 TEST(SplitStringTest, SplitEmptyString)
 {

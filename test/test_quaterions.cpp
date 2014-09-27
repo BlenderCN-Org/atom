@@ -4,7 +4,7 @@
 
 namespace atom {
 
-constexpr float ERROR = 0.001f;
+const float ERROR = 0.001f;
 
 #define EXPECT_QUATF_EQ(expected, q) \
   EXPECT_FLOAT_EQ(expected.w, q.w);  \
