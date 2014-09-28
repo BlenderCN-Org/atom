@@ -6,10 +6,6 @@
 
 namespace atom {
 
-struct Unitialized {
-
-};
-
 /**
  * Quaternion template is type independent.
  * The quaternion_utils.h defines float quaternion Quatf, this is used everywhere.

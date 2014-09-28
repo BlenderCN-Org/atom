@@ -31,6 +31,9 @@ class GameView : public QGLWidget {
   Vec2f              my_drag_start_pos;
   QPoint             my_cursor_pos;
   QPoint             my_ignore_mouse_move;
+  bool               my_has_intersection;
+  Vec3f              my_intersect_point;
+
 public:
   GameView(const QGLFormat &format, QWidget *parent = nullptr);
   ~GameView();
@@ -76,6 +79,10 @@ private:
   void switch_state_to_looking();
 
   void find_entity_in_center();
+
+  void find_triangle_in_center();
+
+  void draw_intersection();
 };
 
 }

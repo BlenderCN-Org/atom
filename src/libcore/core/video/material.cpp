@@ -55,7 +55,7 @@ void LinesMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   }
 
   context.uniforms.color = color;
-  
+
   DrawCommand command;
   command.draw = DrawType::LINES;
   command.attributes[0] = mesh.vertex.get();
@@ -142,14 +142,14 @@ void WireframeMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh
 {
   assert(my_shader != nullptr);
   not_tested();
-  
+
   if (mesh.vertex == nullptr || mesh.surface == nullptr) {
     log::warning("%s: mesh missing vertex or surface data", ATOM_FUNC_NAME);
     return;
   }
-  
+
   context.uniforms.color = color;
-  
+
   DrawCommand command;
   command.draw = DrawType::TRIANGLES;
   command.attributes[0] = mesh.vertex.get();
@@ -193,8 +193,9 @@ void PhongMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
   assert(my_shader != nullptr);
 
-  if (mesh.vertex == nullptr || mesh.normal != nullptr || mesh.surface == nullptr) {
+  if (mesh.vertex == nullptr || mesh.normal == nullptr || mesh.surface == nullptr) {
     log::warning("%s: mesh missing vertex, normal or surface data", ATOM_FUNC_NAME);
+    return;
   }
 
   VideoService &vs = context.video_processor;

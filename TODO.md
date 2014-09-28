@@ -1,26 +1,14 @@
-Zavislosti:
- - OpenGL (4.2)
- - SDL (1.2)
- - Bullet
- - vorbis/vorbisfile
- - ogg
- - libpng
- - Qt4 (editor)
+TODO
+====
 
-TODO:
- - pridat do ScriptComponent metodu init/on_init
- - pridat do Processoru pristup na Core Service-s
  - delete Vec2Array... or replace by Slice
  - allow Entity without ModelComponent, just MeshComponent
  - proper clone method, Component attributes are not copied
  - rename VideoBuffer::set_raw_data to set_bytes???
- - conversion from rotation matrix 3x3 to quaternion
  - premenovat MAP_COMPONENT_TYPE na napr. DECLARE_COMPONENT, DEFINE_COMPONENT,
    "INSTALL_COMPONENT", "REGISTER_COMPONENT"
  - debug per entity, per component?
- - prekopat MoveCommand, aby pouzivat transform a nie position/rotation
  - zmazat Singleton
- - pouzivame TextureSampler
  - rozlisenie medzi uniform a uniform array sa deje na zaklade parametru size,
    ktory je pre polia vacsi ako 1, vynimkou je pole velkosti 1, riesenim je asi
    rozlisovat medzi scalar a array podla nazvu pretoze pole ma nazov + [0]

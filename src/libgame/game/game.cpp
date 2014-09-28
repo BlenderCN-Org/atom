@@ -281,6 +281,23 @@ uptr<Entity> create_suzanne(World &world, Core &core)
   return entity;
 }
 
+uptr<Entity> create_flat_terrain(World &world, Core &core)
+{
+  uptr<Entity> entity(new Entity(world, core));
+  // suzanne
+//  uptr<ModelComponent> model(new ModelComponent("quad_terrain"));
+  uptr<ModelComponent> model(new ModelComponent("flat_terrain"));
+//  uptr<ModelComponent> model(new ModelComponent("bumpy_terrain"));
+  uptr<MaterialComponent> material(new MaterialComponent("terrain"));
+  uptr<MeshComponent> mesh(new MeshComponent());
+  uptr<RenderComponent> render(new RenderComponent());
+  entity->add_component(std::move(model));
+  entity->add_component(std::move(material));
+  entity->add_component(std::move(mesh));
+  entity->add_component(std::move(render));
+  return entity;
+}
+
 std::vector<EntityCreator> create_object_creators(Core &)
 {
   std::vector<EntityCreator> creators;
@@ -291,6 +308,7 @@ std::vector<EntityCreator> create_object_creators(Core &)
   creators.push_back(EntityCreator("ManualMonster", create_manual_monster));
   creators.push_back(EntityCreator("Ground", create_ground));
   creators.push_back(EntityCreator("Box", create_box));
+  creators.push_back(EntityCreator("FlatTerrain", create_flat_terrain));
   return creators;
 }
 

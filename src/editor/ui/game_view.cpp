@@ -9,9 +9,13 @@
 #include <core/processor/physics_processor.h>
 #include <core/processor/debug_processor.h>
 #include <core/video/draw_service.h>
+#include <core/video/model.h>
+#include <core/video/render_context.h>
+#include <core/component/model_component.h>
 #include <core/utils/utils.h>
 #include <core/world/world.h>
 #include <core/math/intersect.h>
+#include <core/video/uniforms.h>
 #include "../editor_application.h"
 #include "../commands/entity_move.h"
 #include "../commands/entity_add.h"
@@ -25,12 +29,13 @@ GameView::GameView(const QGLFormat &format, QWidget *parent)
   : QGLWidget(format, parent)
   , my_state(GameViewState::NORMAL)
   , my_navigation(true)
+  , my_has_intersection(false)
 {
   makeCurrent();
   setAcceptDrops(true);
   setFocusPolicy(Qt::ClickFocus);
-
-  my_camera.set_position(Vec3f(0, -5, 0));
+  // initial camera position
+  my_camera.set_position(Vec3f(0, -5, 5));
 
   connect(qApp, SIGNAL(load()), SLOT(load()));
   connect(qApp, SIGNAL(unload()), SLOT(unload()));
@@ -158,7 +163,8 @@ void GameView::mouseMoveEvent(QMouseEvent *event)
     my_ignore_mouse_move = event->pos() - mapFromGlobal(my_cursor_pos);
     QCursor::setPos(my_cursor_pos);
 
-    find_entity_in_center();
+//    find_entity_in_center();
+    find_triangle_in_center();
   }
 }
 
@@ -220,6 +226,10 @@ void GameView::paintGL()
 
   core.video_service().enable_depth_test();
 
+  if (my_has_intersection) {
+    //draw intersection line
+    draw_intersection();
+  }
 
   core.video_service().unbind_write_framebuffer();
   my_world->processors().video.get_gbuffer().blit();
@@ -313,6 +323,89 @@ void GameView::find_entity_in_center()
   if (nearest != nullptr) {
     log::info("Neareset entity %i, id %s", count++, nearest->id().c_str());
   }
+}
+
+void GameView::find_triangle_in_center()
+{
+  const Slice<sptr<Entity>> entities = my_world->all_entities();
+  f32 tnearest = F32_MAX;
+  u32 inearest = U32_MAX;
+  Vec3f intersection;
+  Entity *nearest = nullptr;
+
+
+  for (const sptr<Entity> entity : entities) {
+    ModelComponent *component = entity->find_component<ModelComponent>();
+
+    if (component == nullptr) {
+      continue;
+    }
+
+    ModelResourcePtr resource = component->get_model();
+
+    if (resource == nullptr) {
+      continue;
+    }
+
+    const Model &model = resource->model();
+
+    const ElementArray *vertices = model.find_array("vertices", Type::F32);
+    const ElementArray *indices = model.find_array("indices", Type::U32);
+
+    if (vertices == nullptr || indices == nullptr) {
+      continue;
+    }
+
+    const Slice<Vec3f> v(reinterpret_cast<const Vec3f *>(vertices->data.get()),
+      vertices->size / sizeof(Vec3f));
+    const Slice<u32> i(reinterpret_cast<const u32 *>(indices->data.get()),
+                         indices->size / sizeof(u32));
+
+    Mat4f transform = entity->transform().inverted();
+    Vec3f origin = transform * my_camera.get_position();
+    Vec3f dir = transform * my_camera.get_front();
+    Ray ray(origin, dir);
+
+    u32 index;
+    f32 t = intersect_mesh(ray, v, i, index);
+
+    if (t > 0 && t < tnearest) {
+      inearest = index;
+      tnearest = t;
+      nearest = entity.get();
+      intersection = ray.origin + ray.dir * t;
+    }
+  }
+
+  my_has_intersection = nearest != nullptr;
+
+  if (nearest != nullptr) {
+    my_intersect_point = intersection;
+    log::info("Neareset entity %s, triangle %i", nearest->id().c_str(), inearest);
+    log::info("%s", to_string(intersection).c_str());
+  }
+}
+
+void GameView::draw_intersection()
+{
+  std::vector<Vec3f> lines;
+  lines.push_back(my_intersect_point);
+  lines.push_back(my_intersect_point + Vec3f(0, 0, 5));
+
+  Mesh mesh;
+  VideoService &vs = core().video_service();
+  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
+  vertex_buffer->set_bytes(lines.data(), lines.size() * sizeof(Vec3f));
+
+  Uniforms &u = vs.get_uniforms();
+  u.transformations.model = Mat4f();
+  u.model = Mat4f();
+  u.mvp = u.transformations.model_view_projection();
+  RenderContext context = { u, vs };
+
+  mesh.vertex = std::move(vertex_buffer);
+  MaterialResourcePtr material = core().resource_service().get_material("lines");
+  material->material().draw_mesh(context, mesh);
 }
 
 }

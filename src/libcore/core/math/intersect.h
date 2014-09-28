@@ -6,7 +6,6 @@ namespace atom {
 
 u32 dominant_axis(const Vec3f &n);
 
-
 /**
  * Fast intersection between ray and triangle (Ingo Wald projection method).
  *
@@ -26,10 +25,11 @@ f32 intersect_triangle_slow(const Ray &ray, const Vec3f &v0, const Vec3f &v1, co
 f32 intersect_mesh(const Ray &ray, const Slice<Vec3f> &vertices,
   const Slice<u32> &indices, u32 &index);
 
+/**
+ * Nearest intersection of ray and triangle mesh using intersect_mesh_slow.
+ */
 f32 intersect_mesh_slow(const Ray &ray, const Slice<Vec3f> &vertices,
   const Slice<u32> &indices, u32 &index);
-
-
 
 /**
  * Get intersection of a line (infinite endpoints) and box.
