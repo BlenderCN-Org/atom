@@ -183,7 +183,7 @@ def check_required_linux_libs(ctx):
     """
     ctx.check_cxx(uselib_store='SDL', header_name='SDL/SDL.h',
         lib=['SDL'])
-    ctx.check_cxx(uselib_store='OpenGL', header_name='GL/gl.h',
+    ctx.check_cxx(uselib_store='OpenGL',
         lib=['GL'])
     ctx.check_cxx(uselib_store='bullet', header_name='btBulletCollisionCommon.h',
         lib=['LinearMath', 'BulletCollision', 'BulletDynamics', 'BulletSoftBody'])

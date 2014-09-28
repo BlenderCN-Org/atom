@@ -89,7 +89,8 @@ f32 intersect_triangle_slow(const Ray &ray, const Vec3f &v0, const Vec3f &v1, co
   return -1;
 }
 
-f32 intersect_mesh(const Ray &ray, const Slice<Vec3f> &vertices,
+template<typename IntersectFunc>
+f32 intersect_mesh_impl(IntersectFunc intersect_func, const Ray &ray, const Slice<Vec3f> &vertices,
   const Slice<u32> &indices, u32 &index)
 {
   assert(indices.size() % 3 == 0);
@@ -100,7 +101,7 @@ f32 intersect_mesh(const Ray &ray, const Slice<Vec3f> &vertices,
     const Vec3f &v0 = vertices[indices[i    ]];
     const Vec3f &v1 = vertices[indices[i + 1]];
     const Vec3f &v2 = vertices[indices[i + 2]];
-    f32 t = intersect_triangle(ray, v0, v1, v2);
+    f32 t = intersect_func(ray, v0, v1, v2);
 
     if (t >= 0 && t < tnearest) {
       triangle = i;
@@ -114,6 +115,18 @@ f32 intersect_mesh(const Ray &ray, const Slice<Vec3f> &vertices,
   }
 
   return -1;
+}
+
+f32 intersect_mesh(const Ray &ray, const Slice<Vec3f> &vertices,
+  const Slice<u32> &indices, u32 &index)
+{
+  return intersect_mesh_impl(intersect_triangle, ray, vertices, indices, index);
+}
+
+f32 intersect_mesh_slow(const Ray &ray, const Slice<Vec3f> &vertices,
+                   const Slice<u32> &indices, u32 &index)
+{
+  return intersect_mesh_impl(intersect_triangle_slow, ray, vertices, indices, index);
 }
 
 bool intersect_bounding_box(const Ray &ray, const BoundingBox &box, f32 &tnear, f32 &tfar)

@@ -1,5 +1,6 @@
 #include <core/math/intersect.h>
 #include <gtest/gtest.h>
+#include <core/log.h>
 
 namespace atom {
 
@@ -133,11 +134,79 @@ TEST(RayMeshIntersect, Hit)
   Ray hit1(Vec3f(-0.5f, -2.0f,  0.5f), Vec3f(0, 1, 0));
   u32 triangle = U32_MAX;
 
-  ASSERT_EQ(2.0f, intersect_mesh(hit0, Slice<Vec3f>(points, 4), Slice<u32>(indices, 6), triangle));
+  ASSERT_EQ(2.0f, intersect_mesh(hit0, Slice<Vec3f>(points, 4),
+    Slice<u32>(indices, 6), triangle));
   ASSERT_EQ(0, triangle);
 
-  ASSERT_EQ(2.0f, intersect_mesh(hit1, Slice<Vec3f>(points, 4), Slice<u32>(indices, 6), triangle));
+  ASSERT_EQ(2.0f, intersect_mesh(hit1, Slice<Vec3f>(points, 4),
+    Slice<u32>(indices, 6), triangle));
   ASSERT_EQ(1, triangle);
+}
+
+TEST(RayMeshIntersect, Box)
+{
+  // cube vertices
+  const f32 raw_vertices[24] = {
+     1,  1, -1,
+     1, -1, -1,
+    -1, -1, -1,
+    -1,  1, -1,
+     1,  1,  1,
+     1, -1,  1,
+    -1, -1,  1,
+    -1,  1,  1 };
+  // cube indices
+  const u32 raw_indices[36] = {
+    1,2,3,
+    7,6,5,
+    0,4,5,
+    1,5,6,
+    6,7,3,
+    0,3,7,
+    0,1,3,
+    4,7,5,
+    1,0,5,
+    2,1,6,
+    2,6,3,
+    4,0,7
+  };
+
+  const Slice<Vec3f> vertices(reinterpret_cast<const Vec3f *>(raw_vertices), 8);
+  const Slice<u32> indices(raw_indices, 36);
+  // set of test rays
+  const Ray test_rays[] = {
+    // internal rays
+    Ray(Vec3f( 0,  0,  0), Vec3f( 1,  0,  0)),
+    Ray(Vec3f( 0,  0,  0), Vec3f( 0,  1,  0)),
+    Ray(Vec3f( 0,  0,  0), Vec3f( 0,  0,  1)),
+    Ray(Vec3f( 0,  0,  0), Vec3f(-1,  0,  0)),
+    Ray(Vec3f( 0,  0,  0), Vec3f( 0, -1,  0)),
+    Ray(Vec3f( 0,  0,  0), Vec3f( 0,  0, -1)),
+    // externat x-rays
+    Ray(Vec3f( 2,  0,  0), Vec3f( 1,  0,  0)),
+    Ray(Vec3f( 2,  0,  0), Vec3f(-1,  0,  0)),
+    Ray(Vec3f(-2,  0,  0), Vec3f( 1,  0,  0)),
+    Ray(Vec3f(-2,  0,  0), Vec3f(-1,  0,  0)),
+    // external y-rays
+    Ray(Vec3f( 0,  2,  0), Vec3f( 0,  1,  0)),
+    Ray(Vec3f( 0,  2,  0), Vec3f( 0, -1,  0)),
+    Ray(Vec3f( 0, -2,  0), Vec3f( 0,  1,  0)),
+    Ray(Vec3f( 0, -2,  0), Vec3f( 0, -1,  0)),
+    // external z-rays
+    Ray(Vec3f( 0,  0,  2), Vec3f( 0,  0,  1)),
+    Ray(Vec3f( 0,  0,  2), Vec3f( 0,  0, -1)),
+    Ray(Vec3f( 0,  0, -2), Vec3f( 0,  0,  1)),
+    Ray(Vec3f( 0,  0, -2), Vec3f( 0,  0, -1)),
+  };
+  // compare two methods, results has to be equal
+  for (const Ray &ray : test_rays) {
+    u32 i, j;
+    // returned t should be the same
+    ASSERT_FLOAT_EQ(intersect_mesh(ray, vertices, indices, i),
+      intersect_mesh_slow(ray, vertices, indices, j));
+    // compare value of returned/colliding triangle index
+    ASSERT_EQ(i, j);
+  }
 }
 
 }

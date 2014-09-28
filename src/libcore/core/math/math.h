@@ -100,6 +100,11 @@ T lerp(T x, T min, T max)
   return min + x * (max - min);
 }
 
+template<typename T>
+T abs(const T x)
+{
+  return x < 0 ? -x : x;
+}
 
 //
 // Simple Ray structure, just origin & direction

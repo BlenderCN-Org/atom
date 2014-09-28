@@ -26,6 +26,9 @@ f32 intersect_triangle_slow(const Ray &ray, const Vec3f &v0, const Vec3f &v1, co
 f32 intersect_mesh(const Ray &ray, const Slice<Vec3f> &vertices,
   const Slice<u32> &indices, u32 &index);
 
+f32 intersect_mesh_slow(const Ray &ray, const Slice<Vec3f> &vertices,
+  const Slice<u32> &indices, u32 &index);
+
 
 
 /**

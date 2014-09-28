@@ -7,7 +7,7 @@
 namespace atom {
 
 struct Unitialized {
-  
+
 };
 
 /**
@@ -68,7 +68,7 @@ public:
     , w(1)
   {
   }
-  
+
   /**
    * Construct quaternion from w, x, y, z coefficients.
    */
@@ -400,7 +400,7 @@ Quat<T> slerp(const Quat<T> &a, const Quat<T> &b, T t)
   // Calculate angle between them.
   T half_cos = a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
   // if a=b or a=-b then theta = 0 and we can return a
-  if (std::abs(half_cos) >= 1) {
+  if (abs(half_cos) >= 1) {
     return a;
   }
   // Calculate temporary values.
@@ -408,7 +408,7 @@ Quat<T> slerp(const Quat<T> &a, const Quat<T> &b, T t)
   T half_sin = std::sqrt(1 - half_cos * half_cos);
   // if theta = 180 degrees then result is not fully defined
   // we could rotate around any axis normal to a or b
-  if (std::fabs(half_sin) < static_cast<T>(0.001)) {
+  if (abs(half_sin) < static_cast<T>(0.001)) {
     return Quat<T>(
       a.w * 0.5 + b.w * 0.5,
       a.x * 0.5 + b.x * 0.5,
