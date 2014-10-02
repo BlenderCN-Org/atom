@@ -7,7 +7,7 @@ class btCollisionShape;
 
 namespace atom {
 
-class ColliderComponent : public Component {
+class ColliderComponent : public NullComponent {
   uptr<btCollisionShape> my_shape;
 
   void activate() override;

@@ -5,7 +5,7 @@
 
 namespace atom {
 
-class RenderComponent : public Component {
+class RenderComponent : public NullComponent {
   Slot<MaterialComponent> my_material;
   Slot<MeshComponent>     my_mesh;
   bool                    my_is_enabled;

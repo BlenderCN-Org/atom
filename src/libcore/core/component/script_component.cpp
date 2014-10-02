@@ -4,19 +4,36 @@
 
 namespace atom {
 
+void ScriptComponent::init()
+{
+  on_init();
+}
+
 void ScriptComponent::activate()
 {
   processors().script.register_script(this);
+  on_activate();
 }
 
 void ScriptComponent::deactivate()
 {
-processors().script.unregister_script(this);
+  processors().script.unregister_script(this);
+  on_deactivate();
+}
+
+void ScriptComponent::terminate()
+{
+  on_terminate();
 }
 
 ScriptComponent::ScriptComponent()
-  : Component(ComponentType::SCRIPT)
+  : NullComponent(ComponentType::SCRIPT)
 {
+}
+
+void ScriptComponent::update()
+{
+  on_update();
 }
 
 }

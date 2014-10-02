@@ -4,7 +4,7 @@
 
 namespace atom {
 
-class ModelComponent : public Component {
+class ModelComponent : public NullComponent {
   String           my_model_name;
   ModelResourcePtr my_model;
 

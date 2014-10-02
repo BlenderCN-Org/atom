@@ -20,7 +20,7 @@ void MaterialComponent::deactivate()
 }
 
 MaterialComponent::MaterialComponent(const String &name)
-  : Component(ComponentType::MATERIAL)
+  : NullComponent(ComponentType::MATERIAL)
   , my_material_name(name)
 {
   assert(!name.empty());

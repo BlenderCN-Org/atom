@@ -1,6 +1,8 @@
 TODO
 ====
 
+ - ComponentType by mohol by mapovany na u32 a tym padom by nemusel
+   byt registrovany v meta (Type::ComponentType ani v set_value)
  - delete Vec2Array... or replace by Slice
  - allow Entity without ModelComponent, just MeshComponent
  - proper clone method, Component attributes are not copied

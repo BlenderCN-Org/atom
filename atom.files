@@ -1,6 +1,7 @@
 .gitignore
 README.md
 RULES.md
+TODO.md
 atom.config
 atom.creator
 atom.files
@@ -20,6 +21,7 @@ data/material/debug_bounding_box.mat
 data/material/flat.mat
 data/material/lines.mat
 data/material/manual.mat
+data/material/player.mat
 data/material/terrain.mat
 data/mesh/animal.m3d
 data/mesh/bumpy_terrain.m3d
@@ -29,6 +31,7 @@ data/mesh/flat_terrain.m3d
 data/mesh/horse.m3d
 data/mesh/icosphere.m3d
 data/mesh/monster.m3d
+data/mesh/player.m3d
 data/mesh/quad_terrain.m3d
 data/mesh/suzanne.m3d
 data/music/README
@@ -110,6 +113,8 @@ src/libcore/core/component/collider_component.h
 src/libcore/core/component/component.cpp
 src/libcore/core/component/component.h
 src/libcore/core/component/crate.cpp
+src/libcore/core/component/geometry_component.cpp
+src/libcore/core/component/geometry_component.h
 src/libcore/core/component/material_component.cpp
 src/libcore/core/component/material_component.h
 src/libcore/core/component/mesh_component.cpp
@@ -161,6 +166,8 @@ src/libcore/core/platform.h
 src/libcore/core/processor/crate.cpp
 src/libcore/core/processor/debug_processor.cpp
 src/libcore/core/processor/debug_processor.h
+src/libcore/core/processor/geometry_processor.cpp
+src/libcore/core/processor/geometry_processor.h
 src/libcore/core/processor/physics_processor.cpp
 src/libcore/core/processor/physics_processor.h
 src/libcore/core/processor/processor.cpp
@@ -251,6 +258,8 @@ src/libgame/game/crate.cpp
 src/libgame/game/game.cpp
 src/libgame/game/monster.cpp
 src/libgame/game/monster.h
+src/libgame/game/player.cpp
+src/libgame/game/player.h
 src/runner/main.cpp
 test/test_intersect.cpp
 test/test_lru_cache_int.cpp
@@ -281,4 +290,3 @@ tools/scripts/reduli.py
 tools/scripts/winconf.bat
 waf
 wscript
-TODO.md

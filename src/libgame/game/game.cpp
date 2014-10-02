@@ -10,10 +10,12 @@
 #include <core/component/skeleton_component.h>
 #include <core/component/collider_component.h>
 #include <core/component/rigid_body_component.h>
+#include <core/component/geometry_component.h>
 #include <core/component/model_component.h>
 #include <core/video/model.h>
 #include <core/video/mesh.h>
 #include "monster.h"
+#include "player.h"
 
 namespace atom {
 namespace {
@@ -34,20 +36,7 @@ class SkeletonBodyScript : public ScriptComponent {
     return uptr<Component>(new SkeletonBodyScript());
   }
 
-public:
-  SkeletonBodyScript()
-    : my_model(this)
-    , my_skeleton(this)
-    , my_mesh(this)
-    , my_render(this)
-    , my_is_initialized(false)
-    , my_mesh_vertices(nullptr)
-  {
-    my_mesh_resource.reset(new MeshResource());
-    my_mesh_resource->set_data(uptr<Mesh>(new Mesh()));
-  }
-
-  void update() override
+  void on_update() override
   {
     const Model &model = my_model->get_model()->model();
 
@@ -118,6 +107,19 @@ public:
       my_mesh_vertices->set_data(my_vertices.data(), my_vertices.size());
     }
   }
+  
+public:
+  SkeletonBodyScript()
+    : my_model(this)
+    , my_skeleton(this)
+    , my_mesh(this)
+    , my_render(this)
+    , my_is_initialized(false)
+    , my_mesh_vertices(nullptr)
+  {
+    my_mesh_resource.reset(new MeshResource());
+    my_mesh_resource->set_data(uptr<Mesh>(new Mesh()));
+  }
 };
 
 
@@ -130,15 +132,7 @@ class AnimalScript : public ScriptComponent {
     return uptr<Component>(new AnimalScript());
   }
 
-public:
-  AnimalScript()
-    : my_tick(0)
-    , my_skeleton(this)
-  {
-
-  }
-
-  void update() override
+  void on_update() override
   {
     ++my_tick;
     f32 angle1 = my_tick / 10.0f;
@@ -155,6 +149,16 @@ public:
 
     my_skeleton->recalculate_skeleton();
   }
+  
+public:
+  AnimalScript()
+    : my_tick(0)
+    , my_skeleton(this)
+  {
+
+  }
+
+  
 };
 
 
@@ -165,22 +169,6 @@ Frame* create_first_frame(Core &core)
 //  return new game::DemoFrame(core);
   //return new game::MainMenuFrame(core, std::make_shared<game::DemoFrame>(core));
 }
-
-
-class MySimpleUpdate : public ScriptComponent {
-  uptr<Component> clone() const override
-  {
-    return uptr<Component>(new MySimpleUpdate());
-  }
-
-public:
-  void update() override
-  {
-    Mat4f t = entity().transform() * Mat4f::translation(0, 0, 0.1f);
-    entity().set_transform(t);
-  }
-};
-
 
 
 uptr<Entity> create_test_object(World &world, Core &core)
@@ -291,10 +279,28 @@ uptr<Entity> create_flat_terrain(World &world, Core &core)
   uptr<MaterialComponent> material(new MaterialComponent("terrain"));
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
+  uptr<GeometryComponent> geometry(new GeometryComponent());
   entity->add_component(std::move(model));
   entity->add_component(std::move(material));
   entity->add_component(std::move(mesh));
   entity->add_component(std::move(render));
+  entity->add_component(std::move(geometry));
+  return entity;
+}
+
+uptr<Entity> create_bumpy_terrain(World &world, Core &core)
+{
+  uptr<Entity> entity(new Entity(world, core));
+  uptr<ModelComponent> model(new ModelComponent("bumpy_terrain"));
+  uptr<MaterialComponent> material(new MaterialComponent("terrain"));
+  uptr<MeshComponent> mesh(new MeshComponent());
+  uptr<RenderComponent> render(new RenderComponent());
+  uptr<GeometryComponent> geometry(new GeometryComponent());
+  entity->add_component(std::move(model));
+  entity->add_component(std::move(material));
+  entity->add_component(std::move(mesh));
+  entity->add_component(std::move(render));
+  entity->add_component(std::move(geometry));
   return entity;
 }
 
@@ -309,6 +315,8 @@ std::vector<EntityCreator> create_object_creators(Core &)
   creators.push_back(EntityCreator("Ground", create_ground));
   creators.push_back(EntityCreator("Box", create_box));
   creators.push_back(EntityCreator("FlatTerrain", create_flat_terrain));
+  creators.push_back(EntityCreator("BumpyTerrain", create_bumpy_terrain));
+  creators.push_back(EntityCreator("Player", create_player));
   return creators;
 }
 

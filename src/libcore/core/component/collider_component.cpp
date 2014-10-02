@@ -18,7 +18,7 @@ void ColliderComponent::deactivate()
 }
 
 ColliderComponent::ColliderComponent()
-  : Component(ComponentType::COLLIDER)
+  : NullComponent(ComponentType::COLLIDER)
 {
 
 }

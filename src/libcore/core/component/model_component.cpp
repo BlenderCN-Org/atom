@@ -24,7 +24,7 @@ uptr<Component> ModelComponent::clone() const
 }
 
 ModelComponent::ModelComponent(const String &name)
-  : Component(ComponentType::MODEL)
+  : NullComponent(ComponentType::MODEL)
   , my_model_name(name)
 {
 

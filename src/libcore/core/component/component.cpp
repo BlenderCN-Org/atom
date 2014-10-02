@@ -5,20 +5,18 @@
 
 namespace atom {
 
-void Component::activate()
-{
-  // empty
-}
+META_DEFINE_FIELDS(Component) {
+  FIELD(Component, my_type, "type"),
+  FIELD(Component, my_name, "name")
+};
 
-void Component::deactivate()
-{
-  // empty
-}
+META_DEFINE_ROOT_CLASS(Component, "Component");
 
 Component::Component(ComponentType type)
   : my_type(type)
   , my_entity(nullptr)
 {
+  META_INIT();
 }
 
 Component::~Component()
@@ -29,6 +27,10 @@ Component::~Component()
 uptr<Component> Component::duplicate() const
 {
   uptr<Component> component = clone();
+
+  // copy properties
+  copy_field_values(*this, *component);
+  
   return component;
 }
 
@@ -39,6 +41,7 @@ void Component::attach(Entity &entity)
   for (GenericSlot *slot : my_slots) {
     slot->activate(entity);
   }
+  init();
   // then activate entity
   activate();
 }
@@ -46,6 +49,7 @@ void Component::attach(Entity &entity)
 void Component::detach()
 {
   deactivate();
+  terminate();
   my_entity = nullptr;
 }
 

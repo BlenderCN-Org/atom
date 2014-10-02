@@ -8,7 +8,7 @@
 namespace atom {
 
 SkeletonComponent::SkeletonComponent()
-  : Component(ComponentType::SKELETON)
+  : NullComponent(ComponentType::SKELETON)
   , my_model(this)
 {
   // empty

@@ -15,7 +15,7 @@ struct Bone {
 };
 
 
-class SkeletonComponent : public Component {
+class SkeletonComponent : public NullComponent {
   Slot<ModelComponent> my_model;
   std::vector<Bone>    my_bones;
   std::vector<Mat4f>   my_transforms;

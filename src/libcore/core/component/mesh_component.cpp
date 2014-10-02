@@ -4,6 +4,12 @@
 
 namespace atom {
 
+META_DEFINE_FIELDS(MeshComponent) {
+  FIELD(MeshComponent, my_mode, "mode")
+};
+
+META_DEFINE_CLASS(MeshComponent, Component, "MeshComponent");
+
 void MeshComponent::activate()
 {
   if (my_mode == MeshComponentMode::AUTO) {
@@ -22,11 +28,11 @@ uptr<Component> MeshComponent::clone() const
 }
 
 MeshComponent::MeshComponent(MeshComponentMode mode)
-  : Component(ComponentType::MESH)
+  : NullComponent(ComponentType::MESH)
   , my_mode(mode)
   , my_model(this)
 {
-  // empty
+  META_INIT()
 }
 
 MeshComponent::~MeshComponent()

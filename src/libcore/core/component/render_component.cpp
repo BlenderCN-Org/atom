@@ -26,7 +26,7 @@ uptr<Component> RenderComponent::clone() const
 }
 
 RenderComponent::RenderComponent()
-  : Component(ComponentType::RENDER)
+  : NullComponent(ComponentType::RENDER)
   , my_material(this, "")
   , my_mesh(this, "")
   , my_is_enabled(true)

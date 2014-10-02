@@ -4,12 +4,12 @@
 
 namespace atom {
 
-enum class MeshComponentMode {
+enum class MeshComponentMode : u32 {
   AUTO,
   MANUAL
 };
 
-class MeshComponent : public Component {
+class MeshComponent : public NullComponent {
   MeshComponentMode    my_mode;
   Slot<ModelComponent> my_model;
   MeshResourcePtr      my_mesh;
@@ -21,6 +21,8 @@ class MeshComponent : public Component {
   void deactivate() override;
 
 public:
+  META_DECLARE_CLASS;
+  
   explicit MeshComponent(MeshComponentMode mode = MeshComponentMode::AUTO);
   ~MeshComponent();
 
@@ -29,6 +31,7 @@ public:
   void set_mesh(MeshResourcePtr mesh);
 };
 
+MAP_TYPE(MeshComponentMode, U32)
 MAP_COMPONENT_TYPE(MeshComponent, MESH)
 
 }

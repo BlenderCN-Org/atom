@@ -114,6 +114,7 @@ class MaterialComponent;
 class MeshComponent;
 class RenderComponent;
 class ScriptComponent;
+class GeometryComponent;
 class SkeletonComponent;
 class PlaneColliderComponent;
 class BoxColliderComponent;
@@ -127,6 +128,7 @@ class Processor;
 class RenderProcessor;
 class PhysicsProcessor;
 class ScriptProcessor;
+class GeometryProcessor;
 class DebugProcessor;
 
 // math

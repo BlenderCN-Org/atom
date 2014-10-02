@@ -36,6 +36,7 @@ enum class Type : u32 {
   TEXTURE,
   SAMPLER_2D,
   DRAW_FACE,
+  COMPONENT_TYPE,
   UNKNOWN
 //  IMAGE
 };

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include "../foundation.h"
 #include "../log.h"
 #include "../stdvec.h"

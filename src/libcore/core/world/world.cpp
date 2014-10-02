@@ -5,6 +5,7 @@
 #include "../processor/render_processor.h"
 #include "../processor/physics_processor.h"
 #include "../processor/script_processor.h"
+#include "../processor/geometry_processor.h"
 #include "../processor/debug_processor.h"
 #include "../utils/utils.h"
 
@@ -185,10 +186,12 @@ void World::init_processors()
   my_processors.video.reset(new RenderProcessor(*this));
   my_processors.physics.reset(new PhysicsProcessor(*this));
   my_processors.script.reset(new ScriptProcessor(*this));
+  my_processors.geometry.reset(new GeometryProcessor(*this));
   my_processors.debug.reset(new DebugProcessor(*this));
 
   my_processors_ref.reset(new WorldProcessorsRef(*my_processors.video,
-                                                 *my_processors.physics, *my_processors.script, *my_processors.debug));
+    *my_processors.physics, *my_processors.script, *my_processors.geometry,
+    *my_processors.debug));
 }
 
 void World::init()

@@ -8,6 +8,7 @@
 #include <core/processor/render_processor.h>
 #include <core/processor/physics_processor.h>
 #include <core/processor/debug_processor.h>
+#include <core/processor/geometry_processor.h>
 #include <core/video/draw_service.h>
 #include <core/video/model.h>
 #include <core/video/render_context.h>
@@ -327,62 +328,15 @@ void GameView::find_entity_in_center()
 
 void GameView::find_triangle_in_center()
 {
-  const Slice<sptr<Entity>> entities = my_world->all_entities();
-  f32 tnearest = F32_MAX;
-  u32 inearest = U32_MAX;
-  Vec3f intersection;
-  Entity *nearest = nullptr;
-
-
-  for (const sptr<Entity> entity : entities) {
-    ModelComponent *component = entity->find_component<ModelComponent>();
-
-    if (component == nullptr) {
-      continue;
-    }
-
-    ModelResourcePtr resource = component->get_model();
-
-    if (resource == nullptr) {
-      continue;
-    }
-
-    const Model &model = resource->model();
-
-    const ElementArray *vertices = model.find_array("vertices", Type::F32);
-    const ElementArray *indices = model.find_array("indices", Type::U32);
-
-    if (vertices == nullptr || indices == nullptr) {
-      continue;
-    }
-
-    const Slice<Vec3f> v(reinterpret_cast<const Vec3f *>(vertices->data.get()),
-      vertices->size / sizeof(Vec3f));
-    const Slice<u32> i(reinterpret_cast<const u32 *>(indices->data.get()),
-                         indices->size / sizeof(u32));
-
-    Mat4f transform = entity->transform().inverted();
-    Vec3f origin = transform * my_camera.get_position();
-    Vec3f dir = transform * my_camera.get_front();
-    Ray ray(origin, dir);
-
-    u32 index;
-    f32 t = intersect_mesh(ray, v, i, index);
-
-    if (t > 0 && t < tnearest) {
-      inearest = index;
-      tnearest = t;
-      nearest = entity.get();
-      intersection = ray.origin + ray.dir * t;
-    }
-  }
-
-  my_has_intersection = nearest != nullptr;
-
-  if (nearest != nullptr) {
-    my_intersect_point = intersection;
-    log::info("Neareset entity %s, triangle %i", nearest->id().c_str(), inearest);
-    log::info("%s", to_string(intersection).c_str());
+  RayGeometryResult result;
+  Ray ray(my_camera.get_position(), my_camera.get_front());
+  my_has_intersection = my_world->processors().geometry.intersect_ray(ray, result);
+  
+  static int count = 0;
+  
+  if (my_has_intersection) {
+    my_intersect_point = result.hit;
+    log::info("Hit %i", count++);
   }
 }
 

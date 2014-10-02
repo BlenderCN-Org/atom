@@ -5,7 +5,7 @@
 
 namespace atom {
 
-class MaterialComponent : public Component {
+class MaterialComponent : public NullComponent {
   String my_material_name;
   MaterialResourcePtr my_material;
 

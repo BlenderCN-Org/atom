@@ -17,24 +17,27 @@ typedef std::vector<sptr<Entity>> EntityVector;
 
 /// processory pre jednotlive komponenty
 struct WorldProcessors {
-  uptr<RenderProcessor>  video;
-  uptr<PhysicsProcessor> physics;
-  uptr<ScriptProcessor>  script;
-  uptr<DebugProcessor>   debug;
+  uptr<RenderProcessor>   video;
+  uptr<PhysicsProcessor>  physics;
+  uptr<ScriptProcessor>   script;
+  uptr<GeometryProcessor> geometry;
+  uptr<DebugProcessor>    debug;
 };
 
 /// referencie na processory, umoznuju pohodlny pristup pomocou jednej metody processors()
 struct WorldProcessorsRef {
-  RenderProcessor  &video;
-  PhysicsProcessor &physics;
-  ScriptProcessor  &script;
-  DebugProcessor   &debug;
+  RenderProcessor   &video;
+  PhysicsProcessor  &physics;
+  ScriptProcessor   &script;
+  GeometryProcessor &geometry;
+  DebugProcessor    &debug;
 
   WorldProcessorsRef(RenderProcessor &vp, PhysicsProcessor &pp,
-    ScriptProcessor &sp, DebugProcessor &dp)
+    ScriptProcessor &sp, GeometryProcessor &gp, DebugProcessor &dp)
     : video(vp)
     , physics(pp)
     , script(sp)
+    , geometry(gp)
     , debug(dp)
   {
     // empty

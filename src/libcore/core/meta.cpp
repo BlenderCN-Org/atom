@@ -65,6 +65,10 @@ void set_value(Type type, const void *src, void *dst)
     case Type::INT:
       *reinterpret_cast<int *>(dst) = *reinterpret_cast<const int *>(src);
       break;
+      
+    case Type::U32:
+      *reinterpret_cast<u32 *>(dst) = *reinterpret_cast<const u32 *>(src);
+      break;
 
     case Type::FLOAT:
       *reinterpret_cast<float *>(dst) = *reinterpret_cast<const float *>(src);
@@ -80,6 +84,10 @@ void set_value(Type type, const void *src, void *dst)
 
     case Type::VEC3F:
       *reinterpret_cast<Vec3f *>(dst) = *reinterpret_cast<const Vec3f *>(src);
+      break;
+      
+    case Type::COMPONENT_TYPE:
+      *reinterpret_cast<ComponentType *>(dst) = *reinterpret_cast<const ComponentType *>(src);
       break;
 
     default:

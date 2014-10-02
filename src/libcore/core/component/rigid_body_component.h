@@ -14,7 +14,7 @@ enum class RigidBodyType {
   DYNAMIC
 };
 
-class RigidBodyComponent : public Component {
+class RigidBodyComponent : public NullComponent {
   uptr<btRigidBody> my_rigid_body;
   uptr<btDefaultMotionState> my_motion_state;
   f32               my_mass;

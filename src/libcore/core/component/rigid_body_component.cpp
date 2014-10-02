@@ -66,7 +66,7 @@ uptr<Component> RigidBodyComponent::clone() const
 }
 
 RigidBodyComponent::RigidBodyComponent()
-  : Component(ComponentType::RIGID_BODY)
+  : NullComponent(ComponentType::RIGID_BODY)
   , my_mass(1.0f)
   , my_rigid_body_type(RigidBodyType::DYNAMIC)
 {

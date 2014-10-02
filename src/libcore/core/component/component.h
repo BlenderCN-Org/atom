@@ -6,13 +6,14 @@
 
 namespace atom {
 
-enum class ComponentType {
+enum class ComponentType : u32 {
   UNKNOWN,
   MODEL,
   MATERIAL,
   RENDER,
   MESH,
   RAW_MESH,
+  GEOMETRY,
   SCRIPT,
   RIGID_BODY,
   SKELETON,
@@ -53,19 +54,27 @@ class Component : NonCopyable {
   Entity       *my_entity;
   String        my_name;
   SlotArray     my_slots;
+  
+  virtual void init() = 0;
 
   // empty implementation
-  virtual void activate();
+  virtual void activate() = 0;
 
   // empty implementation
-  virtual void deactivate();
+  virtual void deactivate() = 0;
+  
+  virtual void terminate() = 0;
 
   virtual uptr<Component> clone() const = 0;
 
 public:
+  META_DECLARE_CLASS_PTR; // each instance contains pointer to the MetaClass
+  META_DECLARE_CLASS;     // static instance of MetaClass for Material
+  
+  // doesn't need to be private because it is abstract class
   Component(ComponentType type);
   virtual ~Component();
-
+  
   uptr<Component> duplicate() const;
 
   void attach(Entity &entity);
@@ -88,6 +97,45 @@ public:
 
   void register_slot(GenericSlot *slot);
 };
+
+
+class NullComponent : public Component {
+  void init() override
+  {
+    // empty
+  }
+  
+  // empty implementation
+  void activate() override
+  {
+    // empty
+  }
+
+  // empty implementation
+  void deactivate() override
+  {
+    
+  }
+  
+  void terminate() override
+  {
+    // empty
+  }
+    
+protected:
+  NullComponent(ComponentType type)
+    : Component(type)
+  {
+    // empty
+  }
+  
+  ~NullComponent()
+  {
+    // empty
+  }
+};
+
+MAP_TYPE(ComponentType, COMPONENT_TYPE)
 
 template<typename T>
 ComponentType component_type_of();

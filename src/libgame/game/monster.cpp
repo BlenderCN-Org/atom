@@ -9,7 +9,7 @@ MonsterScript::MonsterScript()
 {
 }
 
-void MonsterScript::update()
+void MonsterScript::on_update()
 {
   f32 t = (sin(world().time()) + 1) / 2;  // t = <0, 1>
   f32 t1 = sin(world().time());
