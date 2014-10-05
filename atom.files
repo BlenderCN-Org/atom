@@ -1,9 +1,8 @@
 .gitignore
 README.md
-RULES.md
-TODO.md
 atom.config
 atom.creator
+atom.creator.user
 atom.files
 atom.includes
 data/config
@@ -54,6 +53,8 @@ data/sound/hit.ogg
 data/sound/level1_music.ogg
 data/sound/trampoline_jump.ogg
 data/sound/walking.ogg
+doc/RULES.md
+doc/TODO.md
 scene/animal.blend
 scene/horse.blend
 scene/monster.blend
