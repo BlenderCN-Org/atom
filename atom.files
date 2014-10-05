@@ -53,6 +53,7 @@ data/sound/hit.ogg
 data/sound/level1_music.ogg
 data/sound/trampoline_jump.ogg
 data/sound/walking.ogg
+doc/MISSION.md
 doc/RULES.md
 doc/TODO.md
 scene/animal.blend
