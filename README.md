@@ -1,10 +1,10 @@
 Atom Project (Engine + Game + Editor)
 =====================================
 
-**Project features:**
- - grip mechanics
- - vast open world
- - giant colosi
+**Project features:**  
+ - grip mechanics  
+ - vast open world  
+ - giant colosi  
 
 **Project structure:**
  - src
