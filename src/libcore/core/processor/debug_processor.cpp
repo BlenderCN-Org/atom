@@ -154,14 +154,14 @@ void DebugProcessor::draw_bounding_box()
     Mat4f transform = entity->transform();
     const BoundingBox &box = entity->bounding_box();
 
-    Vec3f v0 = transform * Vec3f(box.xmin, box.ymin, box.zmin);
-    Vec3f v1 = transform * Vec3f(box.xmax, box.ymin, box.zmin);
-    Vec3f v2 = transform * Vec3f(box.xmax, box.ymax, box.zmin);
-    Vec3f v3 = transform * Vec3f(box.xmin, box.ymax, box.zmin);
-    Vec3f v4 = transform * Vec3f(box.xmin, box.ymin, box.zmax);
-    Vec3f v5 = transform * Vec3f(box.xmax, box.ymin, box.zmax);
-    Vec3f v6 = transform * Vec3f(box.xmax, box.ymax, box.zmax);
-    Vec3f v7 = transform * Vec3f(box.xmin, box.ymax, box.zmax);
+    Vec3f v0 = transform_point(transform, Vec3f(box.xmin, box.ymin, box.zmin));
+    Vec3f v1 = transform_point(transform, Vec3f(box.xmax, box.ymin, box.zmin));
+    Vec3f v2 = transform_point(transform, Vec3f(box.xmax, box.ymax, box.zmin));
+    Vec3f v3 = transform_point(transform, Vec3f(box.xmin, box.ymax, box.zmin));
+    Vec3f v4 = transform_point(transform, Vec3f(box.xmin, box.ymin, box.zmax));
+    Vec3f v5 = transform_point(transform, Vec3f(box.xmax, box.ymin, box.zmax));
+    Vec3f v6 = transform_point(transform, Vec3f(box.xmax, box.ymax, box.zmax));
+    Vec3f v7 = transform_point(transform, Vec3f(box.xmin, box.ymax, box.zmax));
 
     lines.push_back(v0);
     lines.push_back(v1);

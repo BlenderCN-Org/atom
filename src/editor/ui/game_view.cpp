@@ -307,8 +307,8 @@ void GameView::find_entity_in_center()
   for (const sptr<Entity> entity : entities) {
     const BoundingBox &box = entity->bounding_box();
     Mat4f transform = entity->transform().inverted();
-    Vec3f origin = transform * my_camera.get_position();
-    Vec3f dir = transform * my_camera.get_front();
+    Vec3f origin = transform_point(transform, my_camera.get_position());
+    Vec3f dir = transform_vec(transform, my_camera.get_front());
     Ray ray(origin, dir);
 
     f32 t = intersect_bounding_box(ray, box);

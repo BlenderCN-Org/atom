@@ -161,14 +161,14 @@ void Entity::update_aabb()
   Vec3f xmin_ymax_zmax = Vec3f(box.xmin, box.ymax, box.zmax);
   Vec3f xmax_ymax_zmax = Vec3f(box.xmax, box.ymax, box.zmax);
 
-  my_aabb.extend(my_transform * xmin_ymin_zmin);
-  my_aabb.extend(my_transform * xmax_ymin_zmin);
-  my_aabb.extend(my_transform * xmin_ymax_zmin);
-  my_aabb.extend(my_transform * xmax_ymax_zmin);
-  my_aabb.extend(my_transform * xmin_ymin_zmax);
-  my_aabb.extend(my_transform * xmax_ymin_zmax);
-  my_aabb.extend(my_transform * xmin_ymax_zmax);
-  my_aabb.extend(my_transform * xmax_ymax_zmax);
+  my_aabb.extend(transform_point(my_transform, xmin_ymin_zmin));
+  my_aabb.extend(transform_point(my_transform, xmax_ymin_zmin));
+  my_aabb.extend(transform_point(my_transform, xmin_ymax_zmin));
+  my_aabb.extend(transform_point(my_transform, xmax_ymax_zmin));
+  my_aabb.extend(transform_point(my_transform, xmin_ymin_zmax));
+  my_aabb.extend(transform_point(my_transform, xmax_ymin_zmax));
+  my_aabb.extend(transform_point(my_transform, xmin_ymax_zmax));
+  my_aabb.extend(transform_point(my_transform, xmax_ymax_zmax));
 }
 
 }

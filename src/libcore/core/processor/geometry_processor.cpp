@@ -56,7 +56,8 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, RayGeometryResult &result)
                          indices->size / sizeof(u32));
 
     Mat4f transform = entity.transform();
-    Ray r(transform * ray.origin, transform * ray.dir);
+    Ray r(transform_point(transform, ray.origin),
+          transform_vec(transform, ray.dir));
 
     u32 index;
     f32 t = intersect_mesh(r, v, i, index);
