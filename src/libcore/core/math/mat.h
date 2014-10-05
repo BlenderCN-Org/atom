@@ -376,7 +376,7 @@ struct Mat4 {
     value(2, 0) = v20;  value(2, 1) = v21;  value(2, 2) = v22;  value(2, 3) = v23;
     value(3, 0) = v30;  value(3, 1) = v31;  value(3, 2) = v32;  value(3, 3) = v33;
   }
-
+  
   void set_identity()
   {
     value(0, 0) = 1;

@@ -200,7 +200,7 @@ void PhongMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 
   VideoService &vs = context.video_processor;
   vs.enable_depth_test();
-  context.uniforms.color = Vec3f(0.7, 0.7, 0.7);
+  context.uniforms.color = my_color;
   context.uniforms.sun_dir = Vec3f(0, 0, -1);
   context.uniforms.ambient_color = Vec3f(0.13, 0.13, 0.13);
 

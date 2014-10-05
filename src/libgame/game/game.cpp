@@ -283,10 +283,8 @@ uptr<Entity> create_suzanne(World &world, Core &core)
 uptr<Entity> create_flat_terrain(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
-  // suzanne
-//  uptr<ModelComponent> model(new ModelComponent("quad_terrain"));
   uptr<ModelComponent> model(new ModelComponent());
-  model->set_model_name("flat_terrain");
+  model->set_model_name("quad_terrain");
   uptr<MaterialComponent> material(new MaterialComponent());
   material->set_material_name("terrain");
   uptr<MeshComponent> mesh(new MeshComponent());

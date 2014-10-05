@@ -56,9 +56,10 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, RayGeometryResult &result)
                          indices->size / sizeof(u32));
 
     Mat4f transform = entity.transform();
-    Ray r(transform_point(transform, ray.origin),
-          transform_vec(transform, ray.dir));
-
+    Mat4f inverted = transform.inverted();
+    Ray r(transform_point(inverted, ray.origin),
+          transform_vec(inverted, ray.dir));
+    
     u32 index;
     f32 t = intersect_mesh(r, v, i, index);
 
@@ -66,7 +67,7 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, RayGeometryResult &result)
       inearest = index;
       tnearest = t;
       nearest = component;
-      intersection = r.origin + r.dir * t;
+      intersection = transform_point(transform, r.origin) + transform_vec(transform, r.dir) * t;
     }
   }
   

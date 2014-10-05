@@ -78,8 +78,6 @@ private:
 
   void switch_state_to_looking();
 
-  void find_entity_in_center();
-
   void find_triangle_in_center();
 
   void draw_intersection();

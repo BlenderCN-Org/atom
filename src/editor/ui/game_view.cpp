@@ -164,7 +164,6 @@ void GameView::mouseMoveEvent(QMouseEvent *event)
     my_ignore_mouse_move = event->pos() - mapFromGlobal(my_cursor_pos);
     QCursor::setPos(my_cursor_pos);
 
-//    find_entity_in_center();
     find_triangle_in_center();
   }
 }
@@ -296,47 +295,15 @@ void GameView::switch_state_to_looking()
   my_state = GameViewState::LOOKING;
 }
 
-void GameView::find_entity_in_center()
-{
-  Slice<sptr<Entity>> entities = my_world->all_entities();
-  f32 tnearest = F32_MAX;
-
-  Entity *nearest = nullptr;
-
-
-  for (const sptr<Entity> entity : entities) {
-    const BoundingBox &box = entity->bounding_box();
-    Mat4f transform = entity->transform().inverted();
-    Vec3f origin = transform_point(transform, my_camera.get_position());
-    Vec3f dir = transform_vec(transform, my_camera.get_front());
-    Ray ray(origin, dir);
-
-    f32 t = intersect_bounding_box(ray, box);
-
-    if (t >= 0 && t < tnearest) {
-      tnearest = t;
-      nearest = entity.get();
-    }
-  }
-
-  static int count = 0;
-
-  if (nearest != nullptr) {
-    log::info("Neareset entity %i, id %s", count++, nearest->id().c_str());
-  }
-}
-
 void GameView::find_triangle_in_center()
 {
   RayGeometryResult result;
   Ray ray(my_camera.get_position(), my_camera.get_front());
   my_has_intersection = my_world->processors().geometry.intersect_ray(ray, result);
   
-  static int count = 0;
   
   if (my_has_intersection) {
     my_intersect_point = result.hit;
-    log::info("Hit %i", count++);
   }
 }
 

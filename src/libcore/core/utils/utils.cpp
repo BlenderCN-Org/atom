@@ -133,8 +133,14 @@ String to_string(const Quatf &q)
 String to_string(const Mat4f &m)
 {
   std::stringstream output;
-  for (unsigned i = 0; i < 4; ++i)
-    output << m(0, i) << ", " << m(1, i) << ", " << m(2, i) << ", " << m(3, i) << std::endl;
+  output << std::fixed << std::setprecision(4);
+  
+  for (unsigned i = 0; i < 4; ++i) {
+    output << m(0, i) << ", " <<
+              m(1, i) << ", " <<
+              m(2, i) << ", " <<
+              m(3, i) << std::endl;
+  }
   return output.str();
 }
 
