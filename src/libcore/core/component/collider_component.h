@@ -32,11 +32,18 @@ public:
  * Static plane collider.
  */
 class PlaneColliderComponent : public ColliderComponent {
-  Vec4f my_plane;   ///< plane equation (xyz normal, w constant)
+  Vec3f my_normal;   ///< plane equation (xyz normal, w constant)
+  f32   my_w;
+  
+  void activate();
 
   uptr<Component> clone() const override;
 public:
-  explicit PlaneColliderComponent(const Vec4f &plane);
+  META_DECLARE_CLASS;
+  
+  PlaneColliderComponent();
+  
+  void set_plane(const Vec3f &normal, f32 w);
 };
 
 
@@ -47,21 +54,13 @@ class BoxColliderComponent : public ColliderComponent {
   Vec3f my_size;
 
   uptr<Component> clone() const override;
+  
 public:
-  explicit BoxColliderComponent(const Vec3f &extent);
+  META_DECLARE_CLASS;
+  
+  BoxColliderComponent();
 
-};
-
-
-/**
- * Sphere collider.
- */
-class SphereColliderComponent : public ColliderComponent {
-  f32 my_radius;
-
-public:
-  explicit SphereColliderComponent(f32 radius);
-
+  void set_size(const Vec3f &extent);
 };
 
 
@@ -75,7 +74,6 @@ class MeshColliderComponent : public ColliderComponent {
 MAP_COMPONENT_TYPE(ColliderComponent, COLLIDER)
 MAP_COMPONENT_TYPE(PlaneColliderComponent, COLLIDER)
 MAP_COMPONENT_TYPE(BoxColliderComponent, COLLIDER)
-MAP_COMPONENT_TYPE(SphereColliderComponent, COLLIDER)
 MAP_COMPONENT_TYPE(MeshColliderComponent, COLLIDER)
 
 }

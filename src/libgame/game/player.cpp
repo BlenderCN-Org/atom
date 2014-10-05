@@ -13,8 +13,13 @@ class PlayerScript : public ScriptComponent {
 uptr<Entity> create_player(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
-  entity->add_component(uptr<Component>(new ModelComponent("player")));
-  entity->add_component(uptr<Component>(new MaterialComponent("player")));
+  uptr<ModelComponent> model(new ModelComponent());
+  model->set_model_name("player");
+  entity->add_component(std::move(model));
+  uptr<MaterialComponent> material(new MaterialComponent());
+  material->set_material_name("player");
+  entity->add_component(std::move(material));
+  
   entity->add_component(uptr<Component>(new MeshComponent()));
   entity->add_component(uptr<Component>(new RenderComponent()));
   return entity;

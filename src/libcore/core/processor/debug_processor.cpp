@@ -67,7 +67,7 @@ public:
 
 DebugProcessor::DebugProcessor(World &world)
   : NullProcessor(world)
-  , my_debug_categories(0)
+  , my_debug_categories(DebugCategory::PHYSICS)
   , my_physics_drawer(new PhysicsDebugDrawer())
 {
   ResourceService &rs = core().resource_service();

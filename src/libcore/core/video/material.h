@@ -39,6 +39,8 @@ typedef sptr<Material> MaterialPtr;
 
 class LinesMaterial : public Material {
 public:
+  META_DECLARE_CLASS;
+  
   static uptr<Material> create(ResourceService &rs);
 
   LinesMaterial(const TechniqueResourcePtr &shader);
@@ -49,8 +51,6 @@ public:
 
   TechniqueResourcePtr my_shader;
   Vec3f color;
-
-  META_DECLARE_CLASS;
 };
 
 

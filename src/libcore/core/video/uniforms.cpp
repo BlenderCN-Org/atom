@@ -13,7 +13,7 @@ META_DEFINE_FIELDS(Uniforms) {
 //  FIELD(Uniforms, color, "color"),
 };
 
-META_DEFINE_ROOT_CLASS(Uniforms, "Uniforms");
+META_DEFINE_ROOT_CLASS(Uniforms);
 
 Uniforms::Uniforms()
   : color(0.5, 0.5, 0.5)

@@ -141,15 +141,15 @@ struct MetaClass {
 
 /// pridaj do (definicie) triedy meta informacie
 /// vhodne pre odvodenu triedu
-#define META_DEFINE_CLASS(C, PARENT_CLASS, NAME) \
-  MetaClass C::meta_class(&PARENT_CLASS::meta_class, NAME, C::meta_fields, \
-    sizeof(C::meta_fields) / sizeof(MetaField))
+#define META_DEFINE_CLASS(CLASS, PARENT_CLASS) \
+  MetaClass CLASS::meta_class(&PARENT_CLASS::meta_class, #CLASS, CLASS::meta_fields, \
+    sizeof(CLASS::meta_fields) / sizeof(MetaField))
 
 /// pridaj do (definicie) triedy meta informacie
 /// vhodne pre najvyssiu (nie odvodenu) triedu
-#define META_DEFINE_ROOT_CLASS(C, NAME) \
-  MetaClass C::meta_class(nullptr, NAME, C::meta_fields, \
-    sizeof(C::meta_fields) / sizeof(MetaField))
+#define META_DEFINE_ROOT_CLASS(CLASS) \
+  MetaClass CLASS::meta_class(nullptr, #CLASS, CLASS::meta_fields, \
+    sizeof(CLASS::meta_fields) / sizeof(MetaField))
 
 /// inicializuj meta ptr (kazda instancia ma svoj meta ptr)
 /// &meta_class je adresa statickej clenskej premennej s meta informaciami

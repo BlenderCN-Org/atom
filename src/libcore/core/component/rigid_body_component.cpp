@@ -6,6 +6,13 @@
 
 namespace atom {
 
+META_DEFINE_FIELDS(RigidBodyComponent) {
+  FIELD(RigidBodyComponent, my_body_type, "body_type"),
+  FIELD(RigidBodyComponent, my_mass, "mass")
+};
+
+META_DEFINE_CLASS(RigidBodyComponent, NullComponent);
+
 void RigidBodyComponent::activate()
 {
   ColliderComponent *collider = entity().find_component<ColliderComponent>();
@@ -28,7 +35,7 @@ void RigidBodyComponent::activate()
   my_motion_state.reset(new btDefaultMotionState(transform));
   my_rigid_body.reset(new btRigidBody(my_mass, my_motion_state.get(), shape));
 
-  switch (my_rigid_body_type) {
+  switch (my_body_type) {
     case RigidBodyType::STATIC:
       log::info("Creating static body");
       my_rigid_body->setFlags(btCollisionObject::CF_STATIC_OBJECT);
@@ -60,7 +67,7 @@ void RigidBodyComponent::deactivate()
 uptr<Component> RigidBodyComponent::clone() const
 {
   uptr<RigidBodyComponent> duplicate(new RigidBodyComponent());
-  duplicate->set_type(my_rigid_body_type);
+  duplicate->set_body_type(my_body_type);
   duplicate->set_mass(my_mass);
   return std::move(duplicate);
 }
@@ -68,7 +75,7 @@ uptr<Component> RigidBodyComponent::clone() const
 RigidBodyComponent::RigidBodyComponent()
   : NullComponent(ComponentType::RIGID_BODY)
   , my_mass(1.0f)
-  , my_rigid_body_type(RigidBodyType::DYNAMIC)
+  , my_body_type(RigidBodyType::DYNAMIC)
 {
 
 }

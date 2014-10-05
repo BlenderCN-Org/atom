@@ -8,7 +8,7 @@ META_DEFINE_FIELDS(MeshComponent) {
   FIELD(MeshComponent, my_mode, "mode")
 };
 
-META_DEFINE_CLASS(MeshComponent, Component, "MeshComponent");
+META_DEFINE_CLASS(MeshComponent, NullComponent);
 
 void MeshComponent::activate()
 {
@@ -24,12 +24,12 @@ void MeshComponent::deactivate()
 
 uptr<Component> MeshComponent::clone() const
 {
-  return uptr<MeshComponent>(new MeshComponent(my_mode));
+  return uptr<MeshComponent>(new MeshComponent());
 }
 
-MeshComponent::MeshComponent(MeshComponentMode mode)
+MeshComponent::MeshComponent()
   : NullComponent(ComponentType::MESH)
-  , my_mode(mode)
+  , my_mode(MeshComponentMode::AUTO)
   , my_model(this)
 {
   META_INIT()
@@ -48,6 +48,11 @@ MeshResourcePtr MeshComponent::mesh() const
 void MeshComponent::set_mesh(MeshResourcePtr mesh)
 {
   my_mesh = mesh;
+}
+
+void MeshComponent::set_mode(MeshComponentMode mode)
+{
+  my_mode = mode;
 }
 
 }

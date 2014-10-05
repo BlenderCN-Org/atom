@@ -12,7 +12,7 @@ META_DEFINE_FIELDS(Material) {
   FIELD(Material, face, "face")
 };
 
-META_DEFINE_ROOT_CLASS(Material, "Material");
+META_DEFINE_ROOT_CLASS(Material);
 
 Material::~Material()
 {
@@ -27,7 +27,7 @@ META_DEFINE_FIELDS(LinesMaterial) {
   FIELD(LinesMaterial, color, "color")
 };
 
-META_DEFINE_CLASS(LinesMaterial, Material, "LinesMaterial");
+META_DEFINE_CLASS(LinesMaterial, Material);
 
 uptr<Material> LinesMaterial::create(ResourceService &rs)
 {
@@ -73,7 +73,7 @@ META_DEFINE_FIELDS(FlatMaterial) {
   FIELD(FlatMaterial, color, "color")
 };
 
-META_DEFINE_CLASS(FlatMaterial, Material, "FlatMaterial");
+META_DEFINE_CLASS(FlatMaterial, Material);
 
 uptr<Material> FlatMaterial::create(ResourceService &rs)
 {
@@ -120,7 +120,7 @@ META_DEFINE_FIELDS(WireframeMaterial) {
   FIELD(WireframeMaterial, color, "color")
 };
 
-META_DEFINE_CLASS(WireframeMaterial, Material, "WireframeMaterial");
+META_DEFINE_CLASS(WireframeMaterial, Material);
 
 uptr<Material> WireframeMaterial::create(ResourceService &rs)
 {
@@ -171,7 +171,7 @@ META_DEFINE_FIELDS(PhongMaterial) {
   FIELD(PhongMaterial, my_color, "color"),
 };
 
-META_DEFINE_CLASS(PhongMaterial, Material, "PhongMaterial");
+META_DEFINE_CLASS(PhongMaterial, Material);
 
 
 uptr<Material> PhongMaterial::create(ResourceService &rs)
@@ -227,7 +227,7 @@ META_DEFINE_FIELDS(FlatSkinMaterial) {
   FIELD(FlatSkinMaterial, my_color, "color"),
 };
 
-META_DEFINE_CLASS(FlatSkinMaterial, Material, "FlatSkinMaterial");
+META_DEFINE_CLASS(FlatSkinMaterial, Material);
 
 
 uptr<Material> FlatSkinMaterial::create(ResourceService &rs)

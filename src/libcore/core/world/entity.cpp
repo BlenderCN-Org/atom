@@ -12,7 +12,7 @@ META_DEFINE_FIELDS(Entity) {
   FIELD(Entity, my_transform, "transform")
 };
 
-META_DEFINE_ROOT_CLASS(Entity, "Entity");
+META_DEFINE_ROOT_CLASS(Entity);
 
 Entity::Entity(World &world, Core &core)
   : my_world(world)

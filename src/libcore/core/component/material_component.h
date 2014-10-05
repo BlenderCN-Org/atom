@@ -16,7 +16,11 @@ class MaterialComponent : public NullComponent {
   uptr<Component> clone() const override;
 
 public:
-  explicit MaterialComponent(const String &name);
+  META_DECLARE_CLASS;
+  
+  MaterialComponent();
+  
+  void set_material_name(const String &name);
 
   MaterialResourcePtr material() const;
 };

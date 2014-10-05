@@ -26,7 +26,7 @@ META_DEFINE_FIELDS(Config) {
   FIELD(Config, debug_counters, "debug_counters")
 };
 
-META_DEFINE_ROOT_CLASS(Config, "Config");
+META_DEFINE_ROOT_CLASS(Config);
 
 namespace {
 

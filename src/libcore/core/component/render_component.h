@@ -17,6 +17,8 @@ class RenderComponent : public NullComponent {
   void deactivate() override;
 
 public:
+  META_DECLARE_CLASS;
+  
   RenderComponent();
 
   MaterialResourcePtr material() const;

@@ -15,8 +15,12 @@ class ModelComponent : public NullComponent {
   uptr<Component> clone() const override;
 
 public:
-  explicit ModelComponent(const String &name);
+  META_DECLARE_CLASS;
+  
+  ModelComponent();
   ~ModelComponent();
+  
+  void set_model_name(const String &model_name);
 
   ModelResourcePtr get_model() const;
 

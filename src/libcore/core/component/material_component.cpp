@@ -3,10 +3,15 @@
 
 namespace atom {
 
+META_DEFINE_FIELDS(MaterialComponent) {
+  FIELD(MaterialComponent, my_material_name, "material_name")
+};
+
+META_DEFINE_CLASS(MaterialComponent, NullComponent);
+
 uptr<Component> MaterialComponent::clone() const
 {
-  uptr<Component> component(new MaterialComponent(my_material_name));
-  return component;
+  return uptr<Component>(new MaterialComponent());
 }
 
 void MaterialComponent::activate()
@@ -19,11 +24,15 @@ void MaterialComponent::deactivate()
   my_material = nullptr;
 }
 
-MaterialComponent::MaterialComponent(const String &name)
+MaterialComponent::MaterialComponent()
   : NullComponent(ComponentType::MATERIAL)
-  , my_material_name(name)
 {
-  assert(!name.empty());
+  META_INIT();
+}
+
+void MaterialComponent::set_material_name(const String &name)
+{
+  my_material_name = name;
 }
 
 MaterialResourcePtr MaterialComponent::material() const

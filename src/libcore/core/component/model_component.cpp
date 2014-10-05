@@ -4,6 +4,12 @@
 
 namespace atom {
 
+META_DEFINE_FIELDS(ModelComponent) {
+  FIELD(ModelComponent, my_model_name, "model_name")
+};
+
+META_DEFINE_CLASS(ModelComponent, NullComponent);
+
 void ModelComponent::activate()
 {
   my_model = core().resource_service().get_model(my_model_name);
@@ -20,19 +26,24 @@ void ModelComponent::deactivate()
 
 uptr<Component> ModelComponent::clone() const
 {
-  return uptr<Component>(new ModelComponent(my_model_name));
+  return uptr<Component>(new ModelComponent());
 }
 
-ModelComponent::ModelComponent(const String &name)
+ModelComponent::ModelComponent()
   : NullComponent(ComponentType::MODEL)
-  , my_model_name(name)
 {
-
+  META_INIT();
 }
 
 ModelComponent::~ModelComponent()
 {
   // empty
+}
+
+void ModelComponent::set_model_name(const String &model_name)
+{
+  assert(!model_name.empty());
+  my_model_name = model_name;
 }
 
 ModelResourcePtr ModelComponent::get_model() const

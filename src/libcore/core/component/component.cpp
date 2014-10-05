@@ -10,7 +10,7 @@ META_DEFINE_FIELDS(Component) {
   FIELD(Component, my_name, "name")
 };
 
-META_DEFINE_ROOT_CLASS(Component, "Component");
+META_DEFINE_ROOT_CLASS(Component);
 
 Component::Component(ComponentType type)
   : my_type(type)

@@ -8,7 +8,7 @@ struct btDefaultMotionState;
 
 namespace atom {
 
-enum class RigidBodyType {
+enum class RigidBodyType : u32 {
   STATIC,
   KINEMATIC,
   DYNAMIC
@@ -18,7 +18,7 @@ class RigidBodyComponent : public NullComponent {
   uptr<btRigidBody> my_rigid_body;
   uptr<btDefaultMotionState> my_motion_state;
   f32               my_mass;
-  RigidBodyType     my_rigid_body_type;
+  RigidBodyType     my_body_type;
 
   void activate() override;
 
@@ -26,12 +26,14 @@ class RigidBodyComponent : public NullComponent {
 
   uptr<Component> clone() const override;
 public:
+  META_DECLARE_CLASS;
+  
   RigidBodyComponent();
   ~RigidBodyComponent();
 
-  void set_type(RigidBodyType type)
+  void set_body_type(RigidBodyType type)
   {
-    my_rigid_body_type = type;
+    my_body_type = type;
   }
 
   void set_mass(f32 mass)
@@ -45,6 +47,7 @@ public:
   }
 };
 
+MAP_TYPE(RigidBodyType, U32)
 MAP_COMPONENT_TYPE(RigidBodyComponent, RIGID_BODY)
 
 }

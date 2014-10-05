@@ -175,8 +175,10 @@ uptr<Entity> create_test_object(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
-  uptr<ModelComponent> model(new ModelComponent("animal"));
-  uptr<MaterialComponent> material(new MaterialComponent("animal"));
+  uptr<ModelComponent> model(new ModelComponent());
+  model->set_model_name("animal");
+  uptr<MaterialComponent> material(new MaterialComponent());
+  material->set_material_name("animal");
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<RenderComponent> render(new RenderComponent());
@@ -194,8 +196,10 @@ uptr<Entity> create_test_object(World &world, Core &core)
 uptr<Entity> create_monster(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
-  uptr<ModelComponent> model(new ModelComponent("monster"));
-  uptr<MaterialComponent> material(new MaterialComponent("animal"));
+  uptr<ModelComponent> model(new ModelComponent());
+  model->set_model_name("monster");
+  uptr<MaterialComponent> material(new MaterialComponent());
+  material->set_material_name("animal");
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<RenderComponent> render(new RenderComponent());
@@ -213,9 +217,12 @@ uptr<Entity> create_monster(World &world, Core &core)
 uptr<Entity> create_manual_monster(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
-  uptr<ModelComponent> model(new ModelComponent("monster"));
-  uptr<MaterialComponent> material(new MaterialComponent("manual"));
-  uptr<MeshComponent> mesh(new MeshComponent(MeshComponentMode::MANUAL));
+  uptr<ModelComponent> model(new ModelComponent());
+  model->set_model_name("monster");
+  uptr<MaterialComponent> material(new MaterialComponent());
+  material->set_material_name("manual");
+  uptr<MeshComponent> mesh(new MeshComponent());
+  mesh->set_mode(MeshComponentMode::MANUAL);
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<RenderComponent> render(new RenderComponent());
   render->set_enabled(false);
@@ -235,9 +242,10 @@ uptr<Entity> create_manual_monster(World &world, Core &core)
 uptr<Entity> create_ground(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
-  uptr<PlaneColliderComponent> collider(new PlaneColliderComponent(Vec4f(0, 0, 1, 0)));
+  uptr<PlaneColliderComponent> collider(new PlaneColliderComponent());
+  collider->set_plane(Vec3f(0, 0, 1), 0);
   uptr<RigidBodyComponent> rigid_body(new RigidBodyComponent());
-  rigid_body->set_type(RigidBodyType::STATIC);
+  rigid_body->set_body_type(RigidBodyType::STATIC);
   rigid_body->set_mass(0);
   entity->add_component(std::move(collider));
   entity->add_component(std::move(rigid_body));
@@ -247,7 +255,8 @@ uptr<Entity> create_ground(World &world, Core &core)
 uptr<Entity> create_box(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
-  uptr<BoxColliderComponent> collider(new BoxColliderComponent(Vec3f(1, 1, 1)));
+  uptr<BoxColliderComponent> collider(new BoxColliderComponent());
+  collider->set_size(Vec3f(1, 1, 1));
   uptr<RigidBodyComponent> rigid_body(new RigidBodyComponent());
   entity->add_component(std::move(collider));
   entity->add_component(std::move(rigid_body));
@@ -258,8 +267,10 @@ uptr<Entity> create_suzanne(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
-  uptr<ModelComponent> model(new ModelComponent("suzzane"));
-  uptr<MaterialComponent> material(new MaterialComponent("flat"));
+  uptr<ModelComponent> model(new ModelComponent());
+  model->set_model_name("suzzane");
+  uptr<MaterialComponent> material(new MaterialComponent());
+  material->set_material_name("flat");
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
   entity->add_component(std::move(model));
@@ -274,9 +285,10 @@ uptr<Entity> create_flat_terrain(World &world, Core &core)
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
 //  uptr<ModelComponent> model(new ModelComponent("quad_terrain"));
-  uptr<ModelComponent> model(new ModelComponent("flat_terrain"));
-//  uptr<ModelComponent> model(new ModelComponent("bumpy_terrain"));
-  uptr<MaterialComponent> material(new MaterialComponent("terrain"));
+  uptr<ModelComponent> model(new ModelComponent());
+  model->set_model_name("flat_terrain");
+  uptr<MaterialComponent> material(new MaterialComponent());
+  material->set_material_name("terrain");
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
   uptr<GeometryComponent> geometry(new GeometryComponent());
@@ -291,8 +303,10 @@ uptr<Entity> create_flat_terrain(World &world, Core &core)
 uptr<Entity> create_bumpy_terrain(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
-  uptr<ModelComponent> model(new ModelComponent("bumpy_terrain"));
-  uptr<MaterialComponent> material(new MaterialComponent("terrain"));
+  uptr<ModelComponent> model(new ModelComponent());
+  model->set_model_name("bumpy_terrain");
+  uptr<MaterialComponent> material(new MaterialComponent());
+  material->set_material_name("terrain");
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
   uptr<GeometryComponent> geometry(new GeometryComponent());

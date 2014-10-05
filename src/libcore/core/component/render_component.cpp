@@ -8,6 +8,12 @@
 
 namespace atom {
 
+META_DEFINE_FIELDS(RenderComponent) {
+  FIELD(RenderComponent, my_is_enabled, "enabled")
+};
+
+META_DEFINE_CLASS(RenderComponent, NullComponent);
+
 void RenderComponent::activate()
 {
   processors().video.register_component(this);
@@ -20,9 +26,7 @@ void RenderComponent::deactivate()
 
 uptr<Component> RenderComponent::clone() const
 {
-  uptr<RenderComponent> component(new RenderComponent());
-  component->set_enabled(is_enabled());
-  return std::move(component);
+  return uptr<Component>(new RenderComponent());
 }
 
 RenderComponent::RenderComponent()
@@ -31,6 +35,7 @@ RenderComponent::RenderComponent()
   , my_mesh(this, "")
   , my_is_enabled(true)
 {
+  META_INIT();
 }
 
 MaterialResourcePtr RenderComponent::material() const

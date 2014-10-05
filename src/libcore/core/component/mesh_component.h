@@ -23,12 +23,14 @@ class MeshComponent : public NullComponent {
 public:
   META_DECLARE_CLASS;
   
-  explicit MeshComponent(MeshComponentMode mode = MeshComponentMode::AUTO);
+  MeshComponent();
   ~MeshComponent();
 
   MeshResourcePtr mesh() const;
 
   void set_mesh(MeshResourcePtr mesh);
+  
+  void set_mode(MeshComponentMode mode);
 };
 
 MAP_TYPE(MeshComponentMode, U32)
