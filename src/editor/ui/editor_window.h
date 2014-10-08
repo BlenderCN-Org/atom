@@ -15,8 +15,38 @@ namespace editor {
 class EntityList;
 class GameView;
 
+enum class EditorWindowMode {
+  EDIT,
+  GAME
+};
+
+struct EditorWindowPanels {
+  bool entity_list;
+  bool entity_edit;
+  bool undo_view;
+};
+
 class EditorWindow : public QMainWindow {
 Q_OBJECT
+  
+  uptr<Ui::MainWindow> my_ui;
+  EditorWindowMode     my_mode;             ///< current editor mode
+  i64                  my_update_interval;
+  GameView            *my_game_view;
+  EntityList          *my_entity_list;
+  EntityEdit          *my_entity_edit;
+  QString              my_filename;
+  QTimer               my_refresh_timer;
+  sptr<World>          my_clone;
+  QUndoView           *my_undo_view;
+  QAction             *my_undo_action;
+  QAction             *my_redo_action;
+  EditorWindowPanels   my_panels;           ///< panel visibility state
+  
+#ifdef _WIN32
+  i64                  my_last_update;
+#endif
+  
 public:
   EditorWindow();
   ~EditorWindow();
@@ -26,7 +56,7 @@ public:
   bool eventFilter(QObject *watched, QEvent *event);
 
   void load_file(const QString &filename);
-
+  
 protected:
   void closeEvent(QCloseEvent *event) override;
 
@@ -51,12 +81,9 @@ private slots:
   void update_world();
 
 private:
-  enum class Mode {
-    EDIT,
-    GAME
-  };
+  
 
-  void switch_mode(Mode mode);
+  void switch_mode(EditorWindowMode mode);
 
   void init_menu_view();
   void init_game_view();
@@ -77,31 +104,7 @@ private:
   bool eventFilterMouseMove(QMouseEvent &event);
 
 private:
-  struct DockVisibility {
-    bool entity_list;
-    bool entity_edit;
-    bool undo_view;
-  };
 
-private:
-  uptr<Ui::MainWindow> my_ui;
-  Mode                 my_mode;           ///< current editor mode
-  i64                  my_update_interval;
-  GameView            *my_game_view;
-  EntityList          *my_entity_list;
-  EntityEdit          *my_entity_edit;
-  QString              my_filename;
-  QTimer               my_refresh_timer;
-  sptr<World>          my_clone;
-  QUndoView           *my_undo_view;
-  QAction             *my_undo_action;
-  QAction             *my_redo_action;
-  bool                 my_grab_input;
-  DockVisibility       my_dock_visibility;
-
-#ifdef _WIN32
-  i64                  my_last_update;
-#endif
 };
 
 }

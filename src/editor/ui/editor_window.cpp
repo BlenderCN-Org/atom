@@ -39,6 +39,32 @@ Key qt_key_event_to_key(const QKeyEvent &e)
     case Qt::Key_7:       return Key::KEY_7;
     case Qt::Key_8:       return Key::KEY_8;
     case Qt::Key_9:       return Key::KEY_9;
+    case Qt::Key_A:       return Key::KEY_A;
+    case Qt::Key_B:       return Key::KEY_B;
+    case Qt::Key_C:       return Key::KEY_C;
+    case Qt::Key_D:       return Key::KEY_D;
+    case Qt::Key_E:       return Key::KEY_E;
+    case Qt::Key_F:       return Key::KEY_F;
+    case Qt::Key_G:       return Key::KEY_G;
+    case Qt::Key_H:       return Key::KEY_H;
+    case Qt::Key_I:       return Key::KEY_I;
+    case Qt::Key_J:       return Key::KEY_J;
+    case Qt::Key_K:       return Key::KEY_K;
+    case Qt::Key_L:       return Key::KEY_L;
+    case Qt::Key_M:       return Key::KEY_M;
+    case Qt::Key_N:       return Key::KEY_N;
+    case Qt::Key_O:       return Key::KEY_O;
+    case Qt::Key_P:       return Key::KEY_P;
+    case Qt::Key_Q:       return Key::KEY_Q;
+    case Qt::Key_R:       return Key::KEY_R;
+    case Qt::Key_S:       return Key::KEY_S;
+    case Qt::Key_T:       return Key::KEY_T;
+    case Qt::Key_U:       return Key::KEY_U;
+    case Qt::Key_V:       return Key::KEY_V;
+    case Qt::Key_W:       return Key::KEY_W;
+    case Qt::Key_X:       return Key::KEY_X;
+    case Qt::Key_Y:       return Key::KEY_Y;
+    case Qt::Key_Z:       return Key::KEY_Z;
     case Qt::Key_Control:
 //      log::info("Native %i, virtual %i", e.nativeScanCode(), e.nativeVirtualKey());
       return e.nativeVirtualKey() == 65508 ? Key::KEY_RCTRL : Key::KEY_LCTRL;
@@ -208,14 +234,13 @@ bool load_from_file(const QString &filename, Core &core, World &world)
 EditorWindow::EditorWindow()
   : QMainWindow()
   , my_ui(new Ui::MainWindow())
-  , my_mode(Mode::EDIT)
+  , my_mode(EditorWindowMode::EDIT)
   , my_update_interval(stf(1) * 1000)
   , my_entity_list(nullptr)
   , my_entity_edit(nullptr)
   , my_undo_view(nullptr)
   , my_undo_action(nullptr)
   , my_redo_action(nullptr)
-  , my_grab_input(false)
 {
   my_ui->setupUi(this);
   init_game_view();
@@ -243,9 +268,7 @@ EditorWindow::EditorWindow()
 
 EditorWindow::~EditorWindow()
 {
-  // release grabbed input
-  my_game_view->releaseKeyboard();
-  my_game_view->releaseMouse();
+  switch_mode(EditorWindowMode::EDIT);
 }
 
 void EditorWindow::on_action_quit_triggered()
@@ -261,11 +284,11 @@ void EditorWindow::update_world()
   app.core().input_service().poll();
 
   switch (my_mode) {
-    case Mode::EDIT:
+    case EditorWindowMode::EDIT:
       app.world()->step();
       break;
 
-    case Mode::GAME:
+    case EditorWindowMode::GAME:
       my_clone->step();
       break;
   }
@@ -287,77 +310,65 @@ void EditorWindow::update_world()
 #endif
 }
 
-void EditorWindow::switch_mode(EditorWindow::Mode mode)
+void EditorWindow::switch_mode(EditorWindowMode mode)
 {
+  // mode is actual mode so do nothing
   if (mode == my_mode) {
     return;
   }
-
-  switch (mode) {
-    case Mode::EDIT:
-      application().core().audio_service().clear();
-      log::debug(DEBUG_EDITOR, "Switching to EDIT mode");
-      my_ui->action_run->setText("Run");
-
-      my_ui->entity_list_dock->setVisible(my_dock_visibility.entity_list);
-      my_ui->entity_edit_dock->setVisible(my_dock_visibility.entity_edit);
-      my_ui->undo_view_dock->setVisible(my_dock_visibility.undo_view);
-
-      my_game_view->set_world(application().world());
-
-      if (my_clone != nullptr) {
-        my_clone->deactivate();
-      }
-
+  // initialize edit mode
+  if (mode == EditorWindowMode::EDIT) {
+    log::debug(DEBUG_EDITOR, "Switching to EDIT mode");
+    application().core().audio_service().clear();
+    my_game_view->set_world(application().world());
+    // destroy cloned world
+    if (my_clone != nullptr) {
+      my_clone->deactivate();
       my_clone.reset();
-      my_game_view->setMouseTracking(false);
-      my_game_view->releaseMouse();
-      my_game_view->removeEventFilter(this);
-      my_game_view->set_navigation(true);
-      application().setDoubleClickInterval(400);
-
-      if (my_grab_input) {
-        my_game_view->releaseKeyboard();
-      }
-      break;
-
-    case Mode::GAME:
-      log::debug(DEBUG_EDITOR, "Switching to GAME mode");
-      my_ui->action_run->setText("Stop");
-
-      my_dock_visibility.entity_list = my_ui->entity_list_dock->isVisible();
-      my_dock_visibility.entity_edit = my_ui->entity_edit_dock->isVisible();
-      my_dock_visibility.undo_view   = my_ui->undo_view_dock->isVisible();
-
-      my_ui->entity_list_dock->setVisible(false);
-      my_ui->entity_edit_dock->setVisible(false);
-      my_ui->undo_view_dock->setVisible(false);
-
-      my_clone = application().world()->clone();
-      my_clone->activate();
-//      my_clone->set_camera(camera);
-      my_game_view->set_world(my_clone);
-//      my_game_view->set_navigation(false);
-//      my_game_view->grabMouse(Qt::BlankCursor);
-      application().setDoubleClickInterval(0);
-
-      if (my_grab_input) {
-        my_game_view->grabKeyboard();
-      }
-
-//      my_game_view->setMouseTracking(true);
-//      my_game_view->installEventFilter(this);
-      my_game_view->setFocus();
-      center_cursor(*my_game_view);
-
-
-//      SoundResourcePtr test_sound = application().core().resource_service().get_sound("level1_music");
-//      application().core().audio_service().play(test_sound, true);
-
-
-      break;
+    }
+    // restore standard input event flow
+    my_game_view->removeEventFilter(this);
   }
-
+  // initialize game mode
+  if (mode == EditorWindowMode::GAME) {
+    log::debug(DEBUG_EDITOR, "Switching to GAME mode");
+    // save panels visibility state
+    my_panels.entity_list = my_ui->entity_list_dock->isVisible();
+    my_panels.entity_edit = my_ui->entity_edit_dock->isVisible();
+    my_panels.undo_view   = my_ui->undo_view_dock->isVisible();
+    // make clone of active world
+    my_clone = application().world()->clone();
+    my_clone->activate();
+    my_game_view->set_world(my_clone);
+    my_game_view->set_camera_free_look(false);
+    // redirect input events to InputService
+    my_game_view->installEventFilter(this);
+    my_game_view->setFocus();
+    center_cursor(*my_game_view);
+  }
+  
+  bool edit_mode = mode == EditorWindowMode::EDIT;
+  bool game_mode = mode == EditorWindowMode::GAME;
+  // receive mouse move events without need of pressed button
+  my_game_view->setMouseTracking(game_mode);
+  // show/hide mouse cursor
+  my_game_view->setCursor(game_mode ? Qt::BlankCursor : Qt::ArrowCursor);
+  my_ui->action_run->setText(mode == EditorWindowMode::EDIT ? "Run" : "Stop");
+  // disable double click in game mode
+  application().setDoubleClickInterval(edit_mode ? 400 : 0);
+  // enable/disable camera navigation
+  my_game_view->set_camera_free_look(edit_mode);
+  // hide editor panels
+  my_ui->entity_list_dock->setVisible(edit_mode && my_panels.entity_list);
+  my_ui->entity_edit_dock->setVisible(edit_mode && my_panels.entity_edit);
+  my_ui->undo_view_dock->setVisible(edit_mode && my_panels.undo_view);
+  // disable edit action in game mode
+  my_ui->action_open->setEnabled(edit_mode);
+  my_ui->action_save->setEnabled(edit_mode);
+  my_ui->action_save_as->setEnabled(edit_mode);
+  my_ui->menu_edit->setEnabled(edit_mode);
+  my_ui->menu_panels->setEnabled(edit_mode);
+  
   my_mode = mode;
 }
 
@@ -438,7 +449,7 @@ void EditorWindow::restore_geometry()
 
 void EditorWindow::save_geometry()
 {
-  switch_mode(Mode::EDIT);
+  switch_mode(EditorWindowMode::EDIT);
 
   QSettings settings;
   settings.setValue("geometry", saveGeometry());
@@ -509,10 +520,10 @@ void EditorWindow::on_action_run_triggered()
 {
   log::debug(DEBUG_EDITOR, "Action run");
 
-  if (my_mode == Mode::EDIT) {
-    switch_mode(Mode::GAME);
-  } else if (my_mode == Mode::GAME) {
-    switch_mode(Mode::EDIT);
+  if (my_mode == EditorWindowMode::EDIT) {
+    switch_mode(EditorWindowMode::GAME);
+  } else if (my_mode == EditorWindowMode::GAME) {
+    switch_mode(EditorWindowMode::EDIT);
   } else {
     log::error("Unknown editor mode");
   }

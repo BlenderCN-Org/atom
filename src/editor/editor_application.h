@@ -13,16 +13,29 @@ namespace editor {
 
 class EditorApplication : public QApplication {
   Q_OBJECT
+
+  // pozor na poradie, je dolezite, hlavne my_is_loaded musi byt pred widgetmi
+  Core         *my_core;
+  bool          my_is_loaded;
+  QSettings     my_settings;
+  QUndoStack    my_undo_stack;
+  sptr<World>   my_world;
+  EditorWindow  my_main_window;
+  
 public:
   EditorApplication(int &argc, char *argv[]);
   ~EditorApplication();
 
-
   /**
-   * Initialize game engine, load game library, create empty world and then display main window.
+   * Initialize game engine, load game library, create empty world
+   * and display main window.
+   * 
+   * Game library is not loaded dynamically, because it is linked to the editor
+   * executable. Just game library entry point symbol is resolved.
+   * 
    * @return true on success, else false (app should quit in this case)
    */
-  bool init();
+  bool init_engine();
 
   void process_arguments();
 
@@ -40,24 +53,16 @@ public:
 
 signals:
   /**
-   * Emitted after gamelib has been loaded
+   * Emitted after gamelib (entity creators) has been loaded
    */
   void load();
 
   /**
-   * Emitted when gamelib is noging to be unloaded (on gamelib reload, quit, ...)
+   * Emitted when gamelib is going to be unloaded (on gamelib reload, quit, ...)
    */
   void unload();
 
   void entity_changed(sptr<Entity> entity);
-
-private:  // pozor na poradie, je dolezite, hlavne my_is_loaded musi byt pred widgetmi
-  Core       *my_core;
-  bool          my_is_loaded;
-  QSettings     my_settings;
-  QUndoStack    my_undo_stack;
-  sptr<World>   my_world;
-  EditorWindow  my_main_window;
 };
 
 EditorApplication& application();

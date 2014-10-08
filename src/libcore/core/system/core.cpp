@@ -65,10 +65,10 @@ Core::Core(const EntryPoint *entry_point)
   previous_handler = signal(SIGSEGV, segmentation_fault_handler);
 #endif
 
-  log::info("[mm] Engine (build %s %s)", __DATE__, __TIME__);
+  log::info("Project Atom (build %s %s)", __DATE__, __TIME__);
 
   if (entry_point == nullptr) {
-    error("Can't find entry point");
+    error("Can't find game entry point");
     return ;
   }
   // load game object creators

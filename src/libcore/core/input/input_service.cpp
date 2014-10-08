@@ -40,10 +40,10 @@ Key sdl_key_to_key(unsigned sdl_key)
     case SDLK_t:          return Key::KEY_T;
     case SDLK_u:          return Key::KEY_U;
     case SDLK_v:          return Key::KEY_V;
+    case SDLK_w:          return Key::KEY_W;
     case SDLK_x:          return Key::KEY_X;
     case SDLK_y:          return Key::KEY_Y;
     case SDLK_z:          return Key::KEY_Z;
-    case SDLK_w:          return Key::KEY_W;
     case SDLK_UP:         return Key::KEY_UP;
     case SDLK_DOWN:       return Key::KEY_DOWN;
     case SDLK_LEFT:       return Key::KEY_LEFT;
@@ -110,11 +110,13 @@ InputService::~InputService()
 
 void InputService::poll()
 {
+  my_mouse.delta.x = 0;
+  my_mouse.delta.y = 0;
   // clear key edge state
-  for (u32 i = 0; i < to_size(Key::COUNT); ++i) {
-    my_keys[i].up = false;
-    my_keys[i].down = false;
-  }
+//  for (u32 i = 0; i < to_size(Key::COUNT); ++i) {
+//    my_keys[i].up = false;
+//    my_keys[i].down = false;
+//  }
 
 //  if (my_is_mouse_captured) {
 //    int mouse_x, mouse_y;

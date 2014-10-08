@@ -28,7 +28,7 @@ EditorApplication::~EditorApplication()
   Core::quit();
 }
 
-bool EditorApplication::init()
+bool EditorApplication::init_engine()
 {
   Core &core = Core::init(InitMode::EDITOR, entry_point());
   my_core = &core;
@@ -81,7 +81,7 @@ bool EditorApplication::notify(QObject *obj, QEvent *event)
   try {
     return QApplication::notify(obj, event);
   } catch (const Exception &e) {
-    QMessageBox::critical(nullptr, "Application error", e.what());
+    QMessageBox::critical(nullptr, "Editor Application Error", e.what());
     return true;
   }
 }

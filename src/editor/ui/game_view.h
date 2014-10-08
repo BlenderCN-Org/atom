@@ -21,7 +21,7 @@ class GameView : public QGLWidget {
   Q_OBJECT
 
   GameViewState      my_state;
-  bool               my_navigation;
+  bool               my_is_free_look_enabled;
   Mat4f              my_projection;
   BasicCamera        my_camera;
   QPoint             my_last_mouse_pos;
@@ -42,7 +42,7 @@ public:
 
   void set_world(sptr<World> world);
 
-  void set_navigation(bool enable);
+  void set_camera_free_look(bool enable);
 
   Camera current_camera() const;
 

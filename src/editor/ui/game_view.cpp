@@ -29,7 +29,7 @@ namespace editor {
 GameView::GameView(const QGLFormat &format, QWidget *parent)
   : QGLWidget(format, parent)
   , my_state(GameViewState::NORMAL)
-  , my_navigation(true)
+  , my_is_free_look_enabled(true)
   , my_has_intersection(false)
 {
   makeCurrent();
@@ -67,9 +67,9 @@ void GameView::set_world(sptr<World> world)
   }
 }
 
-void GameView::set_navigation(bool enable)
+void GameView::set_camera_free_look(bool enable)
 {
-  my_navigation = enable;
+  my_is_free_look_enabled = enable;
 }
 
 Camera GameView::current_camera() const
@@ -214,7 +214,7 @@ void GameView::paintGL()
   glClearColor(0.09, 0.17, 0.27, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if (my_navigation) {
+  if (my_is_free_look_enabled) {
     my_world->set_camera(current_camera());
   }
 

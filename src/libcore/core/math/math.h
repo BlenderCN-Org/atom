@@ -14,9 +14,9 @@ namespace atom {
 //
 typedef Vec2<u32> Vec2u32;
 typedef Vec4<u8> Vec4u8;
-typedef Vec2<float> Vec2f;
-typedef Vec3<float> Vec3f;
-typedef Vec4<float> Vec4f;
+typedef Vec2<f32> Vec2f;
+typedef Vec3<f32> Vec3f;
+typedef Vec4<f32> Vec4f;
 
 static_assert(sizeof(Vec2u32) == 8, "Velkost musi byt 8bytov");
 static_assert(sizeof(Vec2f) == 8, "Velkost musi byt 8bytov");
@@ -32,9 +32,9 @@ MAP_TYPE(Vec4f, VEC4F)
 // Matrix specialization for most useful types
 //
 
-typedef Mat2<float> Mat2f;
-typedef Mat3<float> Mat3f;
-typedef Mat4<float> Mat4f;
+typedef Mat2<f32> Mat2f;
+typedef Mat3<f32> Mat3f;
+typedef Mat4<f32> Mat4f;
 
 MAP_TYPE(Mat2f, MAT2F)
 MAP_TYPE(Mat3f, MAT3F)
