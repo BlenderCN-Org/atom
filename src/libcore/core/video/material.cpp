@@ -8,11 +8,9 @@
 
 namespace atom {
 
-META_DEFINE_FIELDS(Material) {
-  FIELD(Material, face, "face")
-};
-
-META_DEFINE_ROOT_CLASS(Material);
+META_CLASS(Material,
+  FIELD(face, "face")
+)
 
 Material::~Material()
 {
@@ -23,11 +21,9 @@ Material::~Material()
 // LinesMaterial
 //
 
-META_DEFINE_FIELDS(LinesMaterial) {
-  FIELD(LinesMaterial, color, "color")
-};
-
-META_DEFINE_CLASS(LinesMaterial, Material);
+META_CLASS(LinesMaterial,
+  FIELD(color, "color")
+)
 
 uptr<Material> LinesMaterial::create(ResourceService &rs)
 {
@@ -69,11 +65,9 @@ void LinesMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 // Flat Material
 //
 
-META_DEFINE_FIELDS(FlatMaterial) {
-  FIELD(FlatMaterial, color, "color")
-};
-
-META_DEFINE_CLASS(FlatMaterial, Material);
+META_CLASS(FlatMaterial,
+  FIELD(color, "color")
+)
 
 uptr<Material> FlatMaterial::create(ResourceService &rs)
 {
@@ -116,11 +110,9 @@ void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 // WireframeMaterial
 //
 
-META_DEFINE_FIELDS(WireframeMaterial) {
-  FIELD(WireframeMaterial, color, "color")
-};
-
-META_DEFINE_CLASS(WireframeMaterial, Material);
+META_CLASS(WireframeMaterial,
+  FIELD(color, "color")
+)
 
 uptr<Material> WireframeMaterial::create(ResourceService &rs)
 {
@@ -166,13 +158,10 @@ void WireframeMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh
 // PhongMaterial
 //
 
-META_DEFINE_FIELDS(PhongMaterial) {
-  FIELD(PhongMaterial, my_shader, "shader"),
-  FIELD(PhongMaterial, my_color, "color"),
-};
-
-META_DEFINE_CLASS(PhongMaterial, Material);
-
+META_CLASS(PhongMaterial,
+  FIELD(my_shader, "shader"),
+  FIELD(my_color, "color")
+)
 
 uptr<Material> PhongMaterial::create(ResourceService &rs)
 {
@@ -222,13 +211,10 @@ void PhongMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 //
 //-----------------------------------------------------------------------------
 
-META_DEFINE_FIELDS(FlatSkinMaterial) {
-  FIELD(FlatSkinMaterial, my_shader, "shader"),
-  FIELD(FlatSkinMaterial, my_color, "color"),
-};
-
-META_DEFINE_CLASS(FlatSkinMaterial, Material);
-
+META_CLASS(FlatSkinMaterial,
+  FIELD(my_shader, "shader"),
+  FIELD(my_color, "color")
+)
 
 uptr<Material> FlatSkinMaterial::create(ResourceService &rs)
 {

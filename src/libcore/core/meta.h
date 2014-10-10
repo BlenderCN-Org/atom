@@ -6,7 +6,7 @@
 namespace atom {
 
 //
-// TYPES
+// type_of functionality
 //
 
 enum class Type : u32 {
@@ -44,7 +44,7 @@ enum class Type : u32 {
 template<typename T>
 Type type_of()
 {
-  return T::type;
+  return T::missing_type_of_implementation_for_this_type;
 }
 
 template<typename T>
@@ -53,24 +53,33 @@ inline Type type_of(const T &)
   return type_of<T>();
 }
 
-// toto makro nadefinuje mapovaciu sablonu type_of pre dany typ
-#define MAP_TYPE(type, mapped)  \
+/// convenient macro that define type_of function for given type
+#define TYPE_OF(type, mapped)   \
   template<>                    \
   inline Type type_of<type>()   \
   { return Type::mapped; }
 
-MAP_TYPE(bool, BOOL)
-MAP_TYPE(float, FLOAT)
-MAP_TYPE(int, INT)
 
 //
-// META
+// type_of for basic types
 //
 
+TYPE_OF(bool, BOOL)
+TYPE_OF(float, FLOAT)
+TYPE_OF(int, INT)
+
+
+//
+// Introspection/meta system
+//
+
+/**
+ * Each meta field is represented by this structure.
+ */
 struct MetaField {
-  const char *name;
-  Type        type;
-  u32         offset;
+  const char *name;   ///< field name
+  Type        type;   ///< field type
+  u32         offset; ///< field offset from structure beginning
 
   MetaField(const char *field_name, Type field_type, u32 field_offset)
     : name(field_name)
@@ -78,6 +87,114 @@ struct MetaField {
     , offset(field_offset)
   {}
 };
+
+
+/**
+ * Each meta class is represented by this structure, contains pointer to parent
+ * and pointer to fields.
+ */
+struct MetaClass {
+  const MetaClass *parent;      ///< parent class (nullptr for root classes)
+  const char      *name;        ///< class name
+  const MetaField *fields;      ///< instance fields
+  u32              field_count; ///< number of fields
+
+  MetaClass()
+    : parent(nullptr)
+    , name(nullptr)
+    , fields(nullptr)
+    , field_count(0)
+  {}
+
+  MetaClass(const char *class_name, const MetaClass *parent_class,
+    const MetaField *class_fields, unsigned count);
+
+  const MetaField* find_field(const char *name) const;
+};
+
+
+//
+// Macros for declaring/defining meta classes/fields.
+//
+// This introspection system is based on declaration of special methods to the
+// class interface and it's implementation in source file. An introspection
+// system can be implemented in header file only, but this approach results
+// in bigger library/executable. So meta system use header file for declaration
+// and source file to hold data.
+//
+
+/**
+ * Declare root meta class (class with no parent)
+ *
+ * Must be placed in public section of class declaration.
+ */
+#define META_ROOT_CLASS                         \
+  const MetaClass *meta;                        \
+                                                \
+  const MetaClass& meta_class()                 \
+  {                                             \
+    return *meta;                               \
+  }                                             \
+                                                \
+  static const MetaClass* meta_class_parent()   \
+  {                                             \
+    return nullptr;                             \
+  }                                             \
+                                                \
+  static const MetaClass* static_meta_class()
+
+/**
+ * Declare meta sub class (class with parent)
+ *
+ * Must be placed in public section of class declaration.
+ */
+#define META_SUB_CLASS(PARENT_CLASS)            \
+  static const MetaClass* meta_class_parent()   \
+  {                                             \
+    return PARENT_CLASS::static_meta_class();   \
+  }                                             \
+                                                \
+  static const MetaClass* static_meta_class()
+
+/**
+ * Define meta class and meta fields
+ *
+ * Must be placed in source file and class name must be provided.
+ * Each META_ROOT_CLASS/META_SUB_CLASS must have a coresponding META_CLASS
+ * in source file.
+ */
+#define META_CLASS(CLASS, ...)                  \
+  const MetaClass* CLASS::static_meta_class()   \
+  {                                             \
+    typedef CLASS class_type;                   \
+                                                \
+    static MetaField meta_fields[] = {          \
+      __VA_ARGS__                               \
+    };                                          \
+                                                \
+    static MetaClass meta_class(#CLASS,         \
+      meta_class_parent(),                      \
+      meta_fields,                              \
+      sizeof(meta_fields) / sizeof(MetaField)); \
+                                                \
+    return &meta_class;                         \
+  }
+
+/**
+ * Define meta field
+ * 
+ * The FIELD macro must be nested in META_CLASS.
+ */
+#define FIELD(member, name) MetaField(name,     \
+  type_of<decltype(class_type::member)>(), offsetof(class_type, member))
+
+/**
+ * Initialize instance meta class pointer
+ *
+ * Must be called in constructor of classes that contains META_ROOT_CLASS
+ * or META_SUB_CLASS in declaration.
+ */
+#define META_INIT() meta = static_meta_class();
 
 template<typename T>
 void* ptr_with_offset(void *ptr, T offset)
@@ -104,57 +221,10 @@ inline const T& field_ref(const MetaField &p, const void *data)
   return *reinterpret_cast<const T *>(ptr_with_offset(data, p.offset));
 }
 
-struct MetaClass {
-  const MetaClass *parent_class;
-  const char      *name;
-  const MetaField *fields;
-  unsigned   field_count;
 
-  MetaClass()
-    : parent_class(nullptr)
-  {}
-
-  MetaClass(const MetaClass *parent, const char *class_name, const MetaField *class_fields, unsigned count);
-
-  const MetaField* find_field(const char *name) const;
-};
-
-/// pridaj meta informacie o clenskych premennych
-#define META_DEFINE_FIELDS(type)  \
-  MetaField type::meta_fields[] =
-
-#define META_FIELD(type, member, name) \
-  MetaField(name, type_of<decltype(type::member)>(), offsetof(type, member))
-
-/// popis clena triedy, musi byt vnorene v META_DEFINE_FIELDS
-/// META_CLASS_NAME je nazov triedy (definicia v DEFINE_META_FIELDS)
-#define FIELD(type, member, name) \
-  META_FIELD(type, member, name)
-
-/// pridaj do (deklaracie) triedy meta informacie
-#define META_DECLARE_CLASS        \
-  static MetaField meta_fields[]; \
-  static MetaClass meta_class
-
-/// pridaj ukazovatel na meta info do kazdej instancie
-#define META_DECLARE_CLASS_PTR MetaClass *meta
-
-/// pridaj do (definicie) triedy meta informacie
-/// vhodne pre odvodenu triedu
-#define META_DEFINE_CLASS(CLASS, PARENT_CLASS) \
-  MetaClass CLASS::meta_class(&PARENT_CLASS::meta_class, #CLASS, CLASS::meta_fields, \
-    sizeof(CLASS::meta_fields) / sizeof(MetaField))
-
-/// pridaj do (definicie) triedy meta informacie
-/// vhodne pre najvyssiu (nie odvodenu) triedu
-#define META_DEFINE_ROOT_CLASS(CLASS) \
-  MetaClass CLASS::meta_class(nullptr, #CLASS, CLASS::meta_fields, \
-    sizeof(CLASS::meta_fields) / sizeof(MetaField))
-
-/// inicializuj meta ptr (kazda instancia ma svoj meta ptr)
-/// &meta_class je adresa statickej clenskej premennej s meta informaciami
-#define META_INIT() meta = &meta_class;
-
+/**
+ * Enumerator to list all fields of meta class (with parent fiels)
+ */
 struct MetaFieldsEnumarator {
   explicit MetaFieldsEnumarator(const MetaClass &meta);
 
@@ -185,13 +255,13 @@ struct MetaObject {
   const MetaClass &meta_class;
   void            *data;
 
-  MetaObject(MetaClass &meta, void *ptr);
+  MetaObject(const MetaClass &meta, void *ptr);
 };
 
 template<typename T>
 MetaObject meta_object(T& obj)
 {
-  return MetaObject(obj.meta_class, &obj);
+  return MetaObject(obj.meta_class(), &obj);
 }
 
 }

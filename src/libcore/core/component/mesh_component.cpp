@@ -1,14 +1,13 @@
 #include "mesh_component.h"
+#include "model_component.h"
 #include "../system/resource_service.h"
 #include "../system/core.h"
 
 namespace atom {
 
-META_DEFINE_FIELDS(MeshComponent) {
-  FIELD(MeshComponent, my_mode, "mode")
-};
-
-META_DEFINE_CLASS(MeshComponent, NullComponent);
+META_CLASS(MeshComponent,
+  FIELD(my_mode, "mode")
+)
 
 void MeshComponent::activate()
 {

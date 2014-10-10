@@ -13,21 +13,6 @@ using namespace atom::utils;
 
 namespace atom {
 
-META_DEFINE_FIELDS(Config) {
-  FIELD(Config, screen_width, "screen_width"),
-  FIELD(Config, screen_height, "screen_height"),
-  FIELD(Config, screen_bpp, "screen_bpp"),
-  FIELD(Config, color_log, "color_log"),
-  FIELD(Config, debug, "debug"),
-  FIELD(Config, debug_video, "debug_video"),
-  FIELD(Config, debug_audio, "debug_audio"),
-  FIELD(Config, debug_input, "debug_input"),
-  FIELD(Config, debug_resources, "debug_resources"),
-  FIELD(Config, debug_counters, "debug_counters")
-};
-
-META_DEFINE_ROOT_CLASS(Config);
-
 namespace {
 
 void load_properties_from_json(const rapidjson::Value &root, const MetaClass &meta_class, void *data, bool ignore)
@@ -45,6 +30,19 @@ void load_properties_from_json(const rapidjson::Value &root, const MetaClass &me
 }
 
 }
+
+META_CLASS(Config,
+  FIELD(screen_width, "screen_width"),
+  FIELD(screen_height, "screen_height"),
+  FIELD(screen_bpp, "screen_bpp"),
+  FIELD(color_log, "color_log"),
+  FIELD(debug, "debug"),
+  FIELD(debug_video, "debug_video"),
+  FIELD(debug_audio, "debug_audio"),
+  FIELD(debug_input, "debug_input"),
+  FIELD(debug_resources, "debug_resources"),
+  FIELD(debug_counters, "debug_counters")
+)
 
 void Config::set_screen_resolution(u32 width, u32 height)
 {
@@ -64,6 +62,7 @@ Config::Config()
   , screen_height(768)
   , screen_bpp(32)
 {
+  META_INIT();
   std::ifstream input(CONFIG_FILENAME);
 
   if (!input.is_open()) {
@@ -78,7 +77,7 @@ Config::Config()
     log::warning("Parse error %s", doc.GetParseError());
   }
 
-  load_properties_from_json(doc, meta_class, this, true);
+  load_properties_from_json(doc, meta_class(), this, true);
 
   log::info("Screen resolution %ix%ix%i", screen_width, screen_height, screen_bpp);
 

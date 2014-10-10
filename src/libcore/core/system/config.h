@@ -13,6 +13,8 @@ class Config : public utils::Singleton<Config> {
   friend class Core;
 
 public:
+  META_ROOT_CLASS;
+  
   // public methods
   /**
    * Vrat objekt s nacitanym nastavenim.
@@ -85,7 +87,7 @@ private:
   int screen_height;
   int screen_bpp;
 
-  META_DECLARE_CLASS;
+  
 };
 
 }

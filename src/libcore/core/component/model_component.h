@@ -15,8 +15,6 @@ class ModelComponent : public NullComponent {
   uptr<Component> clone() const override;
 
 public:
-  META_DECLARE_CLASS;
-  
   ModelComponent();
   ~ModelComponent();
   
@@ -25,6 +23,8 @@ public:
   ModelResourcePtr get_model() const;
 
   const String& get_model_name() const;
+  
+  META_SUB_CLASS(NullComponent);
 };
 
 MAP_COMPONENT_TYPE(ModelComponent, MODEL)

@@ -1,4 +1,5 @@
 #include "rigid_body_component.h"
+#include "collider_component.h"
 #include <bullet/btBulletDynamicsCommon.h>
 #include "../utils/bt_utils.h"
 #include "../world/world.h"
@@ -6,12 +7,10 @@
 
 namespace atom {
 
-META_DEFINE_FIELDS(RigidBodyComponent) {
-  FIELD(RigidBodyComponent, my_body_type, "body_type"),
-  FIELD(RigidBodyComponent, my_mass, "mass")
-};
-
-META_DEFINE_CLASS(RigidBodyComponent, NullComponent);
+META_CLASS(RigidBodyComponent,
+  FIELD(my_body_type, "body_type"),
+  FIELD(my_mass, "mass")
+)
 
 void RigidBodyComponent::activate()
 {
@@ -77,7 +76,7 @@ RigidBodyComponent::RigidBodyComponent()
   , my_mass(1.0f)
   , my_body_type(RigidBodyType::DYNAMIC)
 {
-
+  META_INIT();
 }
 
 RigidBodyComponent::~RigidBodyComponent()

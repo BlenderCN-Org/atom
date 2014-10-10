@@ -9,6 +9,9 @@ enum class MeshComponentMode : u32 {
   MANUAL
 };
 
+TYPE_OF(MeshComponentMode, U32)
+MAP_COMPONENT_TYPE(MeshComponent, MESH)
+
 class MeshComponent : public NullComponent {
   MeshComponentMode    my_mode;
   Slot<ModelComponent> my_model;
@@ -21,8 +24,6 @@ class MeshComponent : public NullComponent {
   void deactivate() override;
 
 public:
-  META_DECLARE_CLASS;
-  
   MeshComponent();
   ~MeshComponent();
 
@@ -31,9 +32,8 @@ public:
   void set_mesh(MeshResourcePtr mesh);
   
   void set_mode(MeshComponentMode mode);
+  
+  META_SUB_CLASS(NullComponent);
 };
-
-MAP_TYPE(MeshComponentMode, U32)
-MAP_COMPONENT_TYPE(MeshComponent, MESH)
 
 }

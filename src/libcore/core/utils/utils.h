@@ -69,18 +69,6 @@ inline float radians_to_degrees(float radians)
   return radians * 180 / PI;
 }
 
-template<typename T>
-const T& min(const T& a, const T &b)
-{
-    return b > a ? a : b;
-}
-
-template<typename T>
-const T& max(const T& a, const T& b)
-{
-    return b < a ? a : b;
-}
-
 #define to_size(value) (static_cast<std::size_t>(value))
 
 template<typename T>

@@ -7,6 +7,7 @@
 #include "../video/render_context.h"
 #include "../video/uniforms.h"
 #include "../math/camera.h"
+#include "../world/world.h"
 
 namespace atom {
 

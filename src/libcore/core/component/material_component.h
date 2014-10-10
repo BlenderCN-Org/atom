@@ -16,13 +16,13 @@ class MaterialComponent : public NullComponent {
   uptr<Component> clone() const override;
 
 public:
-  META_DECLARE_CLASS;
-  
   MaterialComponent();
   
   void set_material_name(const String &name);
 
   MaterialResourcePtr material() const;
+  
+  META_SUB_CLASS(NullComponent);
 };
 
 MAP_COMPONENT_TYPE(MaterialComponent, MATERIAL)

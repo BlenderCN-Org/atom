@@ -6,6 +6,7 @@
 #include "texture_sampler.h"
 #include "technique.h"
 #include "shader.h"
+#include "../system/resources.h"
 
 namespace atom {
 
@@ -25,9 +26,8 @@ public:
   virtual void draw_mesh(const RenderContext &context, const Mesh &mesh) = 0;
 
   DrawFace face;
-
-  META_DECLARE_CLASS_PTR; // each instance contains pointer to the MetaClass
-  META_DECLARE_CLASS;     // static instance of MetaClass for Material
+  
+  META_ROOT_CLASS;
 };
 
 typedef sptr<Material> MaterialPtr;
@@ -39,8 +39,6 @@ typedef sptr<Material> MaterialPtr;
 
 class LinesMaterial : public Material {
 public:
-  META_DECLARE_CLASS;
-  
   static uptr<Material> create(ResourceService &rs);
 
   LinesMaterial(const TechniqueResourcePtr &shader);
@@ -48,6 +46,8 @@ public:
   ~LinesMaterial();
 
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
+  
+  META_SUB_CLASS(Material);
 
   TechniqueResourcePtr my_shader;
   Vec3f color;
@@ -68,10 +68,10 @@ public:
   
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
   
+  META_SUB_CLASS(Material);
+  
   TechniqueResourcePtr my_shader;
   Vec3f color;
-  
-  META_DECLARE_CLASS;
 };
 
 
@@ -89,10 +89,10 @@ public:
   
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
   
+  META_SUB_CLASS(Material);
+  
   TechniqueResourcePtr my_shader;
   Vec3f color;
-  
-  META_DECLARE_CLASS;
 };
 
 
@@ -109,11 +109,12 @@ public:
   ~PhongMaterial();
 
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
+  
+  META_SUB_CLASS(Material);
 
   TechniqueResourcePtr my_shader;
   Vec3f                my_color;
 
-  META_DECLARE_CLASS;
 private:
   TechniqueResourcePtr my_program;
 };
@@ -136,8 +137,9 @@ public:
 
   TechniqueResourcePtr my_shader;
   Vec3f                my_color;
+  
+  META_SUB_CLASS(Material);
 
-  META_DECLARE_CLASS;
 private:
   TechniqueResourcePtr my_program;
 };

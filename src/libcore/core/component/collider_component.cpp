@@ -38,12 +38,10 @@ void ColliderComponent::set_collision_shape(uptr<btCollisionShape> &&shape)
 // Static plane collider
 //
 
-META_DEFINE_FIELDS(PlaneColliderComponent) {
-  FIELD(PlaneColliderComponent, my_normal, "normal"),
-  FIELD(PlaneColliderComponent, my_w, "w")
-};
-
-META_DEFINE_CLASS(PlaneColliderComponent, ColliderComponent);
+META_CLASS(PlaneColliderComponent,
+  FIELD(my_normal, "normal"),
+  FIELD(my_w, "w")
+)
 
 void PlaneColliderComponent::activate()
 {
@@ -72,12 +70,9 @@ void PlaneColliderComponent::set_plane(const Vec3f &normal, f32 w)
 // 3D Box collider
 //
 
-META_DEFINE_FIELDS(BoxColliderComponent) {
-  FIELD(BoxColliderComponent, my_size, "size")
-};
-
-META_DEFINE_CLASS(BoxColliderComponent, ColliderComponent);
-
+META_CLASS(BoxColliderComponent,
+  FIELD(my_size, "size")
+)
 
 uptr<Component> BoxColliderComponent::clone() const
 {

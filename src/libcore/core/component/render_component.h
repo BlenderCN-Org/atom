@@ -17,8 +17,6 @@ class RenderComponent : public NullComponent {
   void deactivate() override;
 
 public:
-  META_DECLARE_CLASS;
-  
   RenderComponent();
 
   MaterialResourcePtr material() const;
@@ -34,6 +32,8 @@ public:
   {
     my_is_enabled = enabled;
   }
+  
+  META_SUB_CLASS(NullComponent);
 };
 
 MAP_COMPONENT_TYPE(RenderComponent, RENDER)

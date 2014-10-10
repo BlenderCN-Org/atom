@@ -8,11 +8,9 @@
 
 namespace atom {
 
-META_DEFINE_FIELDS(RenderComponent) {
-  FIELD(RenderComponent, my_is_enabled, "enabled")
-};
-
-META_DEFINE_CLASS(RenderComponent, NullComponent);
+META_CLASS(RenderComponent,
+  FIELD(my_is_enabled, "enabled")             
+)
 
 void RenderComponent::activate()
 {

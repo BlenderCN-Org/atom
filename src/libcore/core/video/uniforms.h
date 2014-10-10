@@ -9,9 +9,6 @@ namespace atom {
 
 class Uniforms {
 public:
-  META_DECLARE_CLASS_PTR;
-  META_DECLARE_CLASS;
-
   Uniforms();
 
   Vec3f color;
@@ -28,6 +25,8 @@ public:
   Vec3f sun_dir;
   Mat4fArray bones;
   Transformations transformations;
+  
+  META_ROOT_CLASS;
 };
 
 }

@@ -14,6 +14,9 @@ enum class RigidBodyType : u32 {
   DYNAMIC
 };
 
+TYPE_OF(RigidBodyType, U32)
+MAP_COMPONENT_TYPE(RigidBodyComponent, RIGID_BODY)
+
 class RigidBodyComponent : public NullComponent {
   uptr<btRigidBody> my_rigid_body;
   uptr<btDefaultMotionState> my_motion_state;
@@ -26,8 +29,6 @@ class RigidBodyComponent : public NullComponent {
 
   uptr<Component> clone() const override;
 public:
-  META_DECLARE_CLASS;
-  
   RigidBodyComponent();
   ~RigidBodyComponent();
 
@@ -45,9 +46,8 @@ public:
   {
     return my_rigid_body.get();
   }
+  
+  META_SUB_CLASS(NullComponent);
 };
-
-MAP_TYPE(RigidBodyType, U32)
-MAP_COMPONENT_TYPE(RigidBodyComponent, RIGID_BODY)
 
 }

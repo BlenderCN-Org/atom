@@ -6,13 +6,11 @@
 
 namespace atom {
 
-META_DEFINE_FIELDS(Entity) {
-  FIELD(Entity, my_id, "id"),
-  FIELD(Entity, my_class, "class"),
-  FIELD(Entity, my_transform, "transform")
-};
-
-META_DEFINE_ROOT_CLASS(Entity);
+META_CLASS(Entity,
+  FIELD(my_id, "id"),
+  FIELD(my_class, "class"),
+  FIELD(my_transform, "transform")
+)
 
 Entity::Entity(World &world, Core &core)
   : my_world(world)
@@ -145,7 +143,6 @@ void Entity::init(const Vec3f &position, f32 rotation)
   my_state = State::NEW;
   my_class = "Base class";
   my_transform = Mat4f();
-  META_INIT();
 }
 
 void Entity::update_aabb()

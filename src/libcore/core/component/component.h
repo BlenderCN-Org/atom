@@ -22,6 +22,8 @@ enum class ComponentType : u32 {
 
 typedef std::vector<GenericSlot *> SlotArray;
 
+TYPE_OF(ComponentType, COMPONENT_TYPE)
+
 /**
  *
  *
@@ -68,9 +70,6 @@ class Component : NonCopyable {
   virtual uptr<Component> clone() const = 0;
 
 public:
-  META_DECLARE_CLASS_PTR; // each instance contains pointer to the MetaClass
-  META_DECLARE_CLASS;     // static instance of MetaClass for Material
-  
   // doesn't need to be private because it is abstract class
   Component(ComponentType type);
   virtual ~Component();
@@ -96,6 +95,8 @@ public:
   void set_name(const String &name);
 
   void register_slot(GenericSlot *slot);
+  
+  META_ROOT_CLASS;
 };
 
 
@@ -134,8 +135,6 @@ protected:
     // empty
   }
 };
-
-MAP_TYPE(ComponentType, COMPONENT_TYPE)
 
 template<typename T>
 ComponentType component_type_of();

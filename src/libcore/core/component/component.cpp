@@ -5,12 +5,10 @@
 
 namespace atom {
 
-META_DEFINE_FIELDS(Component) {
-  FIELD(Component, my_type, "type"),
-  FIELD(Component, my_name, "name")
-};
-
-META_DEFINE_ROOT_CLASS(Component);
+META_CLASS(Component,
+  FIELD(my_type, "type"),
+  FIELD(my_name, "name")
+)
 
 Component::Component(ComponentType type)
   : my_type(type)

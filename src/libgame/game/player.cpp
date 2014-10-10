@@ -4,6 +4,7 @@
 #include <core/component/model_component.h>
 #include <core/component/mesh_component.h>
 #include <core/component/render_component.h>
+#include <core/component/material_component.h>
 #include <core/input/input_service.h>
 #include <core/world/world.h>
 
@@ -76,8 +77,6 @@ class PlayerScript : public ScriptComponent {
   }
   
 public:
-  META_DECLARE_CLASS;
-  
   PlayerScript()
     : my_position(0, 0, 1)
     , my_camera_yaw(0)
@@ -85,15 +84,15 @@ public:
   {
     META_INIT();
   }
+  
+  META_SUB_CLASS(ScriptComponent);
 };
 
-META_DEFINE_FIELDS(PlayerScript) {
-  FIELD(PlayerScript, my_position, "position"),
-  FIELD(PlayerScript, my_camera_yaw, "camera_yaw"),
-  FIELD(PlayerScript, my_camera_pitch, "camera_pitch")
-};
-
-META_DEFINE_CLASS(PlayerScript, ScriptComponent);
+META_CLASS(PlayerScript,
+ FIELD(my_position, "position"),
+ FIELD(my_camera_yaw, "camera_yaw"),
+ FIELD(my_camera_pitch, "camera_pitch")
+)
 
 uptr<Entity> create_player(World &world, Core &core)
 {

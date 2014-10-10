@@ -39,11 +39,11 @@ class PlaneColliderComponent : public ColliderComponent {
 
   uptr<Component> clone() const override;
 public:
-  META_DECLARE_CLASS;
-  
   PlaneColliderComponent();
   
   void set_plane(const Vec3f &normal, f32 w);
+  
+  META_SUB_CLASS(ColliderComponent);
 };
 
 
@@ -56,11 +56,11 @@ class BoxColliderComponent : public ColliderComponent {
   uptr<Component> clone() const override;
   
 public:
-  META_DECLARE_CLASS;
-  
   BoxColliderComponent();
 
   void set_size(const Vec3f &extent);
+  
+  META_SUB_CLASS(ColliderComponent);
 };
 
 

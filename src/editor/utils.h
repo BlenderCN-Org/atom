@@ -3,7 +3,6 @@
 #include <QString>
 #include <core/ptr.h>
 #include <core/string.h>
-//#include "field_value.h"
 #include "editorfwd.h"
 
 namespace atom {

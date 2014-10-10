@@ -23,9 +23,9 @@ static_assert(sizeof(Vec2f) == 8, "Velkost musi byt 8bytov");
 static_assert(sizeof(Vec3f) == 12, "Velkost musi byt 8bytov");
 static_assert(sizeof(Vec4f) == 16, "Velkost musi byt 8bytov");
 
-MAP_TYPE(Vec2f, VEC2F)
-MAP_TYPE(Vec3f, VEC3F)
-MAP_TYPE(Vec4f, VEC4F)
+TYPE_OF(Vec2f, VEC2F)
+TYPE_OF(Vec3f, VEC3F)
+TYPE_OF(Vec4f, VEC4F)
 
 
 //
@@ -36,9 +36,21 @@ typedef Mat2<f32> Mat2f;
 typedef Mat3<f32> Mat3f;
 typedef Mat4<f32> Mat4f;
 
-MAP_TYPE(Mat2f, MAT2F)
-MAP_TYPE(Mat3f, MAT3F)
-MAP_TYPE(Mat4f, MAT4F)
+TYPE_OF(Mat2f, MAT2F)
+TYPE_OF(Mat3f, MAT3F)
+TYPE_OF(Mat4f, MAT4F)
+
+template<typename T>
+const T& min(const T& a, const T &b)
+{
+  return b > a ? a : b;
+}
+
+template<typename T>
+const T& max(const T& a, const T& b)
+{
+  return b < a ? a : b;
+}
 
 
 //

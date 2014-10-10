@@ -1,5 +1,6 @@
 #include "geometry_component.h"
 #include "../processor/geometry_processor.h"
+#include "../world/world.h"
 
 namespace atom {
 

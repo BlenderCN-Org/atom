@@ -55,9 +55,6 @@ class Entity : NonCopyable {
   String         my_class;
   ComponentArray my_components;
 public:
-  META_DECLARE_CLASS_PTR; // each instance contains pointer to the MetaClass
-  META_DECLARE_CLASS;     // static instance of MetaClass for Material
-
   Entity(World &world, Core &core);
 
   ~Entity();
@@ -120,6 +117,8 @@ public:
   }
 
   std::vector<Component *> find_components(ComponentType type);
+  
+  META_ROOT_CLASS;
 
 private:
   void init(const Vec3f &position = Vec3f(0, 0, 0), f32 rotation = 0);

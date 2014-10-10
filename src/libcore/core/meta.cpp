@@ -38,16 +38,16 @@ const MetaField* MetaFieldsEnumarator::next()
     if (my_index < my_meta_class->field_count)
       return &(my_meta_class->fields[my_index++]);
 
-    my_meta_class = my_meta_class->parent_class;
+    my_meta_class = my_meta_class->parent;
     my_index = 0;
   }
 
   return nullptr;
 }
 
-MetaClass::MetaClass(const MetaClass *parent, const char *class_name,
+MetaClass::MetaClass(const char *class_name, const MetaClass *parent_class,
   const MetaField *class_fields, unsigned count)
-  : parent_class(parent)
+  : parent(parent_class)
   , name(class_name)
   , fields(class_fields)
   , field_count(count)
@@ -118,7 +118,7 @@ void copy_field_values(const MetaClass &src_meta, const MetaClass &dst_meta, con
   }
 }
 
-MetaObject::MetaObject(MetaClass &meta, void *ptr)
+MetaObject::MetaObject(const MetaClass &meta, void *ptr)
   : meta_class(meta)
   , data(ptr)
 {

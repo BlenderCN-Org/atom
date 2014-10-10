@@ -1,14 +1,13 @@
 #include "model_component.h"
 #include "../system/core.h"
 #include "../system/resource_service.h"
+#include "../log.h"
 
 namespace atom {
 
-META_DEFINE_FIELDS(ModelComponent) {
-  FIELD(ModelComponent, my_model_name, "model_name")
-};
-
-META_DEFINE_CLASS(ModelComponent, NullComponent);
+META_CLASS(ModelComponent,
+  FIELD(my_model_name, "model_name")
+)
 
 void ModelComponent::activate()
 {

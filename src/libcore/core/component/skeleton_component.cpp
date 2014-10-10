@@ -1,4 +1,5 @@
 #include "skeleton_component.h"
+#include "model_component.h"
 #include "../world/entity.h"
 #include "../log.h"
 #include "../video/model.h"

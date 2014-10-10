@@ -3,11 +3,9 @@
 
 namespace atom {
 
-META_DEFINE_FIELDS(MaterialComponent) {
-  FIELD(MaterialComponent, my_material_name, "material_name")
-};
-
-META_DEFINE_CLASS(MaterialComponent, NullComponent);
+META_CLASS(MaterialComponent,
+  FIELD(my_material_name, "material_name")
+)
 
 uptr<Component> MaterialComponent::clone() const
 {
