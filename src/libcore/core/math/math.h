@@ -12,13 +12,19 @@ namespace atom {
 //
 // Vector specialization for most useful types
 //
-typedef Vec2<u32> Vec2u32;
+typedef Vec2<u32> Vec2u;
+typedef Vec2<i32> Vec2i;
+typedef Vec3<u32> Vec3u;
+typedef Vec3<i32> Vec3i;
 typedef Vec4<u8> Vec4u8;
 typedef Vec2<f32> Vec2f;
 typedef Vec3<f32> Vec3f;
 typedef Vec4<f32> Vec4f;
 
-static_assert(sizeof(Vec2u32) == 8, "Velkost musi byt 8bytov");
+static_assert(sizeof(Vec2u) == 8, "Velkost musi byt 8bytov");
+static_assert(sizeof(Vec2i) == 8, "Velkost musi byt 8bytov");
+static_assert(sizeof(Vec3u) == 12, "Velkost musi byt 12bytov");
+static_assert(sizeof(Vec3i) == 12, "Velkost musi byt 12bytov");
 static_assert(sizeof(Vec2f) == 8, "Velkost musi byt 8bytov");
 static_assert(sizeof(Vec3f) == 12, "Velkost musi byt 8bytov");
 static_assert(sizeof(Vec4f) == 16, "Velkost musi byt 8bytov");

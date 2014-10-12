@@ -29,6 +29,10 @@ Key qt_key_event_to_key(const QKeyEvent &e)
     case Qt::Key_Right:   return Key::KEY_RIGHT;
     case Qt::Key_Up:      return Key::KEY_UP;
     case Qt::Key_Down:    return Key::KEY_DOWN;
+    // Qt doesn't differentiate between left/right shift key,
+    // returning left shift is not correct solution because right shift will
+    // interfere with it, but it is simplest temporary workaround
+    case Qt::Key_Shift:   return Key::KEY_LSHIFT;
     case Qt::Key_0:       return Key::KEY_0;
     case Qt::Key_1:       return Key::KEY_1;
     case Qt::Key_2:       return Key::KEY_2;
@@ -482,6 +486,7 @@ bool EditorWindow::eventFilterKey(QKeyEvent &event)
   event.accept();
   application().core().input_service().push_event(
     make_key_event(key, event.type() == QEvent::KeyPress));
+  
   return true;
 }
 

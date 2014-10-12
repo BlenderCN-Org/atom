@@ -72,14 +72,14 @@ inline const Vec2<T> operator-(const Vec2<T> &a, const Vec2<T> &b)
   return Vec2<T>(a.x - b.x, a.y - b.y);
 }
 
-template<typename T>
-inline const Vec2<T> operator*(const Vec2<T> &a, T b)
+template<typename T, typename V>
+inline const Vec2<T> operator*(const Vec2<T> &a, V b)
 {
   return Vec2<T>(a.x * b, a.y * b);
 }
 
-template<typename T>
-inline const Vec2<T> operator*(T a, const Vec2<T> &b)
+template<typename T, typename V>
+inline const Vec2<T> operator*(V a, const Vec2<T> &b)
 {
   return Vec2<T>(a * b.x, a * b.y);
 }
@@ -216,14 +216,14 @@ Vec3<T> operator*(const Vec3<T> &a, const Vec3<T> &b)
   return Vec3<T>(a.x * b.x, a.y * b.y, a.z * b.z);
 }
 
-template<typename T>
-Vec3<T> operator*(const Vec3<T> &v, T x)
+template<typename T, typename V>
+Vec3<T> operator*(const Vec3<T> &v, V x)
 {
   return Vec3<T>(v.x * x, v.y * x, v.z * x);
 }
 
-template<typename T>
-Vec3<T> operator*(T x, const Vec3<T> &v)
+template<typename T, typename V>
+Vec3<T> operator*(V x, const Vec3<T> &v)
 {
   return Vec3<T>(v.x * x, v.y * x, v.z * x);
 }
@@ -350,14 +350,14 @@ Vec4<T> operator-(const Vec4<T> &a, const Vec4<T> &b)
   return Vec4<T>(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
 }
 
-template<typename T>
-Vec4<T> operator*(const Vec4<T> &v, T x)
+template<typename T, typename V>
+Vec4<T> operator*(const Vec4<T> &v, V x)
 {
   return Vec4<T>(v.x * x, v.y * x, v.z * x, v.w * x);
 }
 
-template<typename T>
-Vec4<T> operator*(T x, const Vec4<T> &v)
+template<typename T, typename V>
+Vec4<T> operator*(V x, const Vec4<T> &v)
 {
   return Vec4<T>(v.x * x, v.y * x, v.z * x, v.w * x);
 }

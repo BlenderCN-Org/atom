@@ -5,6 +5,11 @@
 
 namespace atom {
 
+//
+// Camera using right handed coordinate system.
+// Z axis is up.
+//
+
 const Vec3f CAMERA_UP = Vec3f::z_axis();
 const Vec3f CAMERA_RIGHT = Vec3f::x_axis();
 const Vec3f CAMERA_FRONT = Vec3f::y_axis();

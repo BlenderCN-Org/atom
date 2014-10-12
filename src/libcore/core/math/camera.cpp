@@ -46,14 +46,14 @@ Vec3f BasicCamera::get_right() const
 
 Quatf BasicCamera::get_rotation() const
 {
-  Quatf yaw = Quatf::from_axis_angle(Vec3f::z_axis(), -my_yaw);
+  Quatf yaw = Quatf::from_axis_angle(Vec3f::z_axis(), my_yaw);
   Quatf pitch = Quatf::from_axis_angle(rotate(yaw, Vec3f::x_axis()), my_pitch);
   return pitch * yaw;
 }
 
 Mat4f BasicCamera::get_rotationm() const
 {
- return Mat4f::rotation_z(-my_yaw) * Mat4f::rotation_x(my_pitch);
+ return Mat4f::rotation_z(my_yaw) * Mat4f::rotation_x(my_pitch);
 }
 
 }
