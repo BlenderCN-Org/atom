@@ -9,7 +9,8 @@ namespace DebugCategory {
   enum {
     PHYSICS = 1,
     BOUNDING_BOX = 2,
-    AABB = 4
+    AABB = 4,
+    GEOMETRY_CACHE = 8
   };
 }
 
@@ -39,6 +40,7 @@ private:
   void draw_physics();
   void draw_bounding_box();
   void draw_aabb();
+  void draw_geometry_cache();
 };
 
 }

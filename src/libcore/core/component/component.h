@@ -167,6 +167,8 @@ public:
   void activate(Entity &entity);
 
   Component* get() const;
+  
+  bool is_null() const;
 
   operator bool() const
   {
@@ -193,6 +195,11 @@ public:
     T* component = static_cast<T *>(get());
     assert(component != nullptr);
     return component;
+  }
+  
+  T* get_component() const
+  {
+    return static_cast<T *>(get());
   }
 };
 

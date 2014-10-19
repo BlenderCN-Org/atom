@@ -16,9 +16,13 @@ struct RayGeometryResult {
 class GeometryProcessor : public NullProcessor {
   GeometryComponentArray my_components;
   
+  void regenerate_mesh(GeometryComponent &component);
+  
 public:
   explicit GeometryProcessor(World &world);
   ~GeometryProcessor();
+  
+  void poll() override;
   
   bool intersect_ray(const Ray &ray, RayGeometryResult &result);
   

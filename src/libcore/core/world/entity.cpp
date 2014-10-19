@@ -138,6 +138,19 @@ Component* Entity::find_component(ComponentType type, const String &name)
   return found != my_components.end() ? found->get() : nullptr;
 }
 
+std::vector<Component *> Entity::find_components(ComponentType type)
+{
+  std::vector<Component *> components;
+  
+  for (const uptr<Component> &component : my_components) {
+    if (component->type() == type) {
+      components.push_back(component.get());
+    }
+  }
+  
+  return components;
+}
+
 void Entity::init(const Vec3f &position, f32 rotation)
 {
   my_state = State::NEW;

@@ -202,6 +202,8 @@ uptr<Entity> create_monster(World &world, Core &core)
   material->set_material_name("animal");
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
+  uptr<GeometryComponent> geometry(new GeometryComponent());
+  geometry->set_dynamic(true);
   uptr<RenderComponent> render(new RenderComponent());
   uptr<ScriptComponent> script(new MonsterScript());
   entity->set_bounding_box(BoundingBox(-20, 20, -20, 20, 0, 20));
@@ -209,6 +211,7 @@ uptr<Entity> create_monster(World &world, Core &core)
   entity->add_component(std::move(material));
   entity->add_component(std::move(mesh));
   entity->add_component(std::move(skeleton));
+  entity->add_component(std::move(geometry));
   entity->add_component(std::move(script));
   entity->add_component(std::move(render));
   return entity;

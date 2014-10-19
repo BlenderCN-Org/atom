@@ -118,6 +118,21 @@ public:
 
   std::vector<Component *> find_components(ComponentType type);
   
+  template<typename T>
+  std::vector<T *> find_components()
+  {
+    std::vector<T *> components;
+    const ComponentType type = component_type_of<T>();
+    
+    for (const uptr<Component> &component : my_components) {
+      if (component->type() == type) {
+        components.push_back(static_cast<T *>(component.get()));
+      }
+    }
+    
+    return components;
+  }
+  
   META_ROOT_CLASS;
 
 private:

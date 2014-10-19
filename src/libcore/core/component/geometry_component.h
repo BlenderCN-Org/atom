@@ -4,7 +4,15 @@
 
 namespace atom {
 
+struct GeometryCache {
+  std::vector<Vec3f> vertices;
+};
+
 class GeometryComponent : public NullComponent {
+  bool                    my_is_dynamic;
+  Slot<ModelComponent>    my_model;
+  Slot<SkeletonComponent> my_skeleton;
+  GeometryCache           my_cache;
   
   void init() override;
   void terminate() override;
@@ -13,6 +21,29 @@ class GeometryComponent : public NullComponent {
   
 public:
   GeometryComponent();
+  
+  void set_dynamic(bool dynamic)
+  {
+    my_is_dynamic = dynamic;
+  }
+  
+  bool is_dynamic() const
+  {
+    return my_is_dynamic;
+  }
+  
+  const Model* model() const;
+  
+  const SkeletonComponent* skeleton() const;
+  
+  GeometryCache& geometry_cache()
+  {
+    return my_cache;
+  }
+  
+  META_SUB_CLASS(NullComponent);
 };
+
+MAP_COMPONENT_TYPE(GeometryComponent, GEOMETRY)
 
 }

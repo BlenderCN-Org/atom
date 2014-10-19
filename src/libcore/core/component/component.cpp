@@ -103,4 +103,9 @@ Component* GenericSlot::get() const
   return my_component;
 }
 
+bool GenericSlot::is_null() const
+{
+  return my_component == nullptr;
+}
+
 }

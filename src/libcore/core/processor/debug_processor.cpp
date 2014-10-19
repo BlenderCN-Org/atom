@@ -6,6 +6,7 @@
 #include "../video/uniforms.h"
 #include "../system/resource_service.h"
 #include "../processor/physics_processor.h"
+#include "../component/geometry_component.h"
 #include "../video/render_context.h"
 
 namespace atom {
@@ -71,7 +72,7 @@ public:
 
 DebugProcessor::DebugProcessor(World &world)
   : NullProcessor(world)
-  , my_debug_categories(DebugCategory::PHYSICS)
+  , my_debug_categories(DebugCategory::PHYSICS | DebugCategory::GEOMETRY_CACHE)
   , my_physics_drawer(new PhysicsDebugDrawer())
 {
   ResourceService &rs = core().resource_service();
@@ -110,6 +111,10 @@ void DebugProcessor::draw()
 
   if (my_debug_categories & DebugCategory::AABB) {
     draw_aabb();
+  }
+  
+  if (my_debug_categories & DebugCategory::GEOMETRY_CACHE) {
+    draw_geometry_cache();
   }
 }
 
@@ -270,6 +275,39 @@ void DebugProcessor::draw_aabb()
 
   mesh.vertex = std::move(vertex_buffer);
   my_aabb_material->material().draw_mesh(context, mesh);
+}
+
+void DebugProcessor::draw_geometry_cache()
+{
+  for (const sptr<Entity> &entity : world().all_entities()) {
+    std::vector<GeometryComponent *> components =
+      entity->find_components<GeometryComponent>();
+    
+    for (GeometryComponent *component : components) {
+      const GeometryCache &geometry_cache = component->geometry_cache();
+      
+      if (geometry_cache.vertices.empty()) {
+        continue;
+      }
+      
+      const std::vector<Vec3f> &vertices = geometry_cache.vertices;
+      
+      //draw geometry
+      Mesh mesh;
+      VideoService &vs = core().video_service();
+      uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
+      vertex_buffer->set_bytes(vertices.data(), vertices.size() * sizeof(Vec3f));
+    
+      Uniforms &u = vs.get_uniforms();
+      u.transformations.model = entity->transform();
+      u.model = entity->transform();
+      u.mvp = u.transformations.model_view_projection();
+      RenderContext context = { u, vs };
+    
+      mesh.vertex = std::move(vertex_buffer);
+      my_aabb_material->material().draw_mesh(context, mesh);
+    }
+  }
 }
 
 }

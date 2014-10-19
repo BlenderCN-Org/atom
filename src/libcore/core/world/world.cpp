@@ -105,6 +105,7 @@ void World::deactivate()
 void World::step()
 {
   my_processors.physics->poll();
+  my_processors.geometry->poll();
   my_processors.script->poll();
   my_processors.debug->poll();
 
