@@ -10,6 +10,7 @@ struct GeometryCache {
 
 class GeometryComponent : public NullComponent {
   bool                    my_is_dynamic;
+  u32                     my_categories;
   Slot<ModelComponent>    my_model;
   Slot<SkeletonComponent> my_skeleton;
   GeometryCache           my_cache;
@@ -31,6 +32,13 @@ public:
   {
     return my_is_dynamic;
   }
+  
+  u32 categories() const
+  {
+    return my_categories;
+  }
+  
+  void set_categories(u32 mask);
   
   const Model* model() const;
   

@@ -299,7 +299,7 @@ void GameView::find_triangle_in_center()
 {
   RayGeometryResult result;
   Ray ray(my_camera.get_position(), my_camera.get_front());
-  my_has_intersection = my_world->processors().geometry.intersect_ray(ray, result);
+  my_has_intersection = my_world->processors().geometry.intersect_ray(ray, U32_MAX, result);
   
   
   if (my_has_intersection) {

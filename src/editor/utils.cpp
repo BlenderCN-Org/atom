@@ -11,11 +11,11 @@ uptr<FieldValue> create_field_value_for_type(Type type)
   uptr<FieldValue> field_value;
 
   switch (type) {
-    case Type::INT:
+    case Type::I32:
       field_value.reset(new FieldValueInt());
       break;
 
-    case Type::FLOAT:
+    case Type::F32:
       field_value.reset(new FieldValueFloat());
       break;
 

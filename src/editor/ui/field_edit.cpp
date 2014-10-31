@@ -59,7 +59,7 @@ uptr<FieldValue> FieldEditInt::value() const
 
 void FieldEditInt::set_value(const FieldValue &value)
 {
-  if (value.type() == Type::INT) {
+  if (value.type() == Type::I32) {
     const FieldValueInt &int_value = dynamic_cast<const FieldValueInt &>(value);
     my_spin_box->setValue(int_value.value());
   } else {
@@ -92,7 +92,7 @@ uptr<FieldValue> FieldEditFloat::value() const
 
 void FieldEditFloat::set_value(const FieldValue &value)
 {
-  if (value.type() == Type::FLOAT) {
+  if (value.type() == Type::F32) {
     const FieldValueFloat &float_value = dynamic_cast<const FieldValueFloat &>(value);
     my_spin_box->setValue(float_value.value());
   } else {

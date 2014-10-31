@@ -24,7 +24,7 @@ public:
   
   void poll() override;
   
-  bool intersect_ray(const Ray &ray, RayGeometryResult &result);
+  bool intersect_ray(const Ray &ray, u32 categories, RayGeometryResult &result);
   
   void register_component(GeometryComponent *component);
   

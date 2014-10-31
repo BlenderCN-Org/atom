@@ -14,11 +14,11 @@ uptr<FieldEdit> create_field_edit(Type type)
   uptr<FieldEdit> field_edit;
 
   switch (type) {
-    case Type::INT:
+    case Type::I32:
       field_edit.reset(new FieldEditInt());
       break;
 
-    case Type::FLOAT:
+    case Type::F32:
       field_edit.reset(new FieldEditFloat());
       break;
 

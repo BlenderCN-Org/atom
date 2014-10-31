@@ -158,6 +158,16 @@ void write_bool(bool value, rapidjson::Value &node)
   node.SetBool(value);
 }
 
+void write_i32(i32 value, rapidjson::Value &node)
+{
+  node.SetInt(value);
+}
+
+void write_u32(u32 value, rapidjson::Value &node)
+{
+  node.SetUint(value);
+}
+
 bool read_string(const rapidjson::Value &node, String &value)
 {
   if (!node.IsString()) {
@@ -287,12 +297,16 @@ ReadResult read_basic_property_from_json(const rapidjson::Value &obj, const Meta
       parsed = read_bool(node, field_ref<bool>(p, data));
       break;
 
-    case Type::INT:
-      parsed = read_number<int>(node, field_ref<int>(p, data));
+    case Type::I32:
+      parsed = read_number<i32>(node, field_ref<i32>(p, data));
+      break;
+      
+    case Type::U32:
+      parsed = read_number<u32>(node, field_ref<u32>(p, data));
       break;
 
-    case Type::FLOAT:
-      parsed = read_number<float>(node, field_ref<float>(p, data));
+    case Type::F32:
+      parsed = read_number<f32>(node, field_ref<f32>(p, data));
       break;
 
     case Type::STRING:
@@ -364,8 +378,18 @@ bool write_basic_property_to_json(rapidjson::Document &doc, rapidjson::Value &ob
       write_bool(field_ref<bool>(field, data), node);
       obj.AddMember(field.name, node, doc.GetAllocator());
       return true;
+      
+    case Type::I32:
+      write_i32(field_ref<i32>(field, data), node);
+      obj.AddMember(field.name, node, doc.GetAllocator());
+      return true;
+      
+    case Type::U32:
+      write_u32(field_ref<u32>(field, data), node);
+      obj.AddMember(field.name, node, doc.GetAllocator());
+      return true;
 
-    case Type::FLOAT:
+    case Type::F32:
       write_float(field_ref<float>(field, data), node);
       obj.AddMember(field.name, node, doc.GetAllocator());
       return true;

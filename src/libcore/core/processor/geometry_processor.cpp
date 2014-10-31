@@ -84,7 +84,8 @@ void GeometryProcessor::poll()
   }
 }
 
-bool GeometryProcessor::intersect_ray(const Ray &ray, RayGeometryResult &result)
+bool GeometryProcessor::intersect_ray(const Ray &ray, u32 categories,
+  RayGeometryResult &result)
 {
   f32 tnearest = F32_MAX;
   u32 inearest = U32_MAX;
@@ -92,6 +93,10 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, RayGeometryResult &result)
   GeometryComponent *nearest = nullptr;
   
   for (GeometryComponent *component : my_components) {
+    if ((component->categories() & categories) == 0) {
+      continue;
+    }
+    
     Entity &entity = component->entity();
     Component *found = entity.find_component<ModelComponent>();
     // entity doesn't have model, skip it

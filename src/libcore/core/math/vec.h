@@ -165,6 +165,14 @@ struct Vec3 {
     z += v.z;
     return *this;
   }
+  
+  Vec3<T>& operator-=(const Vec3<T> &v)
+  {
+    x -= v.x;
+    y -= v.y;
+    z -= v.z;
+    return *this;
+  }
 
   T length() const
   {

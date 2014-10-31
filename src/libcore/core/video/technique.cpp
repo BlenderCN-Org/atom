@@ -207,7 +207,7 @@ Type Technique::get_type_from_gl_type(GLenum type, GLint size)
 {
   switch (type) {
     case GL_FLOAT:
-      return Type::FLOAT;
+      return Type::F32;
 
     case GL_FLOAT_VEC2:
       return Type::VEC2F;

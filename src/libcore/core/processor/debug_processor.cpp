@@ -1,6 +1,6 @@
 #include "debug_processor.h"
 #include <bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
-#include <bullet/BulletDynamics/btBulletDynamicsCommon.h>
+#include <bullet/btBulletDynamicsCommon.h>
 #include "../utils/bt_utils.h"
 #include "../world/world.h"
 #include "../video/uniforms.h"

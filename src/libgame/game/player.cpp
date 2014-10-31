@@ -67,15 +67,17 @@ class PlayerScript : public ScriptComponent {
     if (is.is_key_down(Key::KEY_A)) {
       dir.x -= 1;
     }
+  
+    Vec2f delta = dir.y * step_forward + dir.x * step_strafe;
+    Vec2f pos = Vec2f(my_position.x, my_position.y) + delta;
     
-    if (dir.x != 0 || dir.y != 0) {
-      Vec2f delta = dir.y * step_forward + dir.x * step_strafe;
-      Vec2f pos = Vec2f(my_position.x, my_position.y) + delta;
-      
-      if (collision_at(pos, my_position)) {
-        Mat4f transform = Mat4f::translation(my_position);
-        entity().set_transform(transform);
-      }
+    if (collision_at(pos, my_position)) {
+      Mat4f transform = Mat4f::translation(my_position);
+      entity().set_transform(transform);
+    } else {
+      my_position -= Vec3f(0.0f, 0.0f, 0.1f);
+      Mat4f transform = Mat4f::translation(my_position);
+      entity().set_transform(transform);
     }
     
     refresh_camera();
@@ -90,7 +92,7 @@ class PlayerScript : public ScriptComponent {
   {
     Ray ray(Vec3f(pos.x, pos.y, -10), Vec3f::z_axis());
     RayGeometryResult result;
-    bool hit = processors().geometry.intersect_ray(ray, result);
+    bool hit = processors().geometry.intersect_ray(ray, U32_MAX, result);
     
     if (hit) {
       point = result.hit;

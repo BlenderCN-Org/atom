@@ -5,7 +5,8 @@
 namespace atom {
 
 META_CLASS(GeometryComponent,
-  FIELD(my_is_dynamic, "dynamic")
+  FIELD(my_is_dynamic, "dynamic"),
+  FIELD(my_categories, "categories")
 )
 
 void GeometryComponent::init()
@@ -25,10 +26,17 @@ uptr<Component> GeometryComponent::clone() const
 
 GeometryComponent::GeometryComponent()
   : NullComponent(ComponentType::GEOMETRY)
+  , my_is_dynamic(false)
+  , my_categories(U32_MAX)
   , my_model(this)
   , my_skeleton(this)
 {
   META_INIT();
+}
+
+void GeometryComponent::set_categories(u32 mask)
+{
+  my_categories = mask;
 }
 
 const Model* GeometryComponent::model() const

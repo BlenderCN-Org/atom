@@ -62,16 +62,16 @@ void set_value(Type type, const void *src, void *dst)
       *reinterpret_cast<bool *>(dst) = *reinterpret_cast<const bool *>(src);
       break;
 
-    case Type::INT:
-      *reinterpret_cast<int *>(dst) = *reinterpret_cast<const int *>(src);
+    case Type::I32:
+      *reinterpret_cast<i32 *>(dst) = *reinterpret_cast<const i32 *>(src);
       break;
       
     case Type::U32:
       *reinterpret_cast<u32 *>(dst) = *reinterpret_cast<const u32 *>(src);
       break;
 
-    case Type::FLOAT:
-      *reinterpret_cast<float *>(dst) = *reinterpret_cast<const float *>(src);
+    case Type::F32:
+      *reinterpret_cast<f32 *>(dst) = *reinterpret_cast<const f32 *>(src);
       break;
 
     case Type::STRING:

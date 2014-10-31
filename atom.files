@@ -257,6 +257,7 @@ src/libcore/core/world/entity.h
 src/libcore/core/world/update_context.h
 src/libcore/core/world/world.cpp
 src/libcore/core/world/world.h
+src/libgame/game/constants.h
 src/libgame/game/crate.cpp
 src/libgame/game/game.cpp
 src/libgame/game/monster.cpp

@@ -9,10 +9,12 @@ namespace atom {
 // type_of functionality
 //
 
+/**
+ * Contains only sized types to avoid ambiguity (e.g. i32 is alias for int)
+ */
 enum class Type : u32 {
+  // basic types
   BOOL,
-  INT,
-  FLOAT,
   I8,
   U8,
   I16,
@@ -23,22 +25,25 @@ enum class Type : u32 {
   U64,
   F32,
   F64,
+  // vectors
   VEC2F,
   VEC3F,
   VEC4F,
   VEC4U8,
+  // matrices
   MAT2F,
   MAT3F,
   MAT4F,
   MAT4F_ARRAY,
   STRING,
+  // video types
   SHADER,
   TEXTURE,
   SAMPLER_2D,
   DRAW_FACE,
+  // component
   COMPONENT_TYPE,
   UNKNOWN
-//  IMAGE
 };
 
 template<typename T>
@@ -65,8 +70,9 @@ inline Type type_of(const T &)
 //
 
 TYPE_OF(bool, BOOL)
-TYPE_OF(float, FLOAT)
-TYPE_OF(int, INT)
+TYPE_OF(f32, F32)
+TYPE_OF(i32, I32)
+TYPE_OF(u32, U32)
 
 
 //
