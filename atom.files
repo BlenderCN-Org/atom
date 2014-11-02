@@ -16,6 +16,7 @@ data/level/terrain_level.lev
 data/material/animal.mat
 data/material/debug_aabb.mat
 data/material/debug_bounding_box.mat
+data/material/debug_wireframe.mat
 data/material/flat.mat
 data/material/lines.mat
 data/material/manual.mat
@@ -257,9 +258,9 @@ src/libcore/core/world/entity.h
 src/libcore/core/world/update_context.h
 src/libcore/core/world/world.cpp
 src/libcore/core/world/world.h
-src/libgame/game/constants.h
 src/libgame/game/crate.cpp
 src/libgame/game/game.cpp
+src/libgame/game/game.h
 src/libgame/game/monster.cpp
 src/libgame/game/monster.h
 src/libgame/game/player.cpp

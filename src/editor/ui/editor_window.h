@@ -70,6 +70,7 @@ private slots:
   void on_action_show_physics_triggered(bool checked);
   void on_action_show_bounding_box_triggered(bool checked);
   void on_action_show_aabb_triggered(bool checked);
+  void on_action_show_geometry_triggered(bool checked);
 
   void load();
   void unload();

@@ -9,7 +9,7 @@
 namespace atom {
 
 META_CLASS(Material,
-  FIELD(face, "face")
+  FIELD(my_face, "face")
 )
 
 Material::~Material()
@@ -66,7 +66,8 @@ void LinesMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 //
 
 META_CLASS(FlatMaterial,
-  FIELD(color, "color")
+  FIELD(my_color, "color"),
+  FIELD(my_shader, "shader")
 )
 
 uptr<Material> FlatMaterial::create(ResourceService &rs)
@@ -94,7 +95,7 @@ void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
     return;
   }
 
-  context.uniforms.color = color;
+  context.uniforms.color = my_color;
 
   DrawCommand command;
   command.draw = DrawType::TRIANGLES;
@@ -111,7 +112,8 @@ void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 //
 
 META_CLASS(WireframeMaterial,
-  FIELD(color, "color")
+  FIELD(my_color, "color"),
+  FIELD(my_shader, "shader")
 )
 
 uptr<Material> WireframeMaterial::create(ResourceService &rs)
@@ -133,14 +135,13 @@ WireframeMaterial::~WireframeMaterial()
 void WireframeMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
   assert(my_shader != nullptr);
-  not_tested();
 
   if (mesh.vertex == nullptr || mesh.surface == nullptr) {
     log::warning("%s: mesh missing vertex or surface data", ATOM_FUNC_NAME);
     return;
   }
 
-  context.uniforms.color = color;
+  context.uniforms.color = my_color;
 
   DrawCommand command;
   command.draw = DrawType::TRIANGLES;
@@ -148,6 +149,7 @@ void WireframeMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh
   command.types[0] = Type::VEC3F;
   command.indices = mesh.surface.get();
   command.program = &my_shader->program();
+  command.face = face();
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);  // TODO: vyriesit v ramci materialu, nie OpenGL
   context.video_processor.draw(command);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

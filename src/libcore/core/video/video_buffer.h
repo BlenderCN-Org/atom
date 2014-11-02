@@ -44,13 +44,11 @@ public:
     return my_gl_buffer;
   }
 
-  void set_data(const Vec2f *array, size_t count);
-
-  void set_data(const Vec2fArray &array);
-
-  void set_data(const Vec3f *array, size_t count);
-
-  void set_data(const Vec3fArray &array);
+  template<typename T>
+  void set_data(const Slice<T> &data)
+  {
+    set_bytes(data.data(), data.raw_size());
+  }
   
 private:
   static GLenum get_gl_usage(VideoBufferUsage usage);

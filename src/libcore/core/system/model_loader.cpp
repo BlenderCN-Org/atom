@@ -11,7 +11,7 @@ namespace atom {
 //-----------------------------------------------------------------------------
 
 bool load_model_element_array_from_json(const rapidjson::Value &node,
-  ElementArray &array)
+  DataStream &array)
 {
   if (!node.IsObject()) {
     return false;
@@ -41,10 +41,10 @@ bool load_model_element_array_from_json(const rapidjson::Value &node,
       {
         std::vector<u32> buffer;
         if (utils::read_array(data, buffer) && !buffer.empty()) {
-          array.size = buffer.size() * sizeof(u32);
+          u32 raw_size = buffer.size() * sizeof(u32);
           array.type = Type::U32;
-          array.data = uptr<u8[]>(new u8[array.size]);
-          memcpy(array.data.get(), buffer.data(), array.size);
+          array.data.resize(raw_size);
+          memcpy(&array.data[0], buffer.data(), raw_size);
           return true;
         }
       }
@@ -54,10 +54,10 @@ bool load_model_element_array_from_json(const rapidjson::Value &node,
       {
         std::vector<f32> buffer;
         if (utils::read_array(data, buffer) && !buffer.empty()) {
-          array.size = buffer.size() * sizeof(f32);
+          u32 raw_size = buffer.size() * sizeof(f32);
           array.type = Type::F32;
-          array.data = uptr<u8[]>(new u8[array.size]);
-          memcpy(array.data.get(), buffer.data(), array.size);
+          array.data.resize(raw_size);
+          memcpy(&array.data[0], buffer.data(), raw_size);
           return true;
         }
       }
@@ -86,15 +86,14 @@ bool load_model_arrays_from_json(const rapidjson::Value &arrays_node, Model &mod
       return false;
     }
 
-//    log::info("Loading array %s", i->name.GetString());
     const rapidjson::Value &array_node = i->value;
-    ElementArray array;
+    DataStream array;
 
     if (!load_model_element_array_from_json(array_node, array)) {
       log::warning("Error while loading array \"%s\"", i->name.GetString());
       return false;
     }
-    model.add_array(i->name.GetString(), array.type, std::move(array.data), array.size);
+    model.add_array(i->name.GetString(), array.type, std::move(array.data));
   }
 
   return true;

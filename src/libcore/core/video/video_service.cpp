@@ -86,10 +86,6 @@ VideoService::VideoService()
 {
   memset(&my_state, 0, sizeof(State));
   // initialize with nullptr
-  for (unsigned i = 0; i < TEXTURE_UNIT_COUNT; ++i) {
-    my_textures[i] = nullptr;
-    my_samplers[i] = nullptr;
-  }
 
   GL_ERROR_GUARD;
 
@@ -98,8 +94,12 @@ VideoService::VideoService()
     return;
   }
 
+  // set DrawFace::FRONT
   glEnable(GL_CULL_FACE);
   glFrontFace(GL_CCW);
+  glCullFace(GL_BACK);
+  // set FillMode::FILL
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 VideoService::~VideoService()
@@ -123,6 +123,8 @@ void VideoService::draw(const DrawCommand &command)
 
   bind_program(*command.program);
   command.program->pull(meta_object(*my_uniforms));
+  
+  set_draw_face(command.face);
 
   if (command.draw == DrawType::TRIANGLES) {
     draw_index_array(GL_TRIANGLES, *command.indices, command.indices->size() / sizeof(u32));
@@ -180,14 +182,14 @@ void VideoService::bind_texture(u32 index, const Texture &texture)
   else
     error("This texture type is not supported %i (%s)", type, __FUNCTION__);
 
-  my_textures[index] = &texture;
+  my_state.textures[index] = &texture;
 }
 
 void VideoService::unbind_texture(u32 index)
 {
   assert(index < TEXTURE_UNIT_COUNT);
   GL_ERROR_GUARD;
-  const Texture *texture = my_textures[index];
+  const Texture *texture = my_state.textures[index];
 
   if (texture != nullptr) {
     // texture_unit zacina hodnotou 0, preto ho treba skonvertovat na GL_TEXTURE0..i
@@ -202,7 +204,7 @@ void VideoService::unbind_texture(u32 index)
     } else {
       log::warning("This texture type is not supported %i (%s)", type, ATOM_FUNC_NAME);
     }
-    my_textures[index] = nullptr;
+    my_state.textures[index] = nullptr;
   }
 }
 
@@ -211,7 +213,7 @@ void VideoService::bind_sampler(u32 index, const TextureSampler &sampler)
   assert(my_state.program != nullptr && "Program must be bound");
   assert(index < TEXTURE_UNIT_COUNT);
 
-  my_samplers[index] = &sampler;
+  my_state.samplers[index] = &sampler;
   glBindSampler(index, sampler.gl_sampler());
 }
 
@@ -219,7 +221,7 @@ void VideoService::unbind_sampler(u32 index)
 {
   assert(index < TEXTURE_UNIT_COUNT);
   GL_CHECK_ERROR;
-  if (my_samplers[index] == nullptr) {
+  if (my_state.samplers[index] == nullptr) {
     return;
   }
 
@@ -435,6 +437,10 @@ Uniforms& VideoService::get_uniforms()
 
 void VideoService::set_draw_face(DrawFace face)
 {
+  if (face == my_state.draw_face) {
+    return;
+  }
+  
   switch (face) {
     case DrawFace::FRONT:
       glEnable(GL_CULL_FACE);
@@ -449,7 +455,41 @@ void VideoService::set_draw_face(DrawFace face)
     case DrawFace::BOTH:
       glDisable(GL_CULL_FACE);
       break;
+      
+    default:
+      log::warning("%s: unknown DrawFacee %i", ATOM_FUNC_NAME, static_cast<int>(face));
+      return;
   }
+  
+  my_state.draw_face = face;
+}
+
+void VideoService::set_fill_mode(FillMode mode)
+{
+  if (mode == my_state.fill_mode) {
+    return;
+  }
+  
+  switch (mode) {
+    case FillMode::FILL:
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      break;
+      
+    case FillMode::LINE:
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      break;
+      
+    case FillMode::POINT:
+      glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+      break;
+      
+    default:
+      log::warning("%s: unknown polygon fill mode %i", ATOM_FUNC_NAME,
+        static_cast<int>(mode));
+      return;
+  }
+  
+  my_state.fill_mode = mode;
 }
 
 AttributeBinder::AttributeBinder(VideoService &vs, int index, const VideoBuffer &buffer, Type type)

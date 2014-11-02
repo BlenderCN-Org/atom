@@ -346,35 +346,35 @@ void MeshLoader::reload_resource(ResourceService &rs, Resource &resource)
 
 void MeshLoader::load_mesh_from_model(ResourceService &rs, const Model &model, Mesh &mesh)
 {
-  const ElementArray *vertices = model.find_array("vertices", Type::F32);
-  const ElementArray *normals = model.find_array("normals", Type::F32);
-  const ElementArray *indices = model.find_array("indices", Type::U32);
-  const ElementArray *bone_index = model.find_array("bone_index", Type::U32);
-  const ElementArray *bone_weight = model.find_array("bone_weight", Type::F32);
+  Slice<f32> vertices = model.find_stream<f32>("vertices");
+  Slice<f32> normals = model.find_stream<f32>("normals");
+  Slice<u32> indices = model.find_stream<u32>("indices");
+  Slice<u32> bone_index = model.find_stream<u32>("bone_index");
+  Slice<f32> bone_weight = model.find_stream<f32>("bone_weight");
 
-  if (vertices != nullptr) {
+  if (!vertices.is_empty()) {
     mesh.vertex.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));
-    mesh.vertex->set_bytes(vertices->data.get(), vertices->size);
+    mesh.vertex->set_data(vertices);
   }
 
-  if (normals != nullptr) {
+  if (!normals.is_empty()) {
     mesh.normal.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));
-    mesh.normal->set_bytes(normals->data.get(), normals->size);
+    mesh.normal->set_data(normals);
   }
 
-  if (indices != nullptr) {
+  if (!indices.is_empty()) {
     mesh.surface.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));
-    mesh.surface->set_bytes(indices->data.get(), indices->size);
+    mesh.surface->set_data(indices);
   }
 
-  if (bone_weight != nullptr) {
+  if (!bone_weight.is_empty()) {
     mesh.bone_weight.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));
-    mesh.bone_weight->set_bytes(bone_weight->data.get(), bone_weight->size);
+    mesh.bone_weight->set_data(bone_weight);
   }
 
-  if (bone_index != nullptr) {
+  if (!bone_index.is_empty()) {
     mesh.bone_index.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));
-    mesh.bone_index->set_bytes(bone_index->data.get(), bone_index->size);
+    mesh.bone_index->set_data(bone_index);
   }
 }
 

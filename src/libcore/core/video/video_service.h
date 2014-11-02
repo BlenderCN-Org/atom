@@ -15,17 +15,31 @@ enum class DrawType {
   TRIANGLES
 };
 
+enum class DrawFace {
+  FRONT = 0,  ///< default value in VideoService::State
+  BACK,
+  BOTH
+};
+
+enum class FillMode {
+  FILL = 0,   ///< default value in VideoService::State
+  POINT,
+  LINE
+};
+
 struct DrawCommand {
   VideoBuffer *attributes[MAX_ATTRIBUTES];
   Type         types[MAX_ATTRIBUTES];
   VideoBuffer *indices;
   Technique   *program;
   DrawType     draw;
+  DrawFace     face;
 
   DrawCommand()
     : indices(nullptr)
     , program(nullptr)
     , draw(DrawType::NONE)
+    , face(DrawFace::FRONT)
   {
     for (u32 i = 0; i < MAX_ATTRIBUTES; ++i) {
       attributes[i] = nullptr;
@@ -49,12 +63,6 @@ inline GLenum framebuffer_target_to_gl(FramebufferTarget target)
 
 const u32 TEXTURE_UNIT_COUNT = 8;
 const u32 TEXTURE_SAMPLER_COUNT = 8;
-
-enum class DrawFace {
-  FRONT,
-  BACK,
-  BOTH
-};
 
 enum class BlendOperation : GLenum {
   NO_BLENDING = 0,
@@ -159,20 +167,22 @@ public:
   Uniforms& get_uniforms();
 
   void set_draw_face(DrawFace face);
+  
+  void set_fill_mode(FillMode mode);
 
   struct State {
-    Technique   *program;
-    Texture        *textures[TEXTURE_UNIT_COUNT];
-    TextureSampler *samples[TEXTURE_SAMPLER_COUNT];
-    Renderbuffer   *renderbuffer;
-    Framebuffer    *read_framebuffer;
-    Framebuffer    *write_framebuffer;
+    Technique            *program;
+    const Texture        *textures[TEXTURE_UNIT_COUNT];
+    const TextureSampler *samplers[TEXTURE_SAMPLER_COUNT];
+    Renderbuffer         *renderbuffer;
+    Framebuffer          *read_framebuffer;
+    Framebuffer          *write_framebuffer;
+    FillMode              fill_mode;
+    DrawFace              draw_face;
   };
 
 private:
   State          my_state;
-  const Texture      *my_textures[TEXTURE_UNIT_COUNT];
-  const TextureSampler *my_samplers[TEXTURE_UNIT_COUNT];
   uptr<Uniforms> my_uniforms;
 };
 

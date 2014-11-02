@@ -4,22 +4,21 @@
 
 namespace atom {
 
-bool Model::add_array(const String &name, Type type, uptr<u8[]> &&data, u32 size)
+bool Model::add_array(const String &name, Type type, std::vector<u8> &&data)
 {
-  uptr<ElementArray> array(new ElementArray());
+  uptr<DataStream> array(new DataStream());
   array->name = name;
   array->type = type;
   array->data = std::move(data);
-  array->size = size;
 
   my_arrays.push_back(std::move(array));
   return true;
 }
 
-const ElementArray* Model::find_array(const String &name, Type type) const
+const DataStream* Model::find_array(const String &name, Type type) const
 {
   auto found = std::find_if(my_arrays.begin(), my_arrays.end(),
-    [&name, &type](const uptr<ElementArray> &array)
+    [&name, &type](const uptr<DataStream> &array)
     {
       return array->name == name && array->type == type;
     });

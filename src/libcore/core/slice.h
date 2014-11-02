@@ -60,6 +60,11 @@ public:
   {
     return my_count;
   }
+  
+  u32 raw_size() const
+  {
+    return my_count * sizeof(T);
+  }
 
   T& operator[](u32 index)
   {

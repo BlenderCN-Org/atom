@@ -102,6 +102,15 @@ String to_string(const Quatf &q);
 String to_string(const Mat4f &m);
 
 /**
+ * Convenient function to convert vector to slice
+ */
+template<typename T>
+Slice<T> to_slice(const std::vector<T> &array)
+{
+  return Slice<T>(array.data(), array.size());
+}
+
+/**
  * Konvertuj texturu na obrazok.
  */
 uptr<Image> to_image(VideoService &vs, Texture &texture);

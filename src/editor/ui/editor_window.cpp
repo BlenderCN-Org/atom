@@ -549,6 +549,11 @@ void EditorWindow::on_action_show_aabb_triggered(bool checked)
   application().world()->processors().debug.set_debug(DebugCategory::AABB, checked);
 }
 
+void EditorWindow::on_action_show_geometry_triggered(bool checked)
+{
+  application().world()->processors().debug.set_debug(DebugCategory::GEOMETRY_CACHE, checked);
+}
+
 void EditorWindow::load()
 {
   log::debug(DEBUG_EDITOR, "Loading editor window");

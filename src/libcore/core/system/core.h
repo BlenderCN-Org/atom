@@ -54,12 +54,6 @@ public:
     return *my_services.input;
   }
 
-  DrawService& draw_service() const
-  {
-    assert(my_services.draw != nullptr);
-    return *my_services.draw;
-  }
-
   AudioService& audio_service() const
   {
     assert(my_services.audio != nullptr);
@@ -83,7 +77,6 @@ private:
   struct Services {
     uptr<InputService>    input;
     uptr<VideoService>    video;
-    uptr<DrawService>     draw;
     uptr<AudioService>    audio;
     uptr<ResourceService> resource;
   };

@@ -14,9 +14,10 @@ namespace atom {
 typedef std::vector<String> ChangeList;
 
 enum class WatchMethod {
-  CLOSE,             ///< zatvorenie suboru IN_CLOSE_WRITE
-  MODIFY_AND_CLOSE,  ///< pred zatvorenim musi prist modifikacia, vhodne napr. pre shared kniznice
-  MOVE
+  CLOSE,            ///< zatvorenie suboru IN_CLOSE_WRITE
+  MODIFY_AND_CLOSE, ///< pred zatvorenim musi prist modifikacia, vhodne napr. pre shared kniznice
+  MOVE,             ///< subor vznikne presunutim docasneho suboru do cieloveho (napr. QtCreator takto uklada zmeny)
+  MOVE_OR_CLOSE     ///< kombinacia CLOSE a MOVE
 };
 
 /**

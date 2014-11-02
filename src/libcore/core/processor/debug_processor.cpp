@@ -15,11 +15,6 @@ namespace atom {
 // PhysicsDebugDrawer
 //
 
-template<typename T>
-Slice<T> to_slice(const std::vector<T> &array)
-{
-  return Slice<T>(array.data(), array.size());
-}
 
 class PhysicsDebugDrawer : public btIDebugDraw {
   std::vector<Vec3f> my_vertices;
@@ -72,11 +67,12 @@ public:
 
 DebugProcessor::DebugProcessor(World &world)
   : NullProcessor(world)
-  , my_debug_categories(DebugCategory::PHYSICS | DebugCategory::GEOMETRY_CACHE)
+  , my_debug_categories(0)
   , my_physics_drawer(new PhysicsDebugDrawer())
 {
   ResourceService &rs = core().resource_service();
-  my_wireframe_material = rs.get_material("lines");
+  my_wireframe_material = rs.get_material("debug_wireframe");
+  my_lines_material = rs.get_material("lines");
   my_bounding_box_material = rs.get_material("debug_bounding_box");
   my_aabb_material = rs.get_material("debug_aabb");
 }
@@ -127,6 +123,31 @@ void DebugProcessor::set_debug(u32 category, bool enable)
   }
 }
 
+void DebugProcessor::draw_wireframe(const Slice<Vec3f> &vertices,
+  const Slice<u32> &indices, const Vec3f &color, const Mat4f &model)
+{
+  Mesh mesh;
+  VideoService &vs = core().video_service();
+  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
+  uptr<VideoBuffer> index_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
+  vertex_buffer->set_bytes(vertices.data(), vertices.raw_size());
+  index_buffer->set_bytes(indices.data(), indices.raw_size());
+  
+  Uniforms &u = vs.get_uniforms();
+  u.transformations.model = model;
+  u.model = model;
+  u.mvp = u.transformations.model_view_projection();
+  u.color = color;  // TODO: farba sa nastavuje priamo v materiali a nie tu
+  
+  RenderContext context = { u, vs };
+  mesh.vertex = std::move(vertex_buffer);
+  mesh.surface = std::move(index_buffer);
+  
+  Material &material = my_wireframe_material->material();
+  vs.set_draw_face(material.face());
+  material.draw_mesh(context, mesh);
+}
+
 void DebugProcessor::draw_physics()
 {
   Slice<Vec3f> lines = my_physics_drawer->get_lines();
@@ -149,7 +170,7 @@ void DebugProcessor::draw_physics()
 
   mesh.vertex = std::move(vertex_buffer);
 
-  my_wireframe_material->material().draw_mesh(context, mesh);
+  my_lines_material->material().draw_mesh(context, mesh);
 }
 
 void DebugProcessor::draw_bounding_box()
@@ -279,6 +300,8 @@ void DebugProcessor::draw_aabb()
 
 void DebugProcessor::draw_geometry_cache()
 {
+  core().video_service().disable_depth_test();
+  
   for (const sptr<Entity> &entity : world().all_entities()) {
     std::vector<GeometryComponent *> components =
       entity->find_components<GeometryComponent>();
@@ -290,24 +313,17 @@ void DebugProcessor::draw_geometry_cache()
         continue;
       }
       
-      const std::vector<Vec3f> &vertices = geometry_cache.vertices;
+      const Model *model = component->model();
       
-      //draw geometry
-      Mesh mesh;
-      VideoService &vs = core().video_service();
-      uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
-      vertex_buffer->set_bytes(vertices.data(), vertices.size() * sizeof(Vec3f));
-    
-      Uniforms &u = vs.get_uniforms();
-      u.transformations.model = entity->transform();
-      u.model = entity->transform();
-      u.mvp = u.transformations.model_view_projection();
-      RenderContext context = { u, vs };
-    
-      mesh.vertex = std::move(vertex_buffer);
-      my_aabb_material->material().draw_mesh(context, mesh);
+      Slice<u32> indices = model->find_stream<u32>("indices");
+      
+      const Slice<Vec3f> vertices = to_slice(geometry_cache.vertices);
+      
+      draw_wireframe(vertices, indices, Vec3f(1, 0.5, 1), entity->transform());
     }
   }
+  
+  core().video_service().enable_depth_test();
 }
 
 }

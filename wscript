@@ -232,7 +232,6 @@ def check_required_windows_libs(ctx):
 
 def build_flext_lib(ctx):
     """build small flextGL library"""
-    #filter = 'src/**/crate.cpp'
     ctx.stlib(
       name='flext',
       target = 'flext',
@@ -257,7 +256,7 @@ def build_core_lib(ctx):
 
 def build_game_lib(ctx):
     """build Game lib as static lib"""
-    #filter = 'src/libgame/**/crate.cpp'
+    filter = 'src/libgame/**/crate.cpp'
     ctx.stlib(
       name='game',
       target = 'game',

@@ -53,11 +53,12 @@
     </widget>
     <widget class="QMenu" name="menu_entity">
      <property name="title">
-      <string>Entity</string>
+      <string>Debug</string>
      </property>
      <addaction name="action_show_physics"/>
      <addaction name="action_show_bounding_box"/>
      <addaction name="action_show_aabb"/>
+     <addaction name="action_show_geometry"/>
     </widget>
     <addaction name="menu_entity"/>
     <addaction name="menu_panels"/>
@@ -168,6 +169,14 @@
    </property>
    <property name="text">
     <string>AABB</string>
+   </property>
+  </action>
+  <action name="action_show_geometry">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Geometry</string>
    </property>
   </action>
  </widget>

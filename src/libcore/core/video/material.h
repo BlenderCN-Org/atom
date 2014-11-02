@@ -10,22 +10,28 @@
 
 namespace atom {
 
-//FlatSkin vertices, weight, bones, indices
-//PhongSkin vertices, normals, bones, indices
+// TODO:
+//   PhongSkin vertices, normals, bones, indices
 
 class Material : private NonCopyable {
+  DrawFace my_face;
+  
 public:
   Material()
-    : face(DrawFace::FRONT)
+    : my_face(DrawFace::FRONT)
   {
     META_INIT();
   }
 
   virtual ~Material();
-
+  
   virtual void draw_mesh(const RenderContext &context, const Mesh &mesh) = 0;
 
-  DrawFace face;
+  DrawFace face() const
+  {
+    return my_face;
+  }
+  
   
   META_ROOT_CLASS;
 };
@@ -38,6 +44,9 @@ typedef sptr<Material> MaterialPtr;
 //
 
 class LinesMaterial : public Material {
+  TechniqueResourcePtr my_shader;
+  Vec3f                color;
+  
 public:
   static uptr<Material> create(ResourceService &rs);
 
@@ -48,9 +57,6 @@ public:
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
   
   META_SUB_CLASS(Material);
-
-  TechniqueResourcePtr my_shader;
-  Vec3f color;
 };
 
 
@@ -59,6 +65,9 @@ public:
 //
 
 class FlatMaterial : public Material {
+  TechniqueResourcePtr my_shader;
+  Vec3f                my_color;
+  
 public:
   static uptr<Material> create(ResourceService &rs);
   
@@ -69,9 +78,6 @@ public:
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
   
   META_SUB_CLASS(Material);
-  
-  TechniqueResourcePtr my_shader;
-  Vec3f color;
 };
 
 
@@ -80,6 +86,9 @@ public:
 //
 
 class WireframeMaterial : public Material {
+  TechniqueResourcePtr my_shader;
+  Vec3f my_color;
+  
 public:
   static uptr<Material> create(ResourceService &rs);
   
@@ -90,9 +99,6 @@ public:
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
   
   META_SUB_CLASS(Material);
-  
-  TechniqueResourcePtr my_shader;
-  Vec3f color;
 };
 
 
@@ -101,6 +107,8 @@ public:
 //
 
 class PhongMaterial : public Material {
+  TechniqueResourcePtr my_program;
+  
 public:
   static uptr<Material> create(ResourceService &rs);
 
@@ -114,9 +122,6 @@ public:
 
   TechniqueResourcePtr my_shader;
   Vec3f                my_color;
-
-private:
-  TechniqueResourcePtr my_program;
 };
 
 
@@ -126,6 +131,8 @@ private:
 //
 
 class FlatSkinMaterial : public Material {
+  TechniqueResourcePtr my_program;
+  
 public:
   static uptr<Material> create(ResourceService &rs);
 
@@ -139,9 +146,6 @@ public:
   Vec3f                my_color;
   
   META_SUB_CLASS(Material);
-
-private:
-  TechniqueResourcePtr my_program;
 };
 
 }

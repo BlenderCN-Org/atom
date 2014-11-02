@@ -75,8 +75,7 @@ void RenderProcessor::render(const Camera &camera)
       }
     }
 
-//    my_vs.set_draw_face(DrawFace::BOTH);
-    vs.set_draw_face(material->material().face);
+    vs.set_draw_face(material->material().face());
     material->material().draw_mesh(context, mesh->mesh());
   }
 

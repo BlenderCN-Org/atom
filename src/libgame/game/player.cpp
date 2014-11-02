@@ -8,6 +8,7 @@
 #include <core/input/input_service.h>
 #include <core/world/world.h>
 #include <core/processor/geometry_processor.h>
+#include "game.h"
 
 namespace atom {
 
@@ -90,9 +91,9 @@ class PlayerScript : public ScriptComponent {
   
   bool collision_at(const Vec2f &pos, Vec3f &point) const
   {
-    Ray ray(Vec3f(pos.x, pos.y, -10), Vec3f::z_axis());
+    Ray ray(Vec3f(pos.x, pos.y, 100), -Vec3f::z_axis());
     RayGeometryResult result;
-    bool hit = processors().geometry.intersect_ray(ray, U32_MAX, result);
+    bool hit = processors().geometry.intersect_ray(ray, CollisionMask::WORLD | CollisionMask::ENEMY, result);
     
     if (hit) {
       point = result.hit;

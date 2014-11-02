@@ -11,7 +11,6 @@ namespace atom {
 
 // video
 class VideoService;
-class DrawService;
 class Image;
 class Sprite;
 class Texture;

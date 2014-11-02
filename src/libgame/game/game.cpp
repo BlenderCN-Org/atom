@@ -16,6 +16,7 @@
 #include <core/video/mesh.h>
 #include "monster.h"
 #include "player.h"
+#include "game.h"
 
 namespace atom {
 namespace {
@@ -40,45 +41,41 @@ class SkeletonBodyScript : public ScriptComponent {
   {
     const Model &model = my_model->get_model()->model();
 
-    const ElementArray *vertice_array = model.find_array("vertices", Type::F32);
-    const u8 *vertice_data = vertice_array->data.get();
-    const ElementArray *bweight_array = model.find_array("bone_weight", Type::F32);
-    const u8 *bweight_data = bweight_array->data.get();
-    const ElementArray *bindex_array = model.find_array("bone_index", Type::U32);
-    const u8 *bindex_data = bindex_array->data.get();
+    Slice<f32> vertex_stream = model.find_stream<f32>("vertices");
+    Slice<f32> bweight_stream = model.find_stream<f32>("bone_weight");
+    Slice<u32> bindex_stream = model.find_stream<u32>("bone_index");
 
     if (!my_is_initialized) {
-      const ElementArray *index_array = model.find_array("indices", Type::U32);
+      Slice<u32> index_stream = model.find_stream<u32>("indices");
       my_is_initialized = true;
       Mesh *mesh = my_mesh_resource->data();
 
       uptr<VideoBuffer> mesh_indices(new VideoBuffer(core().video_service(), VideoBufferUsage::STATIC_DRAW));
       uptr<VideoBuffer> mesh_vertices(new VideoBuffer(core().video_service(), VideoBufferUsage::DYNAMIC_DRAW));
 
-      mesh_indices->set_bytes(index_array->data.get(), index_array->size);
+      mesh_indices->set_data(index_stream);
 
       mesh->vertex = std::move(mesh_vertices);
       mesh->surface = std::move(mesh_indices);
       my_mesh_vertices = mesh->vertex.get();
-      my_mesh_vertices->set_bytes(vertice_array->data.get(), vertice_array->size);
+      my_mesh_vertices->set_data(vertex_stream);
       my_mesh->set_mesh(my_mesh_resource);
       my_render->set_enabled(true);
     }
 
 
-    u32 vertex_count = vertice_array->size / sizeof(Vec3f);
-
-    u32 bweight_count = bweight_array->size / sizeof(Vec4f);
-    u32 bindex_count = bindex_array->size / sizeof(Vec4u8);
+    u32 vertex_count = vertex_stream.raw_size() / sizeof(Vec3f);
+    u32 bweight_count = bweight_stream.raw_size() / sizeof(Vec4f);
+    u32 bindex_count = bindex_stream.raw_size() / sizeof(Vec4u8);
 
     if (vertex_count != bweight_count || vertex_count != bindex_count) {
       log::error("Corrupted model data arrays");
       return;
     }
 
-    const Vec3f *vertices = reinterpret_cast<const Vec3f *>(vertice_data);
-    const Vec4f *bone_weight = reinterpret_cast<const Vec4f *>(bweight_data);
-    const Vec4u8 *bone_index = reinterpret_cast<const Vec4u8 *>(bindex_data);
+    const Vec3f *vertices = reinterpret_cast<const Vec3f *>(vertex_stream.data());
+    const Vec4f *bone_weight = reinterpret_cast<const Vec4f *>(bweight_stream.data());
+    const Vec4u8 *bone_index = reinterpret_cast<const Vec4u8 *>(bindex_stream.data());
 
     my_last_vertices.swap(my_vertices);
     my_vertices.clear();
@@ -104,7 +101,7 @@ class SkeletonBodyScript : public ScriptComponent {
       const Vec3f v3 = (m3 * v * weight[3]).to_vec3();
       my_vertices.push_back(v0 + v1 + v2 + v3);
 
-      my_mesh_vertices->set_data(my_vertices.data(), my_vertices.size());
+      my_mesh_vertices->set_data(to_slice(my_vertices));
     }
   }
   
@@ -166,8 +163,6 @@ public:
 Frame* create_first_frame(Core &core)
 {
   return nullptr;
-//  return new game::DemoFrame(core);
-  //return new game::MainMenuFrame(core, std::make_shared<game::DemoFrame>(core));
 }
 
 
@@ -204,6 +199,7 @@ uptr<Entity> create_monster(World &world, Core &core)
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<GeometryComponent> geometry(new GeometryComponent());
   geometry->set_dynamic(true);
+  geometry->set_categories(CollisionMask::ENEMY);
   uptr<RenderComponent> render(new RenderComponent());
   uptr<ScriptComponent> script(new MonsterScript());
   entity->set_bounding_box(BoundingBox(-20, 20, -20, 20, 0, 20));
@@ -293,6 +289,7 @@ uptr<Entity> create_flat_terrain(World &world, Core &core)
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
   uptr<GeometryComponent> geometry(new GeometryComponent());
+  geometry->set_categories(CollisionMask::WORLD);
   entity->add_component(std::move(model));
   entity->add_component(std::move(material));
   entity->add_component(std::move(mesh));
@@ -311,6 +308,7 @@ uptr<Entity> create_bumpy_terrain(World &world, Core &core)
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
   uptr<GeometryComponent> geometry(new GeometryComponent());
+  geometry->set_categories(CollisionMask::WORLD);
   entity->add_component(std::move(model));
   entity->add_component(std::move(material));
   entity->add_component(std::move(mesh));

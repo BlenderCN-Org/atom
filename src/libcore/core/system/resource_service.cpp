@@ -69,8 +69,8 @@ ResourceService::ResourceService(Core &core)
   // watch data directory
   my_file_watch.watch_dir(MESH_RESOURCE_DIR);
   my_file_watch.watch_dir(IMAGE_RESOURCE_DIR);
-  my_file_watch.watch_dir(DEFAULT_SHADER_DIR.c_str(), WatchMethod::MOVE);
-  my_file_watch.watch_dir(MATERIAL_DIR, WatchMethod::MOVE);
+  my_file_watch.watch_dir(DEFAULT_SHADER_DIR.c_str(), WatchMethod::MOVE_OR_CLOSE);
+  my_file_watch.watch_dir(MATERIAL_DIR, WatchMethod::MOVE_OR_CLOSE);
 }
 
 ResourceService::~ResourceService()

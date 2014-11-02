@@ -17,21 +17,33 @@ struct DataBone {
   Vec3f  z; // z axis
 };
 
-struct ElementArray {
-  String     name;
-  Type       type;
-  uptr<u8[]> data;
-  u32        size;
+struct DataStream {
+  String          name;
+  Type            type;
+  std::vector<u8> data;
 };
 
 class Model {
-  std::vector<uptr<ElementArray>> my_arrays;
+  std::vector<uptr<DataStream>> my_arrays;
 
 public:
   std::vector<DataBone> bones;
 
-  bool add_array(const String &name, Type type, uptr<u8[]> &&data, u32 size);
-  const ElementArray* find_array(const String &name, Type type) const;
+  bool add_array(const String &name, Type type, std::vector<u8> &&data);
+  const DataStream* find_array(const String &name, Type type) const;
+  
+  template<typename T>
+  Slice<T> find_stream(const String &name) const
+  {
+    const DataStream *stream = find_array(name, type_of<T>());
+    
+    if (stream != nullptr && stream->type == type_of<T>()) {
+      return Slice<T>(reinterpret_cast<const T *>(&stream->data[0]),
+        stream->data.size() / sizeof(T));
+    }
+    // return empty slice when stream not found or invalid data type
+    return Slice<T>();
+  }
 };
 
 }

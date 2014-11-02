@@ -9,7 +9,6 @@
 #include <core/processor/physics_processor.h>
 #include <core/processor/debug_processor.h>
 #include <core/processor/geometry_processor.h>
-#include <core/video/draw_service.h>
 #include <core/video/model.h>
 #include <core/video/render_context.h>
 #include <core/component/model_component.h>
@@ -158,7 +157,7 @@ void GameView::mouseMoveEvent(QMouseEvent *event)
       return;
     }
 
-    my_camera.set_yaw(my_camera.get_yaw() + delta.x() / 400.0f);
+    my_camera.set_yaw(my_camera.get_yaw() - delta.x() / 400.0f);
     my_camera.set_pitch(my_camera.get_pitch() - delta.y() / 400.0f);
 
     my_ignore_mouse_move = event->pos() - mapFromGlobal(my_cursor_pos);

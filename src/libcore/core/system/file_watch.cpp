@@ -88,18 +88,6 @@ void FileWatch::watch_dir(
   watch_dir(dir.c_str(), method);
 }
 
-//void FileWatch::watch_file(const char *file)
-//{
-//  assert(file != nullptr);
-//  assert(strlen(file) > 0);
-
-//  WatchInfo info;
-//  info.wd = inotify_add_watch(my_watch_fd, file, IN_CLOSE_WRITE);
-//  info.path = file;
-//  info.is_dir = false;
-//  my_watch_info.push_back(info);
-//}
-
 void FileWatch::poll()
 {
   assert(my_watch_fd >= 0);
@@ -143,8 +131,9 @@ void FileWatch::process_inotify_events(const char *data, size_t len)
     const String name = get_full_path(event->wd, event->name);
 
     if (info.method == WatchMethod::CLOSE) {
-      if (event->mask & IN_CLOSE_WRITE || event->mask & IN_MOVED_TO)
+      if (event->mask & IN_CLOSE_WRITE || event->mask & IN_MOVED_TO) {
         my_change_list.push_back(name);
+      }
     } else if (info.method == WatchMethod::MODIFY_AND_CLOSE) {
       // spravi si zaznam o modifikacii
       if (event->mask & IN_MODIFY &&
@@ -167,6 +156,14 @@ void FileWatch::process_inotify_events(const char *data, size_t len)
           std::find(my_modifed_files.begin(), my_modifed_files.end(), name) == my_modifed_files.end()) {
         my_change_list.push_back(name);
       }
+    } else if (info.method == WatchMethod::MOVE_OR_CLOSE) {
+      if (event->mask & IN_MOVED_TO &&
+          std::find(my_modifed_files.begin(), my_modifed_files.end(), name) == my_modifed_files.end()) {
+        my_change_list.push_back(name);
+      } else if (event->mask & IN_CLOSE_WRITE || event->mask & IN_MOVED_TO) {
+        my_change_list.push_back(name);
+      }
+      
     } else {
       error("Unknown WatchMethod %i", static_cast<int>(info.method));
     }

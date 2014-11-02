@@ -5,10 +5,10 @@
 #include <execinfo.h>
 #endif
 
-#include "../video/draw_service.h"
 #include "../video/video_service.h"
 #include "../audio/audio_service.h"
 #include "../input/input_service.h"
+#include "../system/resource_service.h"
 #include "game_api.h"
 #include "config.h"
 
@@ -148,9 +148,6 @@ void Core::init_services()
   // Inicializacia ResourceService
   my_services.resource.reset(new ResourceService(*this));
 
-  // Inicializacia DrawService
-  my_services.draw.reset(new DrawService(video_service(), resource_service()));
-
   // Inicializacia AudioService
   my_services.audio.reset(new AudioService());
 }
@@ -158,7 +155,6 @@ void Core::init_services()
 void Core::quit_services()
 {
   // remove order is important
-  my_services.draw.reset();
   my_services.resource.reset();
   my_services.input.reset();
   my_services.video.reset();

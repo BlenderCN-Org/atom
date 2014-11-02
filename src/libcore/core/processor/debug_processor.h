@@ -20,6 +20,7 @@ class DebugProcessor : public NullProcessor {
   u32                      my_debug_categories;
   uptr<PhysicsDebugDrawer> my_physics_drawer;
   MaterialResourcePtr      my_wireframe_material;
+  MaterialResourcePtr      my_lines_material;
   MaterialResourcePtr      my_bounding_box_material;
   MaterialResourcePtr      my_aabb_material;
 
@@ -35,6 +36,10 @@ public:
 
   void set_debug(u32 category, bool enable);
 
+  void draw_wireframe(const Slice<Vec3f> &vertices, const Slice<u32> &indices,
+    const Vec3f &color, const Mat4f &model);
+  
+  void draw_lines(const Slice<Vec3f> &line_points, const Vec3f &color);
 
 private:
   void draw_physics();

@@ -44,13 +44,13 @@ void GeometryProcessor::poll()
       }
       
       
-      const ElementArray *vertices = model->find_array("vertices", Type::F32);
-      const ElementArray *indices = model->find_array("indices", Type::U32);
-      const ElementArray *bone_index = model->find_array("bone_index", Type::U32);
-      const ElementArray *bone_weight = model->find_array("bone_weight", Type::F32);
+      Slice<f32> vertices = model->find_stream<f32>("vertices");
+      Slice<u32> indices = model->find_stream<u32>("indices");
+      Slice<u32> bone_index = model->find_stream<u32>("bone_index");
+      Slice<f32> bone_weight = model->find_stream<f32>("bone_weight");
   
-      if (vertices == nullptr || indices == nullptr ||
-          bone_index == nullptr || bone_weight == nullptr) {
+      if (vertices.is_empty() || indices.is_empty() ||
+          bone_index.is_empty() || bone_weight.is_empty()) {
         log::error("Dynamic GeometryComponent with invalid model");
         continue;
       }
@@ -58,13 +58,16 @@ void GeometryProcessor::poll()
       GeometryCache &cache = component->geometry_cache();
       cache.vertices.clear();
       
-      const Vec3f *src_vertices = reinterpret_cast<const Vec3f *>(vertices->data.get());
-      const u32 *src_bone_index = reinterpret_cast<const u32 *>(bone_index->data.get());
-      const Vec4f *src_bone_weight = reinterpret_cast<const Vec4f *>(bone_weight->data.get());
+      const Vec3f *src_vertices =
+        reinterpret_cast<const Vec3f *>(vertices.data());
+      const u32 *src_bone_index =
+        reinterpret_cast<const u32 *>(bone_index.data());
+      const Vec4f *src_bone_weight =
+        reinterpret_cast<const Vec4f *>(bone_weight.data());
       
       const Slice<Mat4f> transformations = skeleton->get_transforms();
       
-      u32 count = vertices->size / sizeof(Vec3f);
+      u32 count = vertices.raw_size() / sizeof(Vec3f);
       
       for (u32 i = 0; i < count; ++i) {
         u32 bi = src_bone_index[i];
@@ -78,8 +81,6 @@ void GeometryProcessor::poll()
         }
         cache.vertices.push_back(v);
       }
-      
-      log::info("Processing %i vertices", count);
     }
   }
 }
@@ -113,17 +114,17 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, u32 categories,
     
     const Model &model = model_resource->model();
     
-    const ElementArray *vertices = model.find_array("vertices", Type::F32);
-    const ElementArray *indices = model.find_array("indices", Type::U32);
+    const DataStream *vertices = model.find_array("vertices", Type::F32);
+    const DataStream *indices = model.find_array("indices", Type::U32);
 
     if (vertices == nullptr || indices == nullptr) {
       continue;
     }
 
-    const Slice<Vec3f> v(reinterpret_cast<const Vec3f *>(vertices->data.get()),
-      vertices->size / sizeof(Vec3f));
-    const Slice<u32> i(reinterpret_cast<const u32 *>(indices->data.get()),
-                         indices->size / sizeof(u32));
+    const Slice<Vec3f> v(reinterpret_cast<const Vec3f *>(vertices->data.data()),
+      vertices->data.size() / sizeof(Vec3f));
+    const Slice<u32> i(reinterpret_cast<const u32 *>(indices->data.data()),
+      indices->data.size() / sizeof(u32));
 
     Mat4f transform = entity.transform();
     Mat4f inverted = transform.inverted();
