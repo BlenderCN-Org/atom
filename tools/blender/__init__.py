@@ -43,12 +43,10 @@ class AtomObjectSettings(bpy.types.PropertyGroup):
         description="True or False?", default=True)
     export_bones = bpy.props.BoolProperty(name="Export skeleton",
         description="True or False?", default=True)
-    type_items = [
-        ('Mesh 3D', 'Mesh3D', 'This object will be exported to the mm3 file'),
-        ('Mesh 2D', 'Mesh2D', 'This object will be exported to the mm2 file'),
-        ('Physic', 'Physic', 'This object will be exporte to the mph file')]
-    object_type = bpy.props.EnumProperty(name="Type",
-        description="Object type", items=type_items)
+    export_topology = bpy.props.BoolProperty(name="Export topology",
+        description="True or False?", default=True)
+    closed_topology = bpy.props.BoolProperty(name="Closed",
+        description="True or False?", default=True)
 
 
 class AtomPluginPanel(bpy.types.Panel):
@@ -66,15 +64,26 @@ class AtomPluginPanel(bpy.types.Panel):
     def draw(self, context):
         if (context.object is not None):
             layout = self.layout
+            # basic properties
             layout.prop(context.object, "name")
             layout.prop(context.scene.atom, "base_dir")
-            layout.prop(context.object.atom, "object_type")
             layout.prop(context.object.atom, "export_normals")
-
+            # uv
             if export.has_texcoords(context.object.data.uv_layers):
                 layout.prop(context.object.atom, "export_uv")
+            # topology row with greying for closed topology check
+            row = layout.row()
+            row.prop(context.object.atom, "export_topology")
+            col = row.column()
+            col.prop(context.object.atom, "closed_topology")
+            col.active = context.object.atom.export_topology == True
+            # skeleton
             if export.has_bones(context.object):
                 layout.prop(context.object.atom, "export_bones")
+            
+            
+            
+            # export button
             layout.operator("atom.export_object")
 
 

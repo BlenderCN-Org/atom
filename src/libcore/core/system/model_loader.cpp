@@ -37,6 +37,19 @@ bool load_model_element_array_from_json(const rapidjson::Value &node,
   }
 
   switch (data_type) {
+    case Type::I32:
+      {
+        std::vector<i32> buffer;
+        if (utils::read_array(data, buffer) && !buffer.empty()) {
+          u32 raw_size = buffer.size() * sizeof(i32);
+          array.type = Type::I32;
+          array.data.resize(raw_size);
+          memcpy(&array.data[0], buffer.data(), raw_size);
+          return true;
+        }
+      }
+      break;
+      
     case Type::U32:
       {
         std::vector<u32> buffer;

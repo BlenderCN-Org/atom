@@ -31,6 +31,17 @@ template<typename T>
 bool read_element(const rapidjson::Value &node, T &value);
 
 template<>
+bool read_element(const rapidjson::Value &node, i32 &value)
+{
+  if (node.IsNumber()) {
+    value = node.GetInt();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+template<>
 bool read_element(const rapidjson::Value &node, u32 &value)
 {
   if (node.IsNumber()) {
@@ -74,7 +85,8 @@ bool read_array(const rapidjson::Value &node, std::vector<T> &array)
   return true;
 }
 
-// force generate read_array for u32
+// force generate read_array for i32, u32, f32
+template bool read_array<i32>(const rapidjson::Value &node, std::vector<i32> &value);
 template bool read_array<u32>(const rapidjson::Value &node, std::vector<u32> &value);
 template bool read_array<f32>(const rapidjson::Value &node, std::vector<f32> &value);
 

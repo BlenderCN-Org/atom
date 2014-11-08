@@ -137,10 +137,53 @@ def export_skeleton(ob, me):
     return Result(skeleton, weight, index)
 
 
+def write_topology(ob, me, topology):
+    # build mapping table: edge -> triangles (1 or 2 triangles)
+    i = 0
+    table = dict()
+    for triangle in me.polygons:
+        for edge in triangle.edge_keys:
+            n = table.get(edge)
+            
+            if n != None:
+                n.append(i)
+            else:
+                table[edge] = [i]
+            
+        i = i + 1
+    # write neighbor topology using mapping table
+    i = 0
+    for triangle in me.polygons:
+        for edge in triangle.edge_keys:
+            n = table[edge]
+            count = len(n)
+            if count == 2:
+                if n[0] == i:
+                    topology.append(n[1])
+                elif n[1] == i:
+                    topology.append(n[0])
+                else:
+                    raise Exception("Can't find neighbor for edge {0}".format(edge))
+            elif count == 1:
+                topology.append(-1)
+            else:
+                raise Exception("Some edge has more than 2 adjacend faces")
+        
+        i = i + 1
+    # mesh has closed topology when each edge has two adjacent triangles
+    if ob.atom.closed_topology:
+        for i in topology:
+            if i < 0:
+                raise Exception("The object has not closed topology")
+
+
 def export_mesh(ob, me, export_bones):
+    """require mesh composed of triangles, not quads, ...
+    """
     vertices = []
     normals = []
     indices = []
+    topology = []
 
     # zjednoduseny export len vrcholov, normal a indexov
     # bez zdvojovania vrcholov (netreba, uv sa neexportuje)
@@ -152,18 +195,22 @@ def export_mesh(ob, me, export_bones):
         normals.append(v.normal.y)
         normals.append(v.normal.z)
 
-    for poly in me.polygons:
-        for i in poly.vertices:
+    for triangle in me.polygons:
+        for i in triangle.vertices:
             indices.append(i)
+
+    write_topology(ob, me, topology)
 
     vertex_stream = { 'type' : 'f32', 'data' : vertices }
     normal_stream = { 'type' : 'f32', 'data' : normals }
     index_stream  = { 'type' : 'u32', 'data' : indices }
+    topology_stream  = { 'type' : 'i32', 'data' : topology }
 
     arrays = dict()
     arrays['vertices'] = vertex_stream
     arrays['normals'] = normal_stream
     arrays['indices'] = index_stream
+    arrays['topology'] = topology_stream
 
     mesh = dict()
     mesh['arrays'] = arrays
@@ -235,7 +282,7 @@ def export_object_to_file(ob, filename):
             output.write(data)
 
         t2 = time.clock()
-        print("Transform {0}s".format(t2 - t1))
+        print("Total time {0}s".format(t2 - t1))
         export_status = [{'INFO'}, status]
 
     except Exception as e:
@@ -253,7 +300,7 @@ def export_object_to_file(ob, filename):
 
 class AtomExportObject(bpy.types.Operator):
     bl_idname = "atom.export_object"
-    bl_label = "Export selected object"
+    bl_label = "Export object"
 
     def execute(self, context):
         ob = context.active_object
