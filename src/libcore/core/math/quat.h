@@ -56,6 +56,13 @@ public:
   {
     return from_axis_angle(v.axis, v.angle);
   }
+  
+  static Quat<T> from_to_rotation(const Vec3<T> &from, const Vec3<T> &to)
+  {
+    const Vec3<T> v = cross_product(from, to);
+    const T w = sqrt((from.length2()) * (to.length2())) + dot_product(from, to);
+    return Quat<T>(w, v).normalized();
+  }
 
   Quat()
     : x(0)

@@ -91,6 +91,7 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, u32 categories,
   f32 tnearest = F32_MAX;
   u32 inearest = U32_MAX;
   Vec3f intersection;
+  Vec3f normal;
   GeometryComponent *nearest = nullptr;
   
   for (GeometryComponent *component : my_components) {
@@ -139,6 +140,12 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, u32 categories,
       tnearest = t;
       nearest = component;
       intersection = transform_point(transform, r.origin) + transform_vec(transform, r.dir) * t;
+      
+      Vec3f v0 = v[i[index * 3    ]];
+      Vec3f v1 = v[i[index * 3 + 1]];
+      Vec3f v2 = v[i[index * 3 + 2]];
+      normal = cross_product(v1 - v0, v2 - v0).normalized();
+      
     }
   }
   
@@ -146,6 +153,8 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, u32 categories,
     result.hit = intersection;
     result.component = nearest;
     result.triangle = inearest;
+    result.normal = normal;
+    result.t = tnearest;
   }
   
   return nearest != nullptr;

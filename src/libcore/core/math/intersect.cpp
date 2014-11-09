@@ -90,8 +90,8 @@ f32 intersect_triangle_slow(const Ray &ray, const Vec3f &v0, const Vec3f &v1, co
 }
 
 template<typename IntersectFunc>
-f32 intersect_mesh_impl(IntersectFunc intersect_func, const Ray &ray, const Slice<Vec3f> &vertices,
-  const Slice<u32> &indices, u32 &index)
+f32 intersect_mesh_impl(IntersectFunc intersect_func, const Ray &ray,
+  const Slice<Vec3f> &vertices, const Slice<u32> &indices, u32 &index)
 {
   assert(indices.size() % 3 == 0);
   f32 tnearest = F32_MAX;

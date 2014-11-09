@@ -9,8 +9,10 @@ typedef std::vector<GeometryComponent *> GeometryComponentArray;
 
 struct RayGeometryResult {
   GeometryComponent *component;
-  Vec3f              hit;
-  u32                triangle;
+  Vec3f              hit;       ///< intersection
+  f32                t;
+  u32                triangle;  ///< triangle index
+  Vec3f              normal;    ///< triangle normal
 };
 
 class GeometryProcessor : public NullProcessor {

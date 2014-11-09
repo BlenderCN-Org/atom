@@ -136,6 +136,8 @@ struct Vec3 {
     , y(vy)
     , z(vz)
   {}
+  
+  Vec3<T>& operator=(const Vec3<T> &v) = default;
 
   static Vec3<T> x_axis()
   { return Vec3<T>(1, 0, 0); }
@@ -176,7 +178,7 @@ struct Vec3 {
 
   T length() const
   {
-    return std::sqrt(x * x + y * y + z * z);
+    return std::sqrt(length2());
   }
 
   T length2() const
@@ -252,6 +254,15 @@ template<typename T>
 inline bool operator!=(const Vec3<T> &a, const Vec3<T> &b)
 {
   return !(a == b);
+}
+
+template<typename T>
+inline Vec3<T>& operator*=(Vec3<T> &v, T x)
+{
+  v.x *= x;
+  v.y *= x;
+  v.z *= x;
+  return v;
 }
 
 /**
