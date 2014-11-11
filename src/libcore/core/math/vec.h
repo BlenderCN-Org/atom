@@ -16,9 +16,18 @@ struct Vec2 {
   enum {
     SIZE = 2
   };
-
+  
   typedef T value_type;
-
+  
+  // data
+  union {
+    struct {
+      T x;
+      T y;
+    };
+    T data[SIZE];
+  };
+  
   Vec2() = default;
 
   Vec2(T x, T y)
@@ -50,14 +59,22 @@ struct Vec2 {
     y += v.y;
     return *this;
   }
+  
+  T length() const
+  {
+    return std::sqrt(length2());
+  }
 
-  union {
-    struct {
-      T x;
-      T y;
-    };
-    T data[SIZE];
-  };
+  T length2() const
+  {
+    return x * x + y * y;
+  }
+  
+  Vec2<T> normalized() const
+  {
+    T len = length();
+    return Vec2<T>(x / len, y / len);
+  }
 };
 
 template<typename T>
@@ -100,20 +117,9 @@ inline bool operator!=(const Vec2<T> &a, const Vec2<T> &b)
  * Dot product operation for Vec2
  */
 template<typename T>
-inline T dot_product(
-  const Vec2<T> &a,
-  const Vec2<T> &b)
-{ return a[0] * b[0] + a[1] * b[1]; }
-
-template<typename T>
-Vec2<T> normalized(const Vec2<T> &v)
+inline T dot_product2(const Vec2<T> &a, const Vec2<T> &b)
 {
-  if (v[0] > EPSILON && v[1] > EPSILON) {
-    T w = sqrt(v[0] * v[0] + v[1] * v[1]);
-    return Vec2<T>(v[0] / w, v[1] / w);
-  } else {
-    return v;
-  }
+  return a[0] * b[0] + a[1] * b[1];
 }
 
 
@@ -265,32 +271,27 @@ inline Vec3<T>& operator*=(Vec3<T> &v, T x)
   return v;
 }
 
-/**
- * Dot product operation for Vec3
- */
 template<typename T>
-inline T dot_product(
-  const Vec3<T> &a,
-  const Vec3<T> &b)
-{
-  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-}
-
-template<typename T>
-inline T dot_product(
-  T ax, T ay, T az,
-  T bx, T by, T bz)
+inline T dot_product3(T ax, T ay, T az, T bx, T by, T bz)
 {
   return ax * bx + ay * by + az * bz;
+}
+
+/** 
+ * convenient function to perform dot_product3 on other types than Vec3
+ * e.g. Vec4f and Vec3f, Vec3f and Vec3f, Vec4f and Vec4f
+ */
+template<typename T, typename U>
+inline typename T::value_type dot_product3(const T &a, const U &b)
+{
+  return dot_product3(a.x, a.y, a.z, b.x, b.y, b.z);
 }
 
 /**
  * Skalarny sucin.
  */
 template<typename T>
-inline Vec3<T> cross_product(
-  const Vec3<T> &a,
-  const Vec3<T> &b)
+inline Vec3<T> cross_product3(const Vec3<T> &a, const Vec3<T> &b)
 {
   return Vec3<T>(
     a[1] * b[2] - a[2] * b[1],
@@ -311,6 +312,20 @@ struct Vec4 {
   };
 
   typedef T value_type;
+  
+  union {
+    struct {
+      T x;
+      T y;
+      T z;
+      T w;
+    };
+    struct {
+      Vec3<T> xyz;
+      T empty;
+    };
+    T data[SIZE];
+  };
 
   Vec4() = default;
 
@@ -345,16 +360,6 @@ struct Vec4 {
   {
     return Vec3<T>(x, y, z);
   }
-
-  union {
-    struct {
-      T x;
-      T y;
-      T z;
-      T w;
-    };
-    T data[SIZE];
-  };
 };
 
 template<typename T>

@@ -217,8 +217,6 @@ src/libcore/core/utils/utils.h
 src/libcore/core/video/bitmap_font.cpp
 src/libcore/core/video/bitmap_font.h
 src/libcore/core/video/crate.cpp
-src/libcore/core/video/draw_service.cpp
-src/libcore/core/video/draw_service.h
 src/libcore/core/video/framebuffer.cpp
 src/libcore/core/video/framebuffer.h
 src/libcore/core/video/gbuffer.cpp
@@ -270,8 +268,10 @@ test/test_intersect.cpp
 test/test_lru_cache_int.cpp
 test/test_lru_cache_smart.cpp
 test/test_main.cpp
+test/test_math.cpp
 test/test_quaterions.cpp
 test/test_utils.cpp
+test/test_utils.h
 tools/blender/__init__.py
 tools/blender/export.py
 tools/flextGL/COPYING

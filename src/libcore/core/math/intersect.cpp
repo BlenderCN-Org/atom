@@ -17,9 +17,9 @@ f32 intersect_triangle(const Ray &ray, const Vec3f &v0, const Vec3f &v1, const V
   const f32 tmax = F32_MAX;
   Vec3f b = v2 - v0;
   Vec3f c = v1 - v0;
-  Vec3f n = cross_product(c, b);
+  Vec3f n = cross_product3(c, b);
   // calculate ray plane intersection
-  f32 t = -dot_product(ray.origin - v0, n) / dot_product(ray.dir, n);
+  f32 t = -dot_product3(ray.origin - v0, n) / dot_product3(ray.dir, n);
   // distance test
   if (t <= tmin || t >= tmax) {
     return -1;
@@ -56,8 +56,8 @@ f32 intersect_triangle_slow(const Ray &ray, const Vec3f &v0, const Vec3f &v1, co
   Vec3f b = v2 - v0;
   Vec3f c = v1 - v0;
 
-  Vec3f h = cross_product(ray.dir, c);
-  f32 a = dot_product(b, h);
+  Vec3f h = cross_product3(ray.dir, c);
+  f32 a = dot_product3(b, h);
 
   if (a > -tmin && a < tmin) {
     return -1;
@@ -67,20 +67,20 @@ f32 intersect_triangle_slow(const Ray &ray, const Vec3f &v0, const Vec3f &v1, co
 
   Vec3f s = ray.origin - v0;
 
-  f32 u = f * dot_product(s, h);
+  f32 u = f * dot_product3(s, h);
 
   if (u < 0.0 || u > 1.0) {
     return -1;
   }
 
-  Vec3f q = cross_product(s, b);
-  f32 v = f * dot_product(ray.dir, q);
+  Vec3f q = cross_product3(s, b);
+  f32 v = f * dot_product3(ray.dir, q);
 
   if (v < 0.0 || u + v > 1.0) {
     return -1;
   }
 
-  f32 t = f * dot_product(c, q);
+  f32 t = f * dot_product3(c, q);
 
   if (t > tmin) {
     return t;

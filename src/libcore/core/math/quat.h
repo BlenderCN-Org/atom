@@ -13,7 +13,12 @@ namespace atom {
  */
 template<typename T>
 struct Quat {
-public:
+  T x; ///< smerova zlozka x
+  T y; ///< smerova zlozka y
+  T z; ///< smerova zlozka z
+  T w; ///< skalarna zlozka
+  
+ 
   /**
    * Construct identity quaternion (1, 0, 0, 0)
    */
@@ -59,8 +64,8 @@ public:
   
   static Quat<T> from_to_rotation(const Vec3<T> &from, const Vec3<T> &to)
   {
-    const Vec3<T> v = cross_product(from, to);
-    const T w = sqrt((from.length2()) * (to.length2())) + dot_product(from, to);
+    const Vec3<T> v = cross_product3(from, to);
+    const T w = sqrt((from.length2()) * (to.length2())) + dot_product3(from, to);
     return Quat<T>(w, v).normalized();
   }
 
@@ -89,10 +94,10 @@ public:
    * @param qv direction coefficients
    */
   Quat(T qw, const Vec3<T> &qv)
-    : w(qw)
-    , x(qv.x)
+    : x(qv.x)
     , y(qv.y)
     , z(qv.z)
+    , w(qw)
   {}
 
   Quat(const Vec3<T> &v)
@@ -238,12 +243,6 @@ public:
     to_axis_angle(axis_angle.axis, axis_angle.angle);
     return axis_angle;
   }
-
-public:
-  T x; ///< smerova zlozka x
-  T y; ///< smerova zlozka y
-  T z; ///< smerova zlozka z
-  T w; ///< skalarna zlozka
 };
 
 /**

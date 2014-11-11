@@ -144,7 +144,7 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, u32 categories,
       Vec3f v0 = v[i[index * 3    ]];
       Vec3f v1 = v[i[index * 3 + 1]];
       Vec3f v2 = v[i[index * 3 + 2]];
-      normal = cross_product(v1 - v0, v2 - v0).normalized();
+      normal = cross_product3(v1 - v0, v2 - v0).normalized();
       
     }
   }

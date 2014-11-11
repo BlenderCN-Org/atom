@@ -193,20 +193,23 @@ struct BoundingBox {
   void extend(const Vec3f &v);
 };
 
-//bool contains(const BoundingBox &box, const Vec2f &point)
-//{
-//  return (point.x >= box.left) && (point.x <= box.right) &&
-//         (point.y >= box.bottom) && (point.y <= box.top);
-//}
+/**
+ * @param p point
+ * @param n plane normal, nemusi byt jednotkovy
+ * @param d plane coef
+ */
+Vec3f closest_point_on_plane(const Vec3f &point, const Vec4f &plane);
 
-//bool collide(const BoundingBox &a, const BoundingBox &b)
-//{
-//  if (a.left > b.right || a.top < b.bottom || a.right < b.left || a.bottom > b.top) {
-//    return false;
-//  }
+/**
+ * Signed distance from plane.
+ * 
+ * @param p point
+ * @param n plane normal, 
+ * @param d plane coef
+ * @return 
+ */
+f32 distance_from_plane(const Vec3f &p, const Vec4f &plane);
 
-//  return true;
-//}
-
+//Vec3f closest_point_on_line_segment(const Vec3f &p, const Vec3f &a, Vec3f &v);
 
 }

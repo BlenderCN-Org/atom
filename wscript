@@ -343,7 +343,7 @@ def print_summary(ctx):
 
     modules = ['core', 'game']
 
-    if 'MY_BUILD_TESTS' in ctx.env:
+    if 'ATOM_BUILD_TESTS' in ctx.env:
         modules.append('test')
 
     Logs.pprint('BLUE', 'Modules  : ' + str(modules))
