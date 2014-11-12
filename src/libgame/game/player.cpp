@@ -42,16 +42,16 @@ class PlayerScript : public ScriptComponent {
     my_camera_yaw -= mouse.x;
     my_camera_pitch += mouse.y;
     
-    f32 step_length = is.is_key_down(Key::KEY_LSHIFT) ? 0.3f : 0.1f;
+//    f32 step_length = is.is_key_down(Key::KEY_LSHIFT) ? 0.3f : 0.1f;
     
-    f32 x_forward = -sin(my_camera_yaw);
-    f32 y_forward =  cos(my_camera_yaw);
+//    f32 x_forward = -sin(my_camera_yaw);
+//    f32 y_forward =  cos(my_camera_yaw);
     
-    f32 x_strafe = cos(my_camera_yaw);
-    f32 y_strafe = sin(my_camera_yaw);
+//    f32 x_strafe = cos(my_camera_yaw);
+//    f32 y_strafe = sin(my_camera_yaw);
     
-    Vec2f step_forward = Vec2f(x_forward, y_forward) * step_length;
-    Vec2f step_strafe = Vec2f(x_strafe, y_strafe) * step_length;
+//    Vec2f step_forward = Vec2f(x_forward, y_forward) * step_length;
+//    Vec2f step_strafe = Vec2f(x_strafe, y_strafe) * step_length;
     
     Vec2i dir(0, 0);
     

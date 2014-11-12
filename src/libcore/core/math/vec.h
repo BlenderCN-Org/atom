@@ -5,7 +5,7 @@
 
 namespace atom {
 
-const float EPSILON = 0.01f;
+const float EPSILON = 0.001f;
 
 //
 // 2D Vector
@@ -320,10 +320,6 @@ struct Vec4 {
       T z;
       T w;
     };
-    struct {
-      Vec3<T> xyz;
-      T empty;
-    };
     T data[SIZE];
   };
 
@@ -356,7 +352,7 @@ struct Vec4 {
     return data[i];
   }
 
-  Vec3<T> to_vec3() const
+  Vec3<T> xyz() const
   {
     return Vec3<T>(x, y, z);
   }

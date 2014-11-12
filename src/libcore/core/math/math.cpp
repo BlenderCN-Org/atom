@@ -22,17 +22,4 @@ void BoundingBox::extend(const Vec3f &v)
   zmax = max(v.z, zmax);
 }
 
-Vec3f closest_point_on_plane(const Vec3f &point, const Vec4f &plane)
-{
-  f32 t = (dot_product3(plane, point) - plane.w) / dot_product3(plane, plane);
-  // ak je n jednotkovy vektor rovnica sa zjednodusi na
-  //f32 t = (dot_product(n, p) - d);
-  return point - t * plane.xyz;
-}
-
-f32 distance_from_plane(const Vec3f &point, const Vec4f &plane)
-{
-  return (dot_product3(plane, point) - plane.w) / dot_product3(plane, plane);
-}
-
 }

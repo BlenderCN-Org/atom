@@ -95,10 +95,10 @@ class SkeletonBodyScript : public ScriptComponent {
       const Mat4f &m2 = transforms[index[2]];
       const Mat4f &m3 = transforms[index[3]];
 
-      const Vec3f v0 = (m0 * v * weight[0]).to_vec3();
-      const Vec3f v1 = (m1 * v * weight[1]).to_vec3();
-      const Vec3f v2 = (m2 * v * weight[2]).to_vec3();
-      const Vec3f v3 = (m3 * v * weight[3]).to_vec3();
+      const Vec3f v0 = (m0 * v * weight[0]).xyz();
+      const Vec3f v1 = (m1 * v * weight[1]).xyz();
+      const Vec3f v2 = (m2 * v * weight[2]).xyz();
+      const Vec3f v3 = (m3 * v * weight[3]).xyz();
       my_vertices.push_back(v0 + v1 + v2 + v3);
 
       my_mesh_vertices->set_data(to_slice(my_vertices));

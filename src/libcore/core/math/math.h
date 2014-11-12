@@ -193,23 +193,4 @@ struct BoundingBox {
   void extend(const Vec3f &v);
 };
 
-/**
- * @param p point
- * @param n plane normal, nemusi byt jednotkovy
- * @param d plane coef
- */
-Vec3f closest_point_on_plane(const Vec3f &point, const Vec4f &plane);
-
-/**
- * Signed distance from plane.
- * 
- * @param p point
- * @param n plane normal, 
- * @param d plane coef
- * @return 
- */
-f32 distance_from_plane(const Vec3f &p, const Vec4f &plane);
-
-//Vec3f closest_point_on_line_segment(const Vec3f &p, const Vec3f &a, Vec3f &v);
-
 }

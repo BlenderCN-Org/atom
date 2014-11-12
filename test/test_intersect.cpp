@@ -209,4 +209,104 @@ TEST(RayMeshIntersect, Box)
   }
 }
 
+TEST(IntersectionPlanePlane, ColinearPlanes)
+{
+  const Vec4f plane_set1[] = {
+    Vec4f( 1,  0,  0, 1),
+    Vec4f( 0,  1,  0, 1),
+    Vec4f( 0,  0,  1, 1),
+    Vec4f(-3,  0,  0, 1),
+    Vec4f( 0, -3,  0, 1),
+    Vec4f( 0,  0, -3, 1),
+    Vec4f( 1,  1, -3, 1),
+    Vec4f(-5,  4, -3, 2),
+    Vec4f( 5,  5, -3, 1),
+  };
+  
+  const Vec4f plane_set2[] = {
+    Vec4f(  1,  0,  0,  2),
+    Vec4f(  0,  1,  0,  3),
+    Vec4f(  0,  0,  1,  4),
+    Vec4f(  4,  0,  0,  2),
+    Vec4f(  0,  2,  0,  3),
+    Vec4f(  0,  0,  8,  4),
+    Vec4f(  2,  2, -6, -1),
+    Vec4f(-10,  8, -6,  3),
+    Vec4f( 10, 10, -6,  3),
+  };
+  
+  Ray result;
+  int i = 0;
+  for (const Vec4f &p1 : plane_set1) {
+    const Vec4f &p2 = plane_set2[i];
+    ASSERT_FALSE(intersect_plane_plane(p1, p2, result));
+    ASSERT_FALSE(intersect_plane_plane(p2, p1, result));
+    ++i;
+  }
+}
+
+TEST(IntersectionPlanePlane, CoincidencePlanes)
+{
+  const Vec4f plane_set1[] = {
+    Vec4f( 1,  0,  0, 0),
+    Vec4f( 0,  1,  0, 0),
+    Vec4f( 0,  0,  1, 0),
+    Vec4f(-3,  0,  0, 2),
+    Vec4f( 0, -3,  0, 2),
+    Vec4f( 0,  0, -3, 2),
+    Vec4f( 1,  1, -3, 3),
+    Vec4f(-2,  4, -3, 2),
+  };
+  
+  const Vec4f plane_set2[] = {
+    Vec4f( 1,  0,  0,  0),
+    Vec4f( 0,  1,  0,  0),
+    Vec4f( 0,  0,  1,  0),
+    Vec4f(-6,  0,  0,  1),
+    Vec4f( 0, -6,  0,  1),
+    Vec4f( 0,  0,  6, -1),
+    Vec4f( 3,  3, -9,  1),
+    Vec4f(-2,  4, -3, 2),
+  };
+  
+  Ray result;
+  int i = 0;
+  for (const Vec4f &p1 : plane_set1) {
+    const Vec4f &p2 = plane_set2[i];
+    ASSERT_FALSE(intersect_plane_plane(p1, p2, result));
+    ASSERT_FALSE(intersect_plane_plane(p2, p1, result));
+    ++i;
+  }
+}
+
+TEST(IntersectionPlanePlane, IntersectingPlanes)
+{
+  const Vec4f plane_set1[] = {
+    Vec4f( 1,  0,  0, 0),
+    Vec4f( 1,  0,  0, 0),
+    Vec4f( 0,  1,  0, 0),
+    Vec4f( 0,  1,  0, 0),
+    Vec4f( 0,  0,  1, 0),
+    Vec4f( 0,  0,  1, 0),
+  };
+  
+  const Vec4f plane_set2[] = {
+    Vec4f( 0,  1,  0,  0),
+    Vec4f( 0,  0,  1,  0),
+    Vec4f( 1,  0,  0,  0),
+    Vec4f( 0,  0,  1,  0),
+    Vec4f( 0,  1,  0,  0),
+    Vec4f( 1,  0,  0,  0),
+  };
+  
+  Ray result;
+  int i = 0;
+  for (const Vec4f &p1 : plane_set1) {
+    const Vec4f &p2 = plane_set2[i];
+    ASSERT_TRUE(intersect_plane_plane(p1, p2, result));
+    ASSERT_TRUE(intersect_plane_plane(p2, p1, result));
+    ++i;
+  }
+}
+
 }

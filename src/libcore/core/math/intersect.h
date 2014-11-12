@@ -46,4 +46,45 @@ bool intersect_bounding_box(const Ray &ray, const BoundingBox &box, f32 &tnear, 
  */
 f32 intersect_bounding_box(const Ray &ray, const BoundingBox &box);
 
+//QQQ need test case
+bool intersect_plane(const Vec3f &a, const Vec3f &b, const Vec4f &plane);
+
+/**
+ * Intersection of two planes
+ * 
+ * @param a first plane
+ * @param b second plane
+ * @return true when intersects, false when planes are paraller or coincidence
+ */
+bool intersect_plane_plane(const Vec4f &p1, const Vec4f &p2, Ray &result);
+
+/**
+ * @param p point
+ * @param n plane normal, nemusi byt jednotkovy
+ * @param d plane coef
+ */
+Vec3f closest_point_on_plane(const Vec3f &point, const Vec4f &plane);
+
+/**
+ * Signed distance from plane.
+ * 
+ * @param p point
+ * @param n plane normal, 
+ * @param d plane coef
+ * @return 
+ */
+f32 distance_from_plane(const Vec3f &p, const Vec4f &plane);
+
+f32 closest_point_on_line_segment(const Vec3f &point, const Vec3f &a,
+  const Vec3f &b, Vec3f &result);
+
+f32 distance_from_segment2(const Vec3f &point, const Vec3f &a, const Vec3f &b);
+
+f32 distance_from_segment(const Vec3f &point, const Vec3f &a, const Vec3f &b);
+
+//QQQ need test
+Vec3f closest_point_on_triangle(const Vec3f &point, const Vec3f &a,
+  const Vec3f &b, const Vec3f &c);
+
+
 }
