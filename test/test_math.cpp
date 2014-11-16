@@ -156,4 +156,24 @@ TEST(SquaredDistanceFromLineSegment, Test)
   }
 }
 
+TEST(Sign, Negative)
+{
+  ASSERT_EQ(-1, sign(-1));
+  ASSERT_EQ(-1, sign(-5));
+  ASSERT_EQ(-1, sign(-123));
+}
+
+TEST(Sign, Positive)
+{
+  ASSERT_EQ(1, sign(1));
+  ASSERT_EQ(1, sign(5));
+  ASSERT_EQ(1, sign(123));
+}
+TEST(Sign, Zero)
+{
+  ASSERT_EQ(0, sign(0));
+}
+
+
+
 }

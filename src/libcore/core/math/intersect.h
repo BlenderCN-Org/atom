@@ -58,6 +58,33 @@ bool intersect_plane(const Vec3f &a, const Vec3f &b, const Vec4f &plane);
  */
 bool intersect_plane_plane(const Vec4f &p1, const Vec4f &p2, Ray &result);
 
+// circle = plane + (cx, cy, r)   (x - cx)^2 + (y - cy)^2 = r^2
+
+struct Circle {
+  const Vec3f &center;
+  const Vec3f &normal;
+  const f32   &radius;
+  
+  Circle(const Vec3f &c, const Vec3f &n, const f32 &r)
+    : center(c)
+    , normal(n)
+    , radius(r)
+  {
+    // empty
+  }
+};
+
+f32 plane_sign(const Vec3f &point, const Vec4f &plane);
+
+bool intersect_line_plane(const Vec3f &a, const Vec3f &b, const Vec4f &plane,
+  Vec3f &result);
+
+bool intersect_triangle_plane(const Vec3f &a, const Vec3f &b, const Vec3f &c,
+  const Vec4f &plane, Vec3f &start, Vec3f &end);
+
+bool intersect_circle_triangle(const Circle &circle, const Vec3f &a,
+  const Vec3f &b, const Vec3f &c);
+
 /**
  * @param p point
  * @param n plane normal, nemusi byt jednotkovy

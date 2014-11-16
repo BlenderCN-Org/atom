@@ -323,4 +323,69 @@ bool intersect_plane_plane(const Vec4f &p1, const Vec4f &p2, Ray &result)
   return true;
 }
 
+f32 plane_sign(const Vec3f &point, const Vec4f &plane)
+{
+  return (plane.xyz() * point).sum() - plane.w;
+}
+
+bool intersect_line_plane(const Vec3f &a, const Vec3f &b, const Vec4f &plane,
+  Vec3f &result)
+{
+  const Vec3f ab = b - a;
+  const f32 t = (plane.w - dot_product3(plane.xyz(), a)) / dot_product3(plane.xyz(), ab);
+  
+  if (t >= 0.0f && t <= 1.0f) {
+    // calculate intersection point
+    result = a + t * ab;
+    return true;
+  }
+  // no intersection
+  return false;
+}
+
+bool intersect_triangle_plane(const Vec3f &a, const Vec3f &b, const Vec3f &c,
+  const Vec4f &plane, Vec3f &start, Vec3f &end)
+{
+  int as = sign(plane_sign(a, plane));
+  int bs = sign(plane_sign(b, plane));
+  int cs = sign(plane_sign(c, plane));
+  
+  if (as == bs && bs == cs) {
+    return false;
+  }
+  
+  if (as != bs && bs != cs) {
+    intersect_line_plane(b, a, plane, start);
+    intersect_line_plane(b, c, plane, end);
+  } else if (as != cs && bs != cs) {
+    intersect_line_plane(c, a, plane, start);
+    intersect_line_plane(c, b, plane, end);
+  } else {
+    intersect_line_plane(a, b, plane, start);
+    intersect_line_plane(a, c, plane, end);
+  }
+  
+  return true;
+}
+
+bool intersect_circle_triangle(const Circle &circle, const Vec3f &a,
+  const Vec3f &b, const Vec3f &c)
+{
+  const f32 d = (circle.center * circle.normal).sum();
+  const Vec4f plane(circle.normal, d);
+  
+  Vec3f start;
+  Vec3f end;
+  
+  if (!intersect_triangle_plane(a, b, c, plane, start, end)) {
+    return false;
+  }
+  
+  Vec3f closest;
+  closest_point_on_line_segment(circle.center, start, end, closest);
+  return (closest - circle.center).length2() < circle.radius;
+}
+
+
+
 }

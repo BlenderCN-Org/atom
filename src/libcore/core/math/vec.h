@@ -191,6 +191,11 @@ struct Vec3 {
   {
     return x * x + y * y + z * z;
   }
+  
+  T sum() const
+  {
+    return x + y + z;
+  }
 
   Vec3<T> normalized() const
   {

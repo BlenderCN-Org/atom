@@ -135,6 +135,20 @@ T abs(const T x)
   return x < 0 ? -x : x;
 }
 
+/**
+ * @note: this is branchless sign function
+ * 
+ * @return 1 when x > 0
+ *         0 when x == 0
+ *        -1 when x < 0
+ */
+template<typename T>
+int sign(T x)
+{
+  return (x > 0) - (x < 0);
+}
+
+
 //
 // Simple Ray structure, just origin & direction
 //
