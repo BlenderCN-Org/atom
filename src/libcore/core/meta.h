@@ -41,6 +41,8 @@ enum class Type : u32 {
   TEXTURE,
   SAMPLER_2D,
   DRAW_FACE,
+  DRAW_TYPE,
+  FILL_MODE,
   // component
   COMPONENT_TYPE,
   UNKNOWN
@@ -188,7 +190,7 @@ struct MetaClass {
 
 /**
  * Define meta field
- * 
+ *
  * The FIELD macro must be nested in META_CLASS.
  */
 #define FIELD(member, name) MetaField(name,     \

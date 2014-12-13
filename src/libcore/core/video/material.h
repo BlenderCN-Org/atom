@@ -15,7 +15,7 @@ namespace atom {
 
 class Material : private NonCopyable {
   DrawFace my_face;
-  
+
 public:
   Material()
     : my_face(DrawFace::FRONT)
@@ -24,39 +24,55 @@ public:
   }
 
   virtual ~Material();
-  
+
   virtual void draw_mesh(const RenderContext &context, const Mesh &mesh) = 0;
 
   DrawFace face() const
   {
     return my_face;
   }
-  
-  
+
+
   META_ROOT_CLASS;
 };
 
 typedef sptr<Material> MaterialPtr;
 
+class SimpleMaterial : public Material {
+  u32                  my_flags;
+  DrawFace             my_draw_face;
+  DrawType             my_draw_type;
+  FillMode             my_fill_mode;
+  bool                 my_depth_test;
+  TechniqueResourcePtr my_technique;
+
+public:
+  enum DrawFlags {
+    VERTEX = 1,
+    NORMAL = 2,
+    COLOR = 4,
+    INDEX = 32
+  };
+
+  static uptr<Material> create(ResourceService &rs);
+
+  explicit SimpleMaterial(u32 draw_flags);
+  ~SimpleMaterial();
+
+  void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
+
+  META_SUB_CLASS(Material);
+};
 
 //
-// Lines Material - vertices, color
+// DebugMaterial (wireframe/lines)
 //
 
-class LinesMaterial : public Material {
-  TechniqueResourcePtr my_shader;
-  Vec3f                color;
-  
+class DebugMaterial : public SimpleMaterial {
 public:
   static uptr<Material> create(ResourceService &rs);
 
-  LinesMaterial(const TechniqueResourcePtr &shader);
-
-  ~LinesMaterial();
-
-  void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
-  
-  META_SUB_CLASS(Material);
+  DebugMaterial();
 };
 
 
@@ -64,41 +80,19 @@ public:
 // Flat Material - vertices, indices, color
 //
 
-class FlatMaterial : public Material {
-  TechniqueResourcePtr my_shader;
-  Vec3f                my_color;
-  
-public:
-  static uptr<Material> create(ResourceService &rs);
-  
-  FlatMaterial(const TechniqueResourcePtr &shader);
-  
-  ~FlatMaterial();
-  
-  void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
-  
-  META_SUB_CLASS(Material);
-};
-
-
-//
-// WireframeMaterial - vertices, indices, color
-//
-
-class WireframeMaterial : public Material {
-  TechniqueResourcePtr my_shader;
+class FlatMaterial : public SimpleMaterial {
   Vec3f my_color;
-  
+
 public:
   static uptr<Material> create(ResourceService &rs);
-  
-  WireframeMaterial(const TechniqueResourcePtr &shader);
-  
-  ~WireframeMaterial();
-  
+
+  FlatMaterial();
+
+  ~FlatMaterial();
+
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
-  
-  META_SUB_CLASS(Material);
+
+  META_SUB_CLASS(SimpleMaterial);
 };
 
 
@@ -106,9 +100,9 @@ public:
 // PhongMaterial - vertices, normals, indices
 //
 
-class PhongMaterial : public Material {
+class PhongMaterial : public SimpleMaterial {
   TechniqueResourcePtr my_program;
-  
+
 public:
   static uptr<Material> create(ResourceService &rs);
 
@@ -117,10 +111,9 @@ public:
   ~PhongMaterial();
 
   void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
-  
-  META_SUB_CLASS(Material);
 
-  TechniqueResourcePtr my_shader;
+  META_SUB_CLASS(SimpleMaterial);
+
   Vec3f                my_color;
 };
 
@@ -132,7 +125,7 @@ public:
 
 class FlatSkinMaterial : public Material {
   TechniqueResourcePtr my_program;
-  
+
 public:
   static uptr<Material> create(ResourceService &rs);
 
@@ -144,7 +137,7 @@ public:
 
   TechniqueResourcePtr my_shader;
   Vec3f                my_color;
-  
+
   META_SUB_CLASS(Material);
 };
 

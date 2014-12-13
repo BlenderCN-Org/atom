@@ -209,19 +209,10 @@ uptr<Material> create_material(
   doc.ParseStream<0>(stream);
 
   if (doc.HasParseError()) {
-    log::error("Can't load parse material file \"%s\", error \"%s\"", filename.c_str(),
-      doc.GetParseError());
+    log::error("Can't parse material file \"%s\", error \"%s\", offset %i", filename.c_str(),
+      doc.GetParseError(), doc.GetErrorOffset());
     return nullptr;
   }
-
-//  json_error_t error;
-
-//  JsonPtr root(json_load_file(filename.c_str(), 0, &error), json_decref);
-
-//  if (root == nullptr) {
-//    log::error("Can't load material file \"%s\", line %i: %s", filename.c_str(), error.line, error.text);
-//    return nullptr;
-//  }
 
   if (!doc.HasMember("type")) {
     log::error("Material \"%s\" missing \"type\" value", filename.c_str());
@@ -291,9 +282,9 @@ String MaterialLoader::get_material_filename(const String &name)
 
 MaterialLoader::MaterialLoader()
 {
-  material_creators.push_back(MaterialCreator("lines"    , LinesMaterial::create));
+  material_creators.push_back(MaterialCreator("simple", SimpleMaterial::create));
+  material_creators.push_back(MaterialCreator("debug", DebugMaterial::create));
   material_creators.push_back(MaterialCreator("flat"     , FlatMaterial::create));
-  material_creators.push_back(MaterialCreator("wireframe", WireframeMaterial::create));
   material_creators.push_back(MaterialCreator("phong" , PhongMaterial::create));
   material_creators.push_back(MaterialCreator("flat_skin"  , FlatSkinMaterial::create));
 }

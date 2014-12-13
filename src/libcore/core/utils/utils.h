@@ -125,6 +125,11 @@ inline Vec3f rgb_to_vec3f(u8 r, u8 g, u8 b)
   return Vec3f(r / 255.0f, g / 255.0f, b / 255.0f);
 }
 
+inline Vec3f rgb_to_vec3f(u32 color)
+{
+  return rgb_to_vec3f(color >> 16, color >> 8, color);
+}
+
 StringArray split_string(const String &str, char delim);
 
 /**

@@ -219,16 +219,11 @@ void GameView::paintGL()
 
   my_world->processors().video.render(my_world->camera());
 
-  core.video_service().disable_depth_test();
-
-  my_world->processors().debug.draw();
-
-  core.video_service().enable_depth_test();
-
   if (my_has_intersection) {
-    //draw intersection line
     draw_intersection();
   }
+
+  my_world->processors().debug.draw();
 
   core.video_service().unbind_write_framebuffer();
   my_world->processors().video.get_gbuffer().blit();
@@ -299,8 +294,8 @@ void GameView::find_triangle_in_center()
   RayGeometryResult result;
   Ray ray(my_camera.get_position(), my_camera.get_front());
   my_has_intersection = my_world->processors().geometry.intersect_ray(ray, U32_MAX, result);
-  
-  
+
+
   if (my_has_intersection) {
     my_intersect_point = result.hit;
   }
@@ -308,24 +303,14 @@ void GameView::find_triangle_in_center()
 
 void GameView::draw_intersection()
 {
-  std::vector<Vec3f> lines;
-  lines.push_back(my_intersect_point);
-  lines.push_back(my_intersect_point + Vec3f(0, 0, 5));
+  debug_processor().draw_line(my_intersect_point,
+    my_intersect_point + Vec3f(0, 0, 5), Vec3f(rgb_to_vec3f(0xd9bb7f)));
+}
 
-  Mesh mesh;
-  VideoService &vs = core().video_service();
-  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
-  vertex_buffer->set_bytes(lines.data(), lines.size() * sizeof(Vec3f));
-
-  Uniforms &u = vs.get_uniforms();
-  u.transformations.model = Mat4f();
-  u.model = Mat4f();
-  u.mvp = u.transformations.model_view_projection();
-  RenderContext context = { u, vs };
-
-  mesh.vertex = std::move(vertex_buffer);
-  MaterialResourcePtr material = core().resource_service().get_material("lines");
-  material->material().draw_mesh(context, mesh);
+DebugProcessor &GameView::debug_processor() const
+{
+  assert(my_world != nullptr);
+  return my_world->processors().debug;
 }
 
 }

@@ -1,0 +1,7 @@
+{
+  "type" : "debug",
+  "shader" : "debug",
+  "draw_type" : "lines",
+  "draw_face" : "front",
+  "depth_test" : false
+}

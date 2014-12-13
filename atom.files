@@ -14,9 +14,7 @@ data/level/level1.lev
 data/level/level4.lev
 data/level/terrain_level.lev
 data/material/animal.mat
-data/material/debug_aabb.mat
-data/material/debug_bounding_box.mat
-data/material/debug_wireframe.mat
+data/material/debug.mat
 data/material/flat.mat
 data/material/lines.mat
 data/material/manual.mat
@@ -35,6 +33,8 @@ data/mesh/quad_terrain.m3d
 data/mesh/suzanne.m3d
 data/music/README
 data/music/sotc_15.ogg
+data/shader/debug.ps
+data/shader/debug.vs
 data/shader/flat.gs
 data/shader/flat.ps
 data/shader/flat.vs

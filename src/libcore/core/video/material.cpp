@@ -18,46 +18,104 @@ Material::~Material()
 
 
 //
-// LinesMaterial
+// SimpleMaterial
 //
 
-META_CLASS(LinesMaterial,
-  FIELD(color, "color")
+META_CLASS(SimpleMaterial,
+  FIELD(my_flags, "flags"),
+  FIELD(my_draw_face, "draw_face"),
+  FIELD(my_draw_type, "draw_type"),
+  FIELD(my_fill_mode, "fill_mode"),
+  FIELD(my_depth_test, "depth_test"),
+  FIELD(my_technique, "shader")
 )
 
-uptr<Material> LinesMaterial::create(ResourceService &rs)
+uptr<atom::SimpleMaterial::Material> SimpleMaterial::create(ResourceService &rs)
 {
-  return uptr<Material>(new LinesMaterial(rs.get_technique("lines")));
+  return uptr<Material>(new SimpleMaterial(DrawFlags::VERTEX));
 }
 
-LinesMaterial::LinesMaterial(const TechniqueResourcePtr &shader)
-  : my_shader(shader)
+SimpleMaterial::SimpleMaterial(u32 draw_flags)
+  : my_flags(draw_flags)
+  , my_draw_face(DrawFace::FRONT)
+  , my_draw_type(DrawType::NONE)
+  , my_fill_mode(FillMode::FILL)
+  , my_depth_test(true)
 {
   META_INIT();
 }
 
-LinesMaterial::~LinesMaterial()
+SimpleMaterial::~SimpleMaterial()
 {
   // empty
 }
 
-void LinesMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
+void SimpleMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
-  assert(my_shader != nullptr);
-
-  if (mesh.vertex == nullptr) {
-    log::warning("%s: mesh missing vertex data", ATOM_FUNC_NAME);
+  if (my_technique == nullptr) {
+    log::warning("%s: no shader", ATOM_FUNC_NAME);
     return;
   }
 
-  context.uniforms.color = color;
-
   DrawCommand command;
-  command.draw = DrawType::LINES;
-  command.attributes[0] = mesh.vertex.get();
-  command.types[0] = Type::VEC3F;
-  command.program = &my_shader->program();
+
+  if (my_flags & DrawFlags::VERTEX) {
+    if (mesh.vertex == nullptr) {
+      log::warning("%s: mesh missing vertex data", ATOM_FUNC_NAME);
+      return;
+    }
+
+    command.attributes[0] = mesh.vertex.get();
+    command.types[0] = Type::VEC3F;
+  }
+
+  if (my_flags & DrawFlags::NORMAL) {
+    if (mesh.normal == nullptr) {
+      log::warning("%s: mesh missing normal data", ATOM_FUNC_NAME);
+      return;
+    }
+    command.attributes[1] = mesh.normal.get();
+    command.types[1] = Type::VEC3F;
+  }
+
+  if (my_flags & DrawFlags::COLOR) {
+    if (mesh.color == nullptr) {
+      log::warning("%s: mesh missing color data", ATOM_FUNC_NAME);
+      return;
+    }
+    command.attributes[2] = mesh.color.get();
+    command.types[2] = Type::VEC3F;
+  }
+
+  if (my_flags & DrawFlags::INDEX) {
+    if (mesh.surface == nullptr) {
+      log::warning("%s: mesh missing index data", ATOM_FUNC_NAME);
+      return;
+    }
+    command.indices = mesh.surface.get();
+  }
+
+  command.draw = my_draw_type;
+  command.face = my_draw_face;
+  command.depth_test = my_depth_test;
+  command.program = &my_technique->program();
   context.video_processor.draw(command);
+}
+
+
+//
+// DebugMaterial (wireframe)
+//
+
+uptr<Material> DebugMaterial::create(ResourceService &rs)
+{
+  return uptr<Material>(new DebugMaterial());
+}
+
+DebugMaterial::DebugMaterial()
+  : SimpleMaterial(DrawFlags::VERTEX | DrawFlags::COLOR)
+{
+
 }
 
 
@@ -66,17 +124,17 @@ void LinesMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 //
 
 META_CLASS(FlatMaterial,
-  FIELD(my_color, "color"),
-  FIELD(my_shader, "shader")
+  FIELD(my_color, "color")
 )
 
 uptr<Material> FlatMaterial::create(ResourceService &rs)
 {
-  return uptr<Material>(new FlatMaterial(rs.get_technique("flat")));
+  return uptr<Material>(new FlatMaterial());
 }
 
-FlatMaterial::FlatMaterial(const TechniqueResourcePtr &shader)
-  : my_shader(shader)
+FlatMaterial::FlatMaterial()
+  : SimpleMaterial(DrawFlags::VERTEX | DrawFlags::INDEX)
+  , my_color(1, 0, 0)
 {
   META_INIT();
 }
@@ -88,71 +146,8 @@ FlatMaterial::~FlatMaterial()
 
 void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
-  assert(my_shader != nullptr);
-
-  if (mesh.vertex == nullptr || mesh.surface == nullptr) {
-    log::warning("%s: mesh missing vertex or surface data", ATOM_FUNC_NAME);
-    return;
-  }
-
   context.uniforms.color = my_color;
-
-  DrawCommand command;
-  command.draw = DrawType::TRIANGLES;
-  command.attributes[0] = mesh.vertex.get();
-  command.types[0] = Type::VEC3F;
-  command.indices = mesh.surface.get();
-  command.program = &my_shader->program();
-  context.video_processor.draw(command);
-}
-
-
-//
-// WireframeMaterial
-//
-
-META_CLASS(WireframeMaterial,
-  FIELD(my_color, "color"),
-  FIELD(my_shader, "shader")
-)
-
-uptr<Material> WireframeMaterial::create(ResourceService &rs)
-{
-  return uptr<Material>(new WireframeMaterial(rs.get_technique("lines")));
-}
-
-WireframeMaterial::WireframeMaterial(const TechniqueResourcePtr &shader)
-  : my_shader(shader)
-{
-  META_INIT();
-}
-
-WireframeMaterial::~WireframeMaterial()
-{
-  // empty
-}
-
-void WireframeMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
-{
-  assert(my_shader != nullptr);
-
-  if (mesh.vertex == nullptr || mesh.surface == nullptr) {
-    log::warning("%s: mesh missing vertex or surface data", ATOM_FUNC_NAME);
-    return;
-  }
-
-  context.uniforms.color = my_color;
-
-  DrawCommand command;
-  command.draw = DrawType::TRIANGLES;
-  command.attributes[0] = mesh.vertex.get();
-  command.types[0] = Type::VEC3F;
-  command.indices = mesh.surface.get();
-  command.program = &my_shader->program();
-  command.face = face();
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);  // TODO: vyriesit v ramci materialu, nie OpenGL
-  context.video_processor.draw(command);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  SimpleMaterial::draw_mesh(context, mesh);
 }
 
 
@@ -161,7 +156,6 @@ void WireframeMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh
 //
 
 META_CLASS(PhongMaterial,
-  FIELD(my_shader, "shader"),
   FIELD(my_color, "color")
 )
 
@@ -171,7 +165,7 @@ uptr<Material> PhongMaterial::create(ResourceService &rs)
 }
 
 PhongMaterial::PhongMaterial(const TechniqueResourcePtr &shader)
-  : my_program(shader)
+  : SimpleMaterial(DrawFlags::VERTEX | DrawFlags::NORMAL | DrawFlags::INDEX)
 {
   META_INIT();
 }
@@ -182,28 +176,10 @@ PhongMaterial::~PhongMaterial()
 
 void PhongMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
-  assert(my_shader != nullptr);
-
-  if (mesh.vertex == nullptr || mesh.normal == nullptr || mesh.surface == nullptr) {
-    log::warning("%s: mesh missing vertex, normal or surface data", ATOM_FUNC_NAME);
-    return;
-  }
-
-  VideoService &vs = context.video_processor;
-  vs.enable_depth_test();
   context.uniforms.color = my_color;
   context.uniforms.sun_dir = Vec3f(0, 0, -1);
   context.uniforms.ambient_color = Vec3f(0.13, 0.13, 0.13);
-
-  DrawCommand command;
-  command.draw = DrawType::TRIANGLES;
-  command.attributes[0] = mesh.vertex.get();
-  command.types[0] = Type::VEC3F;
-  command.attributes[1] = mesh.normal.get();
-  command.types[1] = Type::VEC3F;
-  command.indices = mesh.surface.get();
-  command.program = &my_shader->program();
-  context.video_processor.draw(command);
+  SimpleMaterial::draw_mesh(context, mesh);
 }
 
 
@@ -263,5 +239,6 @@ void FlatSkinMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   command.program = &my_shader->program();
   vs.draw(command);
 }
+
 
 }

@@ -274,6 +274,61 @@ bool read_draw_face(const rapidjson::Value &node, DrawFace &face)
   return false;
 }
 
+bool read_draw_type(const rapidjson::Value &node, DrawType &draw_type)
+{
+  if (!node.IsString()) {
+    return false;
+  }
+
+  const char *value = node.GetString();
+
+  if (!strcmp(value, "lines")) {
+    draw_type = DrawType::LINES;
+    return true;
+  } else if (!strcmp(value, "triangles")) {
+    draw_type = DrawType::TRIANGLES;
+    return true;
+  }
+
+  return false;
+}
+
+bool read_fill_mode(const rapidjson::Value &node, FillMode &mode)
+{
+  if (!node.IsString()) {
+    return false;
+  }
+
+  const char *value = node.GetString();
+
+  if (!strcmp(value, "fill")) {
+    mode = FillMode::FILL;
+    return true;
+  } else if (!strcmp(value, "line")) {
+    mode = FillMode::LINE;
+    return true;
+  } else if (!strcmp(value, "point")) {
+    mode = FillMode::POINT;
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Read color in html notation e.g. "c3354e", "8da87b", ...
+ */
+bool read_color(const rapidjson::Value &node, Vec3f &value)
+{
+  if (!node.IsString()) {
+    return false;
+  }
+  // there is no way how check successful conversion (errno is not sufficient)
+  u32 color = strtol(node.GetString(), nullptr, 0);
+  value = rgb_to_vec3f(color);
+  return true;
+}
+
 }
 
 
@@ -282,9 +337,15 @@ bool read_vec2f(const rapidjson::Value &node, Vec2f &v)
   return read_vector(node, v);
 }
 
+/**
+ * Read 3 component array or hexadecimal color value.
+ */
 bool read_vec3f(const rapidjson::Value &node, Vec3f &v)
 {
-  return read_vector(node, v);
+  if (read_vector(node, v)) {
+    return true;
+  }
+  return read_color(node, v);
 }
 
 bool read_vec4f(const rapidjson::Value &node, Vec4f &v)
@@ -312,7 +373,7 @@ ReadResult read_basic_property_from_json(const rapidjson::Value &obj, const Meta
     case Type::I32:
       parsed = read_number<i32>(node, field_ref<i32>(p, data));
       break;
-      
+
     case Type::U32:
       parsed = read_number<u32>(node, field_ref<u32>(p, data));
       break;
@@ -371,6 +432,14 @@ ReadResult read_property_from_json(const rapidjson::Value &obj, const MetaField 
       parsed = read_draw_face(node, field_ref<DrawFace>(p, data));
       break;
 
+    case Type::DRAW_TYPE:
+      parsed = read_draw_type(node, field_ref<DrawType>(p, data));
+      break;
+
+    case Type::FILL_MODE:
+      parsed = read_fill_mode(node, field_ref<FillMode>(p, data));
+      break;
+
     default:
       return read_basic_property_from_json(obj, p, data);
   }
@@ -390,12 +459,12 @@ bool write_basic_property_to_json(rapidjson::Document &doc, rapidjson::Value &ob
       write_bool(field_ref<bool>(field, data), node);
       obj.AddMember(field.name, node, doc.GetAllocator());
       return true;
-      
+
     case Type::I32:
       write_i32(field_ref<i32>(field, data), node);
       obj.AddMember(field.name, node, doc.GetAllocator());
       return true;
-      
+
     case Type::U32:
       write_u32(field_ref<u32>(field, data), node);
       obj.AddMember(field.name, node, doc.GetAllocator());
@@ -410,9 +479,6 @@ bool write_basic_property_to_json(rapidjson::Document &doc, rapidjson::Value &ob
       write_string(field_ref<String>(field, data), node);
       obj.AddMember(field.name, node, doc.GetAllocator());
       return true;
-
-//      //  case Type::INT:
-//      //  case Type::UINT:
 
     case Type::VEC2F:
       write_vector<Vec2f>(field_ref<Vec2f>(field, data), node, doc.GetAllocator());

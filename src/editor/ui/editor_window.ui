@@ -51,20 +51,20 @@
       <string>Panels</string>
      </property>
     </widget>
-    <widget class="QMenu" name="menu_entity">
-     <property name="title">
-      <string>Debug</string>
-     </property>
-     <addaction name="action_show_physics"/>
-     <addaction name="action_show_bounding_box"/>
-     <addaction name="action_show_aabb"/>
-     <addaction name="action_show_geometry"/>
-    </widget>
-    <addaction name="menu_entity"/>
     <addaction name="menu_panels"/>
+   </widget>
+   <widget class="QMenu" name="menu_debug">
+    <property name="title">
+     <string>&amp;Debug</string>
+    </property>
+    <addaction name="action_show_physics"/>
+    <addaction name="action_show_bounding_box"/>
+    <addaction name="action_show_aabb"/>
+    <addaction name="action_show_geometry"/>
    </widget>
    <addaction name="menu_file"/>
    <addaction name="menu_edit"/>
+   <addaction name="menu_debug"/>
    <addaction name="menu_view"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

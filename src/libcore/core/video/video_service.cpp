@@ -123,8 +123,10 @@ void VideoService::draw(const DrawCommand &command)
 
   bind_program(*command.program);
   command.program->pull(meta_object(*my_uniforms));
-  
+
   set_draw_face(command.face);
+  set_depth_test(command.depth_test);
+  set_fill_mode(command.fill_mode);
 
   if (command.draw == DrawType::TRIANGLES) {
     draw_index_array(GL_TRIANGLES, *command.indices, command.indices->size() / sizeof(u32));
@@ -410,6 +412,15 @@ void VideoService::disable_depth_test()
   glDisable(GL_DEPTH_TEST);
 }
 
+void VideoService::set_depth_test(bool enable)
+{
+  if (enable) {
+    glEnable(GL_DEPTH_TEST);
+  } else {
+    glDisable(GL_DEPTH_TEST);
+  }
+}
+
 void set_viewport(int x, int y, int width, int height)
 {
   glViewport(x, y, width, height);
@@ -440,7 +451,7 @@ void VideoService::set_draw_face(DrawFace face)
   if (face == my_state.draw_face) {
     return;
   }
-  
+
   switch (face) {
     case DrawFace::FRONT:
       glEnable(GL_CULL_FACE);
@@ -455,12 +466,12 @@ void VideoService::set_draw_face(DrawFace face)
     case DrawFace::BOTH:
       glDisable(GL_CULL_FACE);
       break;
-      
+
     default:
       log::warning("%s: unknown DrawFacee %i", ATOM_FUNC_NAME, static_cast<int>(face));
       return;
   }
-  
+
   my_state.draw_face = face;
 }
 
@@ -469,26 +480,26 @@ void VideoService::set_fill_mode(FillMode mode)
   if (mode == my_state.fill_mode) {
     return;
   }
-  
+
   switch (mode) {
     case FillMode::FILL:
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       break;
-      
+
     case FillMode::LINE:
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
       break;
-      
+
     case FillMode::POINT:
       glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
       break;
-      
+
     default:
       log::warning("%s: unknown polygon fill mode %i", ATOM_FUNC_NAME,
         static_cast<int>(mode));
       return;
   }
-  
+
   my_state.fill_mode = mode;
 }
 

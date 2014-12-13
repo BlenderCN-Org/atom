@@ -81,6 +81,8 @@ private:
   void find_triangle_in_center();
 
   void draw_intersection();
+
+  DebugProcessor& debug_processor() const;
 };
 
 }

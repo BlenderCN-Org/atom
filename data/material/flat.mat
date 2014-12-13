@@ -2,5 +2,7 @@
   "type" : "flat",
   "shader" : "flat",
   "color" : [ 1, 1, 1 ],
-  "face" : "both"
+  "draw_type" : "triangles",
+  "draw_face" : "front",
+  "depth_test" : true
 }

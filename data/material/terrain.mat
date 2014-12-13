@@ -1,6 +1,7 @@
 {
   "type" : "phong",
   "shader" : "phong",
-  "color" : [ 0.8, 0.7, 0.7 ],
-  "face" : "front"
+  "color" : "0x546475",
+  "draw_face" : "front",
+  "draw_type" : "triangles"
 }

@@ -23,8 +23,8 @@ enum class DrawFace {
 
 enum class FillMode {
   FILL = 0,   ///< default value in VideoService::State
-  POINT,
-  LINE
+  LINE,
+  POINT
 };
 
 struct DrawCommand {
@@ -34,12 +34,16 @@ struct DrawCommand {
   Technique   *program;
   DrawType     draw;
   DrawFace     face;
+  FillMode     fill_mode;
+  bool         depth_test;
 
   DrawCommand()
     : indices(nullptr)
     , program(nullptr)
     , draw(DrawType::NONE)
     , face(DrawFace::FRONT)
+    , fill_mode(FillMode::FILL)
+    , depth_test(true)
   {
     for (u32 i = 0; i < MAX_ATTRIBUTES; ++i) {
       attributes[i] = nullptr;
@@ -158,6 +162,8 @@ public:
 
   void disable_depth_test();
 
+  void set_depth_test(bool enable);
+
   void set_viewport(int x, int y, int width, int height);
 
   void draw_arrays(GLenum mode, GLint first, GLsizei count);
@@ -167,7 +173,7 @@ public:
   Uniforms& get_uniforms();
 
   void set_draw_face(DrawFace face);
-  
+
   void set_fill_mode(FillMode mode);
 
   struct State {
@@ -186,10 +192,9 @@ private:
   uptr<Uniforms> my_uniforms;
 };
 
-template<>
-inline Type type_of<DrawFace>()
-{
-  return Type::DRAW_FACE;
-}
+
+TYPE_OF(DrawFace, DRAW_FACE)
+TYPE_OF(DrawType, DRAW_TYPE)
+TYPE_OF(FillMode, FILL_MODE)
 
 }

@@ -104,7 +104,7 @@ class SkeletonBodyScript : public ScriptComponent {
       my_mesh_vertices->set_data(to_slice(my_vertices));
     }
   }
-  
+
 public:
   SkeletonBodyScript()
     : my_model(this)
@@ -146,7 +146,7 @@ class AnimalScript : public ScriptComponent {
 
     my_skeleton->recalculate_skeleton();
   }
-  
+
 public:
   AnimalScript()
     : my_tick(0)
@@ -155,7 +155,7 @@ public:
 
   }
 
-  
+
 };
 
 
@@ -194,7 +194,7 @@ uptr<Entity> create_monster(World &world, Core &core)
   uptr<ModelComponent> model(new ModelComponent());
   model->set_model_name("monster");
   uptr<MaterialComponent> material(new MaterialComponent());
-  material->set_material_name("animal");
+  material->set_material_name("flat");
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<GeometryComponent> geometry(new GeometryComponent());

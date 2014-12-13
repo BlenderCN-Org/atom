@@ -7,3 +7,5 @@ src/runner
 /usr/include/qt4/QtOpenGL
 .
 test
+data/shader
+data/material

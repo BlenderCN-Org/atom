@@ -71,10 +71,7 @@ DebugProcessor::DebugProcessor(World &world)
   , my_physics_drawer(new PhysicsDebugDrawer())
 {
   ResourceService &rs = core().resource_service();
-  my_wireframe_material = rs.get_material("debug_wireframe");
-  my_lines_material = rs.get_material("lines");
-  my_bounding_box_material = rs.get_material("debug_bounding_box");
-  my_aabb_material = rs.get_material("debug_aabb");
+  my_debug_material = rs.get_material("debug");
 }
 
 DebugProcessor::~DebugProcessor()
@@ -98,20 +95,23 @@ void DebugProcessor::poll()
 void DebugProcessor::draw()
 {
   if (my_debug_categories & DebugCategory::PHYSICS) {
-    draw_physics();
+    gather_physics();
   }
 
   if (my_debug_categories & DebugCategory::BOUNDING_BOX) {
-    draw_bounding_box();
+    gather_bounding_box();
   }
 
   if (my_debug_categories & DebugCategory::AABB) {
-    draw_aabb();
+    gather_aabb();
   }
-  
+
   if (my_debug_categories & DebugCategory::GEOMETRY_CACHE) {
-    draw_geometry_cache();
+    gather_geometry_cache();
   }
+
+  draw_all();
+  clear();
 }
 
 void DebugProcessor::set_debug(u32 category, bool enable)
@@ -123,207 +123,164 @@ void DebugProcessor::set_debug(u32 category, bool enable)
   }
 }
 
-void DebugProcessor::draw_wireframe(const Slice<Vec3f> &vertices,
-  const Slice<u32> &indices, const Vec3f &color, const Mat4f &model)
+void DebugProcessor::draw_line(const Vec3f &start, const Vec3f &end, const Vec3f &color)
 {
-  Mesh mesh;
-  VideoService &vs = core().video_service();
-  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
-  uptr<VideoBuffer> index_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
-  vertex_buffer->set_bytes(vertices.data(), vertices.raw_size());
-  index_buffer->set_bytes(indices.data(), indices.raw_size());
-  
-  Uniforms &u = vs.get_uniforms();
-  u.transformations.model = model;
-  u.model = model;
-  u.mvp = u.transformations.model_view_projection();
-  u.color = color;  // TODO: farba sa nastavuje priamo v materiali a nie tu
-  
-  RenderContext context = { u, vs };
-  mesh.vertex = std::move(vertex_buffer);
-  mesh.surface = std::move(index_buffer);
-  
-  Material &material = my_wireframe_material->material();
-  vs.set_draw_face(material.face());
-  material.draw_mesh(context, mesh);
+  my_line_points.push_back(start);
+  my_line_points.push_back(end);
+  my_line_colors.push_back(color);
+  my_line_colors.push_back(color);
 }
 
-void DebugProcessor::draw_physics()
+void DebugProcessor::draw_line(const Mat4f &transform, const Vec3f &start, const Vec3f &end, const Vec3f &color)
 {
-  Slice<Vec3f> lines = my_physics_drawer->get_lines();
-  if (lines.size() == 0) {
-    return;
-  }
-
-  Mesh mesh;
-
-  VideoService &vs = core().video_service();
-
-  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
-  vertex_buffer->set_bytes(lines.data(), lines.size() * sizeof(Vec3f));
-
-  Uniforms &u = vs.get_uniforms();
-  u.transformations.model = Mat4f();
-  u.model = Mat4f();
-  u.mvp = u.transformations.model_view_projection();
-  RenderContext context = { u, vs };
-
-  mesh.vertex = std::move(vertex_buffer);
-
-  my_lines_material->material().draw_mesh(context, mesh);
+  draw_line(transform_point(transform, start), transform_point(transform, end), color);
 }
 
-void DebugProcessor::draw_bounding_box()
+void DebugProcessor::clear()
+{
+  // TODO: maybe use swap
+  my_line_points.clear();
+  my_line_colors.clear();
+}
+
+void DebugProcessor::gather_physics()
+{
+  not_implemented();
+}
+
+void DebugProcessor::gather_bounding_box()
 {
   auto entities = world().all_entities();
   std::vector<Vec3f> lines;
   lines.reserve(entities.size() * 24);
-
+  const Vec3f color(rgb_to_vec3f(0xca5779));
 
   for (const sptr<Entity> &entity : world().all_entities()) {
     Mat4f transform = entity->transform();
     const BoundingBox &box = entity->bounding_box();
 
-    Vec3f v0 = transform_point(transform, Vec3f(box.xmin, box.ymin, box.zmin));
-    Vec3f v1 = transform_point(transform, Vec3f(box.xmax, box.ymin, box.zmin));
-    Vec3f v2 = transform_point(transform, Vec3f(box.xmax, box.ymax, box.zmin));
-    Vec3f v3 = transform_point(transform, Vec3f(box.xmin, box.ymax, box.zmin));
-    Vec3f v4 = transform_point(transform, Vec3f(box.xmin, box.ymin, box.zmax));
-    Vec3f v5 = transform_point(transform, Vec3f(box.xmax, box.ymin, box.zmax));
-    Vec3f v6 = transform_point(transform, Vec3f(box.xmax, box.ymax, box.zmax));
-    Vec3f v7 = transform_point(transform, Vec3f(box.xmin, box.ymax, box.zmax));
+    const Vec3f v[] = {
+      transform_point(transform, Vec3f(box.xmin, box.ymin, box.zmin)),
+      transform_point(transform, Vec3f(box.xmax, box.ymin, box.zmin)),
+      transform_point(transform, Vec3f(box.xmax, box.ymax, box.zmin)),
+      transform_point(transform, Vec3f(box.xmin, box.ymax, box.zmin)),
+      transform_point(transform, Vec3f(box.xmin, box.ymin, box.zmax)),
+      transform_point(transform, Vec3f(box.xmax, box.ymin, box.zmax)),
+      transform_point(transform, Vec3f(box.xmax, box.ymax, box.zmax)),
+      transform_point(transform, Vec3f(box.xmin, box.ymax, box.zmax))
+    };
 
-    lines.push_back(v0);
-    lines.push_back(v1);
-    lines.push_back(v1);
-    lines.push_back(v2);
-    lines.push_back(v2);
-    lines.push_back(v3);
-    lines.push_back(v3);
-    lines.push_back(v0);
+    draw_line(v[0], v[1], color);
+    draw_line(v[1], v[2], color);
+    draw_line(v[2], v[3], color);
+    draw_line(v[3], v[0], color);
 
-    lines.push_back(v4);
-    lines.push_back(v5);
-    lines.push_back(v5);
-    lines.push_back(v6);
-    lines.push_back(v6);
-    lines.push_back(v7);
-    lines.push_back(v7);
-    lines.push_back(v4);
+    draw_line(v[4], v[5], color);
+    draw_line(v[5], v[6], color);
+    draw_line(v[6], v[7], color);
+    draw_line(v[7], v[4], color);
 
-    lines.push_back(v0);
-    lines.push_back(v4);
-    lines.push_back(v1);
-    lines.push_back(v5);
-    lines.push_back(v2);
-    lines.push_back(v6);
-    lines.push_back(v3);
-    lines.push_back(v7);
+    draw_line(v[0], v[4], color);
+    draw_line(v[1], v[5], color);
+    draw_line(v[2], v[6], color);
+    draw_line(v[3], v[7], color);
   }
-
-  Mesh mesh;
-  VideoService &vs = core().video_service();
-  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
-  vertex_buffer->set_bytes(lines.data(), lines.size() * sizeof(Vec3f));
-
-  Uniforms &u = vs.get_uniforms();
-  u.transformations.model = Mat4f();
-  u.model = Mat4f();
-  u.mvp = u.transformations.model_view_projection();
-  RenderContext context = { u, vs };
-
-  mesh.vertex = std::move(vertex_buffer);
-  my_bounding_box_material->material().draw_mesh(context, mesh);
 }
 
-void DebugProcessor::draw_aabb()
+void DebugProcessor::gather_aabb()
 {
   auto entities = world().all_entities();
   std::vector<Vec3f> lines;
   lines.reserve(entities.size() * 24);
-
+  const Vec3f color(rgb_to_vec3f(0xdf5a44));
 
   for (const sptr<Entity> &entity : world().all_entities()) {
     const BoundingBox &box = entity->aabb();
+    const Mat4f &t = entity->transform();
 
-    Vec3f v0 = Vec3f(box.xmin, box.ymin, box.zmin);
-    Vec3f v1 = Vec3f(box.xmax, box.ymin, box.zmin);
-    Vec3f v2 = Vec3f(box.xmax, box.ymax, box.zmin);
-    Vec3f v3 = Vec3f(box.xmin, box.ymax, box.zmin);
-    Vec3f v4 = Vec3f(box.xmin, box.ymin, box.zmax);
-    Vec3f v5 = Vec3f(box.xmax, box.ymin, box.zmax);
-    Vec3f v6 = Vec3f(box.xmax, box.ymax, box.zmax);
-    Vec3f v7 = Vec3f(box.xmin, box.ymax, box.zmax);
+    const Vec3f v[] = {
+      transform_point(t, Vec3f(box.xmin, box.ymin, box.zmin)),
+      transform_point(t, Vec3f(box.xmax, box.ymin, box.zmin)),
+      transform_point(t, Vec3f(box.xmax, box.ymax, box.zmin)),
+      transform_point(t, Vec3f(box.xmin, box.ymax, box.zmin)),
+      transform_point(t, Vec3f(box.xmin, box.ymin, box.zmax)),
+      transform_point(t, Vec3f(box.xmax, box.ymin, box.zmax)),
+      transform_point(t, Vec3f(box.xmax, box.ymax, box.zmax)),
+      transform_point(t, Vec3f(box.xmin, box.ymax, box.zmax)),
+    };
 
-    lines.push_back(v0);
-    lines.push_back(v1);
-    lines.push_back(v1);
-    lines.push_back(v2);
-    lines.push_back(v2);
-    lines.push_back(v3);
-    lines.push_back(v3);
-    lines.push_back(v0);
+    draw_line(v[0], v[1], color);
+    draw_line(v[1], v[2], color);
+    draw_line(v[2], v[3], color);
+    draw_line(v[3], v[0], color);
 
-    lines.push_back(v4);
-    lines.push_back(v5);
-    lines.push_back(v5);
-    lines.push_back(v6);
-    lines.push_back(v6);
-    lines.push_back(v7);
-    lines.push_back(v7);
-    lines.push_back(v4);
+    draw_line(v[4], v[5], color);
+    draw_line(v[5], v[6], color);
+    draw_line(v[6], v[7], color);
+    draw_line(v[7], v[4], color);
 
-    lines.push_back(v0);
-    lines.push_back(v4);
-    lines.push_back(v1);
-    lines.push_back(v5);
-    lines.push_back(v2);
-    lines.push_back(v6);
-    lines.push_back(v3);
-    lines.push_back(v7);
+    draw_line(v[0], v[4], color);
+    draw_line(v[1], v[5], color);
+    draw_line(v[2], v[6], color);
+    draw_line(v[3], v[7], color);
   }
-
-  Mesh mesh;
-  VideoService &vs = core().video_service();
-  uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
-  vertex_buffer->set_bytes(lines.data(), lines.size() * sizeof(Vec3f));
-
-  Uniforms &u = vs.get_uniforms();
-  u.transformations.model = Mat4f();
-  u.model = Mat4f();
-  u.mvp = u.transformations.model_view_projection();
-  RenderContext context = { u, vs };
-
-  mesh.vertex = std::move(vertex_buffer);
-  my_aabb_material->material().draw_mesh(context, mesh);
 }
 
-void DebugProcessor::draw_geometry_cache()
+void DebugProcessor::gather_geometry_cache()
 {
   core().video_service().disable_depth_test();
-  
+
   for (const sptr<Entity> &entity : world().all_entities()) {
     std::vector<GeometryComponent *> components =
       entity->find_components<GeometryComponent>();
-    
+
     for (GeometryComponent *component : components) {
       const GeometryCache &geometry_cache = component->geometry_cache();
-      
+
       if (geometry_cache.vertices.empty()) {
         continue;
       }
-      
+
       const Model *model = component->model();
-      
-      Slice<u32> indices = model->find_stream<u32>("indices");
-      
+      const Slice<u32> indices = model->find_stream<u32>("indices");
       const Slice<Vec3f> vertices = to_slice(geometry_cache.vertices);
-      
-      draw_wireframe(vertices, indices, Vec3f(1, 0.5, 1), entity->transform());
+      const Mat4f t = entity->transform();
+
+      for (u32 i = 0; i < indices.size(); i += 3) {
+        const Vec3f color(rgb_to_vec3f(0x546475));
+        draw_line(t, vertices[indices[i    ]], vertices[indices[i + 1]], color);
+        draw_line(t, vertices[indices[i + 1]], vertices[indices[i + 2]], color);
+        draw_line(t, vertices[indices[i + 2]], vertices[indices[i    ]], color);
+      }
     }
   }
-  
+
   core().video_service().enable_depth_test();
+}
+
+void DebugProcessor::draw_all()
+{
+  assert(my_debug_material != nullptr);
+
+  if (!my_line_points.empty()) {
+    Mesh mesh;
+    VideoService &vs = core().video_service();
+    uptr<VideoBuffer> vertex_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
+    uptr<VideoBuffer> color_buffer(new VideoBuffer(vs, VideoBufferUsage::STATIC_DRAW));
+    vertex_buffer->set_bytes(my_line_points.data(), my_line_points.size() * sizeof(Vec3f));
+    color_buffer->set_bytes(my_line_colors.data(), my_line_colors.size() * sizeof(Vec3f));
+    mesh.vertex = std::move(vertex_buffer);
+    mesh.color = std::move(color_buffer);
+
+    Uniforms &u = vs.get_uniforms();
+    u.color = Vec3f(1, 1, 1);
+    u.transformations.model = Mat4f();
+    u.model = Mat4f();
+    u.mvp = u.transformations.model_view_projection();
+    RenderContext context = { u, vs };
+
+    my_debug_material->material().draw_mesh(context, mesh);
+  }
 }
 
 }
