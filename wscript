@@ -243,11 +243,11 @@ def build_flext_lib(ctx):
 
 def build_core_lib(ctx):
     """build Core engine as static lib"""
-    #filter = 'src/**/crate.cpp'
+    #filter = 'src/**/unity.cpp'
     ctx.stlib(
       name='core',
       target = 'core',
-      source=ctx.path.ant_glob('src/libcore/**/crate.cpp'),
+      source=ctx.path.ant_glob('src/libcore/**/unity.cpp'),
       #source=ctx.path.ant_glob('src/libcore/**/*.cpp', excl=filter),
       export_includes=['src'],
       use=['SDL', 'bullet', 'png', 'ogg', 'vorbisfile', 'flext']
@@ -256,11 +256,11 @@ def build_core_lib(ctx):
 
 def build_game_lib(ctx):
     """build Game lib as static lib"""
-    filter = 'src/libgame/**/crate.cpp'
+    filter = 'src/libgame/**/unity.cpp'
     ctx.stlib(
       name='game',
       target = 'game',
-      source=ctx.path.ant_glob('src/libgame/**/crate.cpp'),
+      source=ctx.path.ant_glob('src/libgame/**/unity.cpp'),
       #source=ctx.path.ant_glob('src/libgame/**/*.cpp', excl=filter),
       includes=['src/libcore', 'src/libgame'],
       use=['core']
@@ -282,7 +282,7 @@ def build_editor(ctx):
       name='edit',
       target='edit',
       features='cxx cxxprogram qt4',
-      source=ctx.path.ant_glob('src/editor/**/crate.cpp') + ctx.path.ant_glob('src/editor/**/*.ui'),
+      source=ctx.path.ant_glob('src/editor/**/unity.cpp') + ctx.path.ant_glob('src/editor/**/*.ui'),
       includes=['src/libcore', 'src/libgame', 'build/src/editor/ui'],
       use=['game', 'core', 'QTCORE', 'QTGUI', 'QTOPENGL']
     )
