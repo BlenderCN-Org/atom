@@ -3,6 +3,7 @@
 #include "core.cpp"
 #include "performance_counters.cpp"
 #include "resource_service.cpp"
+#include "input_service.cpp"
 #include "resources.cpp"
 #include "loaders.cpp"
 #include "model_loader.cpp"

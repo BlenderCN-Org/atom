@@ -7,7 +7,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <core/world/world.h>
-#include <core/input/input_service.h>
+#include <core/system/input_service.h>
 #include <core/audio/audio_service.h>
 #include <core/system/resource_service.h>
 #include <core/utils/json_utils.h>
@@ -350,7 +350,7 @@ void EditorWindow::switch_mode(EditorWindowMode mode)
     my_game_view->setFocus();
     center_cursor(*my_game_view);
   }
-  
+
   bool edit_mode = mode == EditorWindowMode::EDIT;
   bool game_mode = mode == EditorWindowMode::GAME;
   // receive mouse move events without need of pressed button
@@ -372,7 +372,7 @@ void EditorWindow::switch_mode(EditorWindowMode mode)
   my_ui->action_save_as->setEnabled(edit_mode);
   my_ui->menu_edit->setEnabled(edit_mode);
   my_ui->menu_panels->setEnabled(edit_mode);
-  
+
   my_mode = mode;
 }
 
@@ -486,7 +486,7 @@ bool EditorWindow::eventFilterKey(QKeyEvent &event)
   event.accept();
   application().core().input_service().push_event(
     make_key_event(key, event.type() == QEvent::KeyPress));
-  
+
   return true;
 }
 
