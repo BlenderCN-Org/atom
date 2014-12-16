@@ -16,7 +16,9 @@ class PlayerScript : public ScriptComponent {
   Vec3f my_position;
   f32   my_camera_yaw;    ///< 0 is y_axis
   f32   my_camera_pitch;
+  f32   my_current_pitch;
   Vec3f my_normal;
+  Vec3f my_tmp_normal;
 
   void on_activate() override
   {
@@ -148,7 +150,11 @@ class PlayerScript : public ScriptComponent {
     f32 screen_width = config.get_screen_width();
     f32 screen_height = config.get_screen_height();
     f32 aspect = screen_width / screen_height;
-    Quatf q = Quatf::from_to_rotation(Vec3f::z_axis(), my_normal);
+
+    my_tmp_normal += (my_normal - my_tmp_normal) / 15.0f;
+
+    Quatf q = Quatf::from_to_rotation(Vec3f::z_axis(), my_tmp_normal);
+
     Quatf r = Quatf::from_axis_angle(my_normal, my_camera_yaw) *
         q.normalized() *
         Quatf::from_axis_angle(Vec3f::x_axis(), M_PI / 2);
@@ -167,6 +173,7 @@ public:
     : my_position(0, 0, 1)
     , my_camera_yaw(0)
     , my_camera_pitch(0)
+    , my_current_pitch(0)
     , my_normal(Vec3f::z_axis())
   {
     META_INIT();

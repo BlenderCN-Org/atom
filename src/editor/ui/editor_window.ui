@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Atom Editor</string>
   </property>
   <widget class="QWidget" name="central_widget">
    <layout class="QVBoxLayout" name="verticalLayout"/>
@@ -29,6 +29,7 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="action_file_new"/>
     <addaction name="action_open"/>
     <addaction name="action_save"/>
     <addaction name="action_save_as"/>
@@ -177,6 +178,11 @@
    </property>
    <property name="text">
     <string>Geometry</string>
+   </property>
+  </action>
+  <action name="action_file_new">
+   <property name="text">
+    <string>&amp;New</string>
    </property>
   </action>
  </widget>

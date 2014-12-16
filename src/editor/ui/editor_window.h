@@ -28,7 +28,7 @@ struct EditorWindowPanels {
 
 class EditorWindow : public QMainWindow {
 Q_OBJECT
-  
+
   uptr<Ui::MainWindow> my_ui;
   EditorWindowMode     my_mode;             ///< current editor mode
   i64                  my_update_interval;
@@ -42,11 +42,11 @@ Q_OBJECT
   QAction             *my_undo_action;
   QAction             *my_redo_action;
   EditorWindowPanels   my_panels;           ///< panel visibility state
-  
+
 #ifdef _WIN32
   i64                  my_last_update;
 #endif
-  
+
 public:
   EditorWindow();
   ~EditorWindow();
@@ -56,11 +56,12 @@ public:
   bool eventFilter(QObject *watched, QEvent *event);
 
   void load_file(const QString &filename);
-  
+
 protected:
   void closeEvent(QCloseEvent *event) override;
 
 private slots:
+  void on_action_file_new_triggered();
   void on_action_open_triggered();
   void on_action_save_triggered();
   void on_action_save_as_triggered();
@@ -82,7 +83,7 @@ private slots:
   void update_world();
 
 private:
-  
+
 
   void switch_mode(EditorWindowMode mode);
 

@@ -7,9 +7,9 @@ namespace atom {
 
 namespace DebugCategory {
   enum {
-    PHYSICS = 1,
-    BOUNDING_BOX = 2,
-    AABB = 4,
+    PHYSICS        = 1,
+    BOUNDING_BOX   = 2,
+    AABB           = 4,
     GEOMETRY_CACHE = 8
   };
 }

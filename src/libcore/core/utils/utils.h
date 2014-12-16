@@ -7,42 +7,10 @@
 
 namespace atom {
 
-const float PI = 3.14;
+const f32 PI = 3.14f;
 const u64 NANOSECONDS  = 1000000000UL;
 const u64 MICROSECONDS = 1000000;
 const u64 MILLISECONDS = 1000;
-
-#ifdef NDEBUG
-
-template<typename T, typename U>
-T safe_cast(U value)
-{
-  return static_cast<T >(value);
-}
-
-template<typename T, typename U>
-T& safe_cast(U &value)
-{
-  return static_cast<T &>(value);
-}
-
-#else
-
-template<typename T, typename U>
-T safe_cast(U value)
-{
-  assert(dynamic_cast<T >(value) != nullptr);
-  return dynamic_cast<T >(value);
-}
-
-template<typename T, typename U>
-T& safe_cast(U &value)
-{
-  assert(dynamic_cast<T >(value) != nullptr);
-  return dynamic_cast<T &>(value);
-}
-
-#endif
 
 i64 nano_time();
 
@@ -64,7 +32,7 @@ Type str_to_type(const String &str);
  */
 u64 get_file_size(std::ifstream &file_stream);
 
-inline float radians_to_degrees(float radians)
+inline f32 radians_to_degrees(f32 radians)
 {
   return radians * 180 / PI;
 }

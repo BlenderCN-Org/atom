@@ -585,6 +585,12 @@ void EditorWindow::closeEvent(QCloseEvent *event)
   QMainWindow::closeEvent(event);
 }
 
+void EditorWindow::on_action_file_new_triggered()
+{
+  application().world()->clear();
+  my_filename.clear();
+}
+
 void EditorWindow::on_action_open_triggered()
 {
   QString filename = QFileDialog::getOpenFileName(this, "Open level file", LEVEL_RESOURCE_DIR);

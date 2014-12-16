@@ -97,6 +97,7 @@ void SimpleMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 
   command.draw = my_draw_type;
   command.face = my_draw_face;
+  command.fill_mode = my_fill_mode;
   command.depth_test = my_depth_test;
   command.program = &my_technique->program();
   context.video_processor.draw(command);
