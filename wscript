@@ -246,7 +246,7 @@ def build_core_lib(ctx):
     ctx.stlib(
       name='core',
       target = 'core',
-      source=ctx.path.ant_glob('src/core/**/*.cpp'),
+      source=ctx.path.ant_glob('src/core/unity/*.cpp'),
       export_includes=['src'],
       use=['SDL', 'bullet', 'png', 'ogg', 'vorbisfile', 'flext']
     )
@@ -277,9 +277,9 @@ def build_editor(ctx):
     ctx.program(
       name='edit',
       target='edit',
-      features='cxx cxxprogram qt4',
-      source=ctx.path.ant_glob('src/editor/**/*.cpp') + ctx.path.ant_glob('src/editor/**/*.ui'),
-      includes=['src/libcore', 'src/libgame', 'build/src/editor'],
+      source=ctx.path.ant_glob('src/editor/unity/*.cpp') +
+             ctx.path.ant_glob('src/editor/**/*.ui'),
+      includes=['src', 'build/src/editor'],
       use=['game', 'core', 'QTCORE', 'QTGUI', 'QTOPENGL']
     )
 
@@ -288,7 +288,6 @@ def build_fonttool(ctx):
     ctx.program(
       name='fonttool',
       target='mmfonttool',
-      features='cxx cxxprogram',
       source = ctx.path.ant_glob('tools/fonttool/src/**/*.cpp'),
       cxxflags=['-fopenmp'],
       linkflags=['-Wl,-lstdc++', '-fopenmp'],

@@ -675,4 +675,4 @@ void EditorWindow::load_file(const QString &filename)
 }
 }
 
-#include "editor_window.moc"
+#include "editor/editor_window.moc"

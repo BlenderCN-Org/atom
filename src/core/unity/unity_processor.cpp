@@ -1,0 +1,6 @@
+#include "../processor.cpp"
+#include "../render_processor.cpp"
+#include "../physics_processor.cpp"
+#include "../script_processor.cpp"
+#include "../geometry_processor.cpp"
+#include "../debug_processor.cpp"
