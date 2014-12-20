@@ -1,8 +1,0 @@
-#include "editor_window.cpp"
-#include "entity_edit.cpp"
-#include "field_edit.cpp"
-#include "game_view.cpp"
-#include "entity_list.cpp"
-#include "entity_list_item.cpp"
-#include "vec2f_edit.cpp"
-//#include "vec3f_edit.cpp"

@@ -1,6 +1,8 @@
 #include "geometry_component.h"
 #include "../processor/geometry_processor.h"
 #include "../world/world.h"
+#include "model_component.h"
+#include "skeleton_component.h"
 
 namespace atom {
 
@@ -44,7 +46,7 @@ const Model* GeometryComponent::model() const
   if (my_model.is_null()) {
     return nullptr;
   }
-  
+
   ModelResourcePtr resource = my_model->get_model();
   return resource != nullptr ? &resource->model() : nullptr;
 }

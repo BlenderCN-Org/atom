@@ -8,6 +8,7 @@
 #include "../processor/physics_processor.h"
 #include "../component/geometry_component.h"
 #include "../video/render_context.h"
+#include "../video/model.h"
 
 namespace atom {
 

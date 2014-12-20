@@ -3,6 +3,7 @@
 #include "../field_value.h"
 #include "../constants.h"
 #include "../ui/vec2f_edit.h"
+#include "../log.h"
 
 namespace atom {
 namespace editor {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "../foundation.h"
 #include "processor.h"
 
