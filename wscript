@@ -246,7 +246,7 @@ def build_core_lib(ctx):
     ctx.stlib(
       name='core',
       target = 'core',
-      source=ctx.path.ant_glob('src/libcore/**/*.cpp'),
+      source=ctx.path.ant_glob('src/core/**/*.cpp'),
       export_includes=['src'],
       use=['SDL', 'bullet', 'png', 'ogg', 'vorbisfile', 'flext']
     )
@@ -254,12 +254,11 @@ def build_core_lib(ctx):
 
 def build_game_lib(ctx):
     """build Game lib as static lib"""
-    filter = 'src/libgame/**/unity.cpp'
     ctx.stlib(
       name='game',
       target = 'game',
-      source=ctx.path.ant_glob('src/libgame/**/*.cpp'),
-      includes=['src/libcore', 'src/libgame'],
+      source=ctx.path.ant_glob('src/game/**/*.cpp'),
+      includes=['src'],
       use=['core']
     )
 
@@ -269,7 +268,7 @@ def build_starter(ctx):
       name='run',
       target = 'run',
       source=ctx.path.ant_glob('src/runner/**/*.cpp'),
-      includes=['src/libcore', 'src/libgame'],
+      includes=['src'],
       use=['game', 'core']
     )
 
@@ -280,7 +279,7 @@ def build_editor(ctx):
       target='edit',
       features='cxx cxxprogram qt4',
       source=ctx.path.ant_glob('src/editor/**/*.cpp') + ctx.path.ant_glob('src/editor/**/*.ui'),
-      includes=['src/libcore', 'src/libgame', 'build/src/editor/ui'],
+      includes=['src/libcore', 'src/libgame', 'build/src/editor'],
       use=['game', 'core', 'QTCORE', 'QTGUI', 'QTOPENGL']
     )
 

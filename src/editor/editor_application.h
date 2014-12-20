@@ -6,7 +6,7 @@
 #include <core/ptr.h>
 #include <core/corefwd.h>
 #include "editorfwd.h"
-#include "ui/editor_window.h"
+#include "editor_window.h"
 
 namespace atom {
 namespace editor {
@@ -21,7 +21,7 @@ class EditorApplication : public QApplication {
   QUndoStack    my_undo_stack;
   sptr<World>   my_world;
   EditorWindow  my_main_window;
-  
+
 public:
   EditorApplication(int &argc, char *argv[]);
   ~EditorApplication();
@@ -29,10 +29,10 @@ public:
   /**
    * Initialize game engine, load game library, create empty world
    * and display main window.
-   * 
+   *
    * Game library is not loaded dynamically, because it is linked to the editor
    * executable. Just game library entry point symbol is resolved.
-   * 
+   *
    * @return true on success, else false (app should quit in this case)
    */
   bool init_engine();

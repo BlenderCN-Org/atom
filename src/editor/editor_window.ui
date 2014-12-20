@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>963</width>
+    <height>786</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Atom Editor</string>
+  </property>
+  <widget class="QWidget" name="central_widget">
+   <layout class="QVBoxLayout" name="verticalLayout"/>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>963</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_file">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_file_new"/>
+    <addaction name="action_open"/>
+    <addaction name="action_save"/>
+    <addaction name="action_save_as"/>
+    <addaction name="separator"/>
+    <addaction name="action_run"/>
+    <addaction name="separator"/>
+    <addaction name="action_quit"/>
+   </widget>
+   <widget class="QMenu" name="menu_edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_view">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="menu_panels">
+     <property name="title">
+      <string>Panels</string>
+     </property>
+    </widget>
+    <addaction name="menu_panels"/>
+   </widget>
+   <widget class="QMenu" name="menu_debug">
+    <property name="title">
+     <string>&amp;Debug</string>
+    </property>
+    <addaction name="action_show_physics"/>
+    <addaction name="action_show_bounding_box"/>
+    <addaction name="action_show_aabb"/>
+    <addaction name="action_show_geometry"/>
+   </widget>
+   <addaction name="menu_file"/>
+   <addaction name="menu_edit"/>
+   <addaction name="menu_debug"/>
+   <addaction name="menu_view"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="entity_edit_dock">
+   <property name="windowTitle">
+    <string>Properties</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="atom::editor::EntityEdit" name="entity_edit" native="true"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="entity_list_dock">
+   <property name="windowTitle">
+    <string>All entities</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="atom::editor::EntityList" name="entity_list" native="true"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="undo_view_dock">
+   <property name="toolTip">
+    <string>Undo stack</string>
+   </property>
+   <property name="windowTitle">
+    <string>Undo stack</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3"/>
+  </widget>
+  <action name="action_save">
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_save_as">
+   <property name="text">
+    <string>Save as...</string>
+   </property>
+  </action>
+  <action name="action_quit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_run">
+   <property name="text">
+    <string>&amp;Run</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="action_open">
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_show_physics">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Physics</string>
+   </property>
+  </action>
+  <action name="action_show_bounding_box">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bounding Box</string>
+   </property>
+  </action>
+  <action name="action_show_aabb">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>AABB</string>
+   </property>
+  </action>
+  <action name="action_show_geometry">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Geometry</string>
+   </property>
+  </action>
+  <action name="action_file_new">
+   <property name="text">
+    <string>&amp;New</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>atom::editor::EntityList</class>
+   <extends>QWidget</extends>
+   <header>editor/entity_list.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>atom::editor::EntityEdit</class>
+   <extends>QWidget</extends>
+   <header>editor/entity_edit.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

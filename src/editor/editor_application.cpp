@@ -3,9 +3,9 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QMessageBox>
-#include <core/system/core.h>
-#include <core/system/game_api.h>
-#include <core/world/world.h>
+#include <core/core.h>
+#include <core/game_api.h>
+#include <core/world.h>
 #include <core/exception.h>
 #include "log.h"
 
