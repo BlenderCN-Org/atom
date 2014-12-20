@@ -135,6 +135,40 @@ T abs(const T x)
   return x < 0 ? -x : x;
 }
 
+template<typename T>
+Quat<T> slerp(const Quat<T> &a, const Quat<T> &b, T t)
+{
+  // quaternion to return
+  Quat<T> q;
+  // Calculate angle between them.
+  T half_cos = a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
+  // if a=b or a=-b then theta = 0 and we can return a
+  if (abs(half_cos) >= 1) {
+    return a;
+  }
+  // Calculate temporary values.
+  T half_theta = std::acos(half_cos);
+  T half_sin = std::sqrt(1 - half_cos * half_cos);
+  // if theta = 180 degrees then result is not fully defined
+  // we could rotate around any axis normal to a or b
+  if (abs(half_sin) < 0.001f) {
+    return Quat<T>(
+      a.w * 0.5f + b.w * 0.5f,
+      a.x * 0.5f + b.x * 0.5f,
+      a.y * 0.5f + b.y * 0.5f,
+      a.z * 0.5f + b.z * 0.5f);
+  }
+
+  T ta = std::sin((1 - t) * half_theta) / half_sin;
+  T tb  = std::sin(t * half_theta) / half_sin;
+
+  return Quat<T>(
+    a.w * ta + b.w * tb,
+    a.x * ta + b.x * tb,
+    a.y * ta + b.y * tb,
+    a.z * ta + b.z * tb);
+}
+
 /**
  * @note: this is branchless sign function
  *

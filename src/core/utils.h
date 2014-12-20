@@ -7,11 +7,6 @@
 
 namespace atom {
 
-const f32 PI = 3.14f;
-const u64 NANOSECONDS  = 1000000000UL;
-const u64 MICROSECONDS = 1000000;
-const u64 MILLISECONDS = 1000;
-
 i64 nano_time();
 
 i64 micro_time();

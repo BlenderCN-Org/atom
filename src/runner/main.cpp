@@ -11,7 +11,7 @@
 using namespace atom;
 
 extern "C" {
-const atom::GameAPI* entry_point();
+const atom::GameEntry* entry_point();
 }
 
 void update_gl_buffers(void *)

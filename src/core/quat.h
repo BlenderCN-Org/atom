@@ -17,8 +17,8 @@ struct Quat {
   T y; ///< smerova zlozka y
   T z; ///< smerova zlozka z
   T w; ///< skalarna zlozka
-  
- 
+
+
   /**
    * Construct identity quaternion (1, 0, 0, 0)
    */
@@ -61,11 +61,30 @@ struct Quat {
   {
     return from_axis_angle(v.axis, v.angle);
   }
-  
-  static Quat<T> from_to_rotation(const Vec3<T> &from, const Vec3<T> &to)
+
+  static Quat<T> from_to_rotation(const Vec3<T> &from, const Vec3<T> &to,
+    const Vec3<T> &fallback_axis = Vec3<T>())
   {
+    const T d = dot_product3(from, to);
+    // colinear vectors, return identity quaternion
+    if (d >= 1) {         // NOTE(majo33): maybe use EPSILON
+      return Quat<T>();
+    } else if (d <= -1) { // NOTE(majo33): maybe use EPSILON
+      if (!fallback_axis.is_zero()) { // use fallback axis
+        return Quat<T>::from_axis_angle(fallback_axis, PI);
+      }
+
+      // generate rotation axis
+      Vec3<T> axis = cross_product3(Vec3<T>::x_axis(), from);
+      // generate another axis when FROM vector is colinear with X axis
+      if (axis.is_zero()) {
+        axis = cross_product3(Vec3<T>::y_axis(), from);
+      }
+      // return 180 degree rotation around calculated axis
+      return Quat<T>::from_axis_angle(axis.normalized(), PI);
+    }
     const Vec3<T> v = cross_product3(from, to);
-    const T w = sqrt((from.length2()) * (to.length2())) + dot_product3(from, to);
+    const T w = sqrt((from.length2()) * (to.length2())) + d;
     return Quat<T>(w, v).normalized();
   }
 
@@ -393,39 +412,5 @@ Vec3<T> rotate(const Quat<T> &q, const Vec3<T> &v)
 template<typename T>
 Quat<T> rotate(const Quat<T> &a, const Quat<T> &b)
 { return a * b * a.conjugated(); }
-
-template<typename T>
-Quat<T> slerp(const Quat<T> &a, const Quat<T> &b, T t)
-{
-  // quaternion to return
-  Quat<T> q;
-  // Calculate angle between them.
-  T half_cos = a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
-  // if a=b or a=-b then theta = 0 and we can return a
-  if (abs(half_cos) >= 1) {
-    return a;
-  }
-  // Calculate temporary values.
-  T half_theta = std::acos(half_cos);
-  T half_sin = std::sqrt(1 - half_cos * half_cos);
-  // if theta = 180 degrees then result is not fully defined
-  // we could rotate around any axis normal to a or b
-  if (abs(half_sin) < static_cast<T>(0.001)) {
-    return Quat<T>(
-      a.w * 0.5 + b.w * 0.5,
-      a.x * 0.5 + b.x * 0.5,
-      a.y * 0.5 + b.y * 0.5,
-      a.z * 0.5 + b.z * 0.5);
-  }
-
-  T ta = std::sin((1 - t) * half_theta) / half_sin;
-  T tb  = std::sin(t * half_theta) / half_sin;
-
-  return Quat<T>(
-    a.w * ta + b.w * tb,
-    a.x * ta + b.x * tb,
-    a.y * ta + b.y * tb,
-    a.z * ta + b.z * tb);
-}
 
 }

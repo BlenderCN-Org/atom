@@ -41,6 +41,7 @@ static_assert(sizeof(f64) == 8, "Incorrect size of f64");
 const i8   I8_MAX = 127;
 const i16 I16_MAX = 32767;
 const i32 I32_MAX = 2147483647;
+const u32 U32_MAX = 0xFFFFFFFF;
 const i64 I64_MAX = 9223372036854775807L;
 const f32 F32_MAX = 1e37;
 const f64 F64_MAX = 1e37;
@@ -58,10 +59,13 @@ static_assert(I16_MIN < I16_MAX, "Min has to be smaller than max");
 static_assert(I32_MIN < I32_MAX, "Min has to be smaller than max");
 static_assert(I64_MIN < I64_MAX, "Min has to be smaller than max");
 
-const u32 U32_MAX = 0xFFFFFFFF;
+// math constants
+const f32 PI  = 3.14159265358979323846f;
+const f32 PI2 = 1.57079632679489661923f;
 
-
-// hodnota float je v OpenGL GLfloat
-#define INDEX_GL_TYPE GL_UNSIGNED_INT
+// time constants
+const u64 NANOSECONDS  = 1000000000UL;
+const u64 MICROSECONDS = 1000000;
+const u64 MILLISECONDS = 1000;
 
 }

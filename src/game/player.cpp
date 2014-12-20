@@ -5,6 +5,7 @@
 #include <core/mesh_component.h>
 #include <core/render_component.h>
 #include <core/material_component.h>
+#include <core/debug_processor.h>
 #include <core/input_service.h>
 #include <core/world.h>
 #include <core/geometry_processor.h>
@@ -14,25 +15,28 @@ namespace atom {
 
 class PlayerScript : public ScriptComponent {
   Vec3f my_position;
-  f32   my_camera_yaw;    ///< 0 is y_axis
-  f32   my_camera_pitch;
-  f32   my_current_pitch;
-  Vec3f my_normal;
-  Vec3f my_tmp_normal;
+  Quatf my_rotation;
+  f32   my_pitch;
+
+  Mat4f transform() const
+  {
+    return Mat4f::translation(my_position) * my_rotation.rotation_matrix();
+  }
 
   void on_activate() override
   {
     BasicCamera camera;
     camera.set_position(my_position);
-    camera.set_yaw(my_camera_yaw);
-    camera.set_pitch(my_camera_pitch);
+    camera.set_yaw(0);
+    camera.set_pitch(0);
+    my_pitch = -0.3;
 
     Camera world_camera = world().camera();
     world_camera.view = camera.get_view_matrix();
     world().set_camera(world_camera);
     // correct player position
     collision_at(Vec2f(my_position.x, my_position.y), my_position);
-    entity().set_transform(Mat4f::translation(my_position));
+    entity().set_transform(transform());
   }
 
   void on_update() override
@@ -41,36 +45,30 @@ class PlayerScript : public ScriptComponent {
 
     Vec2f mouse = is.mouse().delta;
 
-    my_camera_yaw -= mouse.x;
-    my_camera_pitch += mouse.y;
+    f32 yaw = -mouse.x;
+    my_pitch += mouse.y;
 
-//    f32 step_length = is.is_key_down(Key::KEY_LSHIFT) ? 0.3f : 0.1f;
-
-//    f32 x_forward = -sin(my_camera_yaw);
-//    f32 y_forward =  cos(my_camera_yaw);
-
-//    f32 x_strafe = cos(my_camera_yaw);
-//    f32 y_strafe = sin(my_camera_yaw);
-
-//    Vec2f step_forward = Vec2f(x_forward, y_forward) * step_length;
-//    Vec2f step_strafe = Vec2f(x_strafe, y_strafe) * step_length;
-
-    Vec2i dir(0, 0);
-
-    if (is.is_key_down(Key::KEY_W)) {
-      dir.y += 1;
+    if (yaw != 0) {
+      my_rotation = Quatf::from_axis_angle(up(), yaw) * my_rotation;
     }
 
-    if (is.is_key_down(Key::KEY_S)) {
-      dir.y -= 1;
+    i32 forward = 0;
+    i32 strafe = 0;
+
+    if (is.is_key_down(Key::KEY_W) || is.is_key_down(Key::KEY_UP)) {
+      forward += 1;
     }
 
-    if (is.is_key_down(Key::KEY_D)) {
-      dir.x += 1;
+    if (is.is_key_down(Key::KEY_S) || is.is_key_down(Key::KEY_DOWN)) {
+      forward -= 1;
     }
 
-    if (is.is_key_down(Key::KEY_A)) {
-      dir.x -= 1;
+    if (is.is_key_down(Key::KEY_D) || is.is_key_down(Key::KEY_RIGHT)) {
+      strafe += 1;
+    }
+
+    if (is.is_key_down(Key::KEY_A) || is.is_key_down(Key::KEY_LEFT)) {
+      strafe -= 1;
     }
 
     // collision shape (triangle)
@@ -78,43 +76,69 @@ class PlayerScript : public ScriptComponent {
     Vec3f v0(0, 0, step);
     Vec3f v1(0, step, 0);
     Vec3f v2(0, 0, -step);
-    const Vec3f v3(0, -step, 0);
+
     // reverse collision shape for moving back
-    if (dir.y < 0) {
+    if (forward < 0) {
       v0 = -v0;
       v1 = -v1;
       v2 = -v2;
     }
 
-    const Quatf shape_rot = Quatf::from_axis_angle(my_normal, my_camera_yaw) *
-      Quatf::from_to_rotation(Vec3f::z_axis(), my_normal);
-    const Vec3f rotated_v0 = rotate(shape_rot, v0);
-    const Vec3f rotated_v1 = rotate(shape_rot, v1);
-    const Vec3f rotated_v2 = rotate(shape_rot, v2);
+    if (forward != 0 || strafe != 0) {
+      const Vec3f base = Vec3f::y_axis();
+      Vec3f dir(strafe, forward, 0);
+      Quatf rotation = Quatf::from_to_rotation(base, dir.normalized()).normalized();
+      v0 = rotate(rotation, v0);
+      v1 = rotate(rotation, v1);
+      v2 = rotate(rotation, v2);
+    }
 
-    Ray r0(my_position + rotated_v0, rotated_v1 - rotated_v0);
-    Ray r1(my_position + rotated_v1, rotated_v2 - rotated_v1);
+    Mat4f t = transform();
+
+    Ray r0(transform_point(t, v0), transform_vec(t, v1 - v0));
+    Ray r1(transform_point(t, v1), transform_vec(t, v2 - v1));
 
     RayGeometryResult result0;
     RayGeometryResult result1;
     bool hit0 = processors().geometry.intersect_ray(r0, CollisionMask::WORLD | CollisionMask::ENEMY, result0);
     bool hit1 = processors().geometry.intersect_ray(r1, CollisionMask::WORLD | CollisionMask::ENEMY, result1);
 
-    if (dir.y != 0) {
+    if (forward != 0 || strafe != 0) {
+      bool hit = hit0 || hit1;
+      Vec3f normal;
+      Vec3f pos;
+
       if (hit0 && result0.t <= 1.1) {
-        log::info("Hit0");
-        my_normal = result0.normal;
-        my_position = result0.hit;
-        entity().set_transform(Mat4f::translation(my_position));
-      } else if (hit1 && result1.t < 1.0) {
-        log::info("Hit1");
-        my_normal = result1.normal;
-        my_position = result1.hit;
-        entity().set_transform(Mat4f::translation(my_position));
+        normal = result0.normal;
+        pos = result0.hit;
+      } else if (hit1 && result1.t <= 1.1) {
+        normal = result1.normal;
+        pos = result1.hit;
+      }
+
+      if (hit) {
+        const Quatf delta = Quatf::from_to_rotation(up(), normal);
+        my_position = pos;
+        my_rotation = delta * my_rotation;
       }
     }
 
     refresh_camera();
+  }
+
+  Vec3f up() const
+  {
+    return rotate(my_rotation, Vec3f::z_axis());
+  }
+
+  Vec3f forward() const
+  {
+    return rotate(my_rotation, Vec3f::y_axis());
+  }
+
+  Vec3f right() const
+  {
+    return rotate(my_rotation, Vec3f::x_axis());
   }
 
   uptr<Component> clone() const override
@@ -130,7 +154,7 @@ class PlayerScript : public ScriptComponent {
 
     if (hit) {
       point = result.hit;
-      my_normal = result.normal;
+      my_rotation = Quatf::from_to_rotation(up(), result.normal);
     }
 
     return hit;
@@ -138,31 +162,24 @@ class PlayerScript : public ScriptComponent {
 
   void refresh_camera()
   {
-//    BasicCamera camera;
-//    camera.set_yaw(my_camera_yaw);
-//    camera.set_position(my_position + Vec3f(0, 0, 3) - camera.get_front() * 3);
-
-//    camera.set_pitch(my_camera_pitch);
-
     const Config &config = Config::instance();
 
-    f32 fov = 1.57f;
+    f32 fov = PI2;
     f32 screen_width = config.get_screen_width();
     f32 screen_height = config.get_screen_height();
     f32 aspect = screen_width / screen_height;
 
-    my_tmp_normal += (my_normal - my_tmp_normal) / 15.0f;
+    Mat4f view_fix = Mat4f::rotation_x(PI2);
+    Mat4f view_offset = Mat4f::translation(up() - forward());
+    Mat4f view = view_offset * Mat4f::translation(my_position) *
+      Quatf::from_axis_angle(right(), my_pitch).rotation_matrix() *
+      my_rotation.rotation_matrix() * view_fix;
 
-    Quatf q = Quatf::from_to_rotation(Vec3f::z_axis(), my_tmp_normal);
-
-    Quatf r = Quatf::from_axis_angle(my_normal, my_camera_yaw) *
-        q.normalized() *
-        Quatf::from_axis_angle(Vec3f::x_axis(), M_PI / 2);
-    Mat4f view = Mat4f::translation(my_position + my_normal * 2) * r.rotation_matrix();
-
+    processors().debug.draw_line(my_position, my_position + up(), Vec3f(0, 0, 1));
+    processors().debug.draw_line(my_position, my_position + forward(), Vec3f(0, 1, 0));
+    processors().debug.draw_line(my_position, my_position + right(), Vec3f(1, 0, 0));
 
     Camera world_camera = world().camera();
-//    world_camera.view = camera.get_view_matrix();
     world_camera.view = view.inverted();
     world_camera.projection = Mat4f::perspective(fov, aspect, 0.001f, 9999.0f);
     world().set_camera(world_camera);
@@ -171,10 +188,6 @@ class PlayerScript : public ScriptComponent {
 public:
   PlayerScript()
     : my_position(0, 0, 1)
-    , my_camera_yaw(0)
-    , my_camera_pitch(0)
-    , my_current_pitch(0)
-    , my_normal(Vec3f::z_axis())
   {
     META_INIT();
   }
@@ -184,8 +197,6 @@ public:
 
 META_CLASS(PlayerScript,
  FIELD(my_position, "position"),
- FIELD(my_camera_yaw, "camera_yaw"),
- FIELD(my_camera_pitch, "camera_pitch")
 )
 
 uptr<Entity> create_player(World &world, Core &core)
@@ -197,8 +208,8 @@ uptr<Entity> create_player(World &world, Core &core)
   uptr<MaterialComponent> material(new MaterialComponent());
   material->set_material_name("player");
   entity->add_component(std::move(material));
-  entity->add_component(uptr<Component>(new MeshComponent()));
-  entity->add_component(uptr<Component>(new RenderComponent()));
+//  entity->add_component(uptr<Component>(new MeshComponent()));
+//  entity->add_component(uptr<Component>(new RenderComponent()));
 
   uptr<PlayerScript> script(new PlayerScript());
   entity->add_component(std::move(script));

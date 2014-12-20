@@ -16,9 +16,9 @@ struct Vec2 {
   enum {
     SIZE = 2
   };
-  
+
   typedef T value_type;
-  
+
   // data
   union {
     struct {
@@ -27,8 +27,13 @@ struct Vec2 {
     };
     T data[SIZE];
   };
-  
-  Vec2() = default;
+
+  Vec2()
+    : x(0)
+    , y(0)
+  {
+    // empty
+  }
 
   Vec2(T x, T y)
   {
@@ -59,7 +64,7 @@ struct Vec2 {
     y += v.y;
     return *this;
   }
-  
+
   T length() const
   {
     return std::sqrt(length2());
@@ -69,7 +74,7 @@ struct Vec2 {
   {
     return x * x + y * y;
   }
-  
+
   Vec2<T> normalized() const
   {
     T len = length();
@@ -135,24 +140,38 @@ struct Vec3 {
 
   typedef T value_type;
 
-  Vec3() = default;
+  Vec3()
+   : x(0)
+   , y(0)
+   , z(0)
+  {
+    // empty
+  }
 
   Vec3(T vx, T vy, T vz)
     : x(vx)
     , y(vy)
     , z(vz)
-  {}
-  
+  {
+    // empty
+  }
+
   Vec3<T>& operator=(const Vec3<T> &v) = default;
 
   static Vec3<T> x_axis()
-  { return Vec3<T>(1, 0, 0); }
+  {
+    return Vec3<T>(1, 0, 0);
+  }
 
   static Vec3<T> y_axis()
-  { return Vec3<T>(0, 1, 0); }
+  {
+    return Vec3<T>(0, 1, 0);
+  }
 
   static Vec3<T> z_axis()
-  { return Vec3<T>(0, 0, 1); }
+  {
+    return Vec3<T>(0, 0, 1);
+  }
 
   T& operator[](unsigned i)
   {
@@ -173,7 +192,7 @@ struct Vec3 {
     z += v.z;
     return *this;
   }
-  
+
   Vec3<T>& operator-=(const Vec3<T> &v)
   {
     x -= v.x;
@@ -191,10 +210,15 @@ struct Vec3 {
   {
     return x * x + y * y + z * z;
   }
-  
+
   T sum() const
   {
     return x + y + z;
+  }
+
+  bool is_zero() const
+  {
+    return sum() == 0;
   }
 
   Vec3<T> normalized() const
@@ -282,7 +306,7 @@ inline T dot_product3(T ax, T ay, T az, T bx, T by, T bz)
   return ax * bx + ay * by + az * bz;
 }
 
-/** 
+/**
  * convenient function to perform dot_product3 on other types than Vec3
  * e.g. Vec4f and Vec3f, Vec3f and Vec3f, Vec4f and Vec4f
  */
@@ -317,7 +341,7 @@ struct Vec4 {
   };
 
   typedef T value_type;
-  
+
   union {
     struct {
       T x;
@@ -328,7 +352,14 @@ struct Vec4 {
     T data[SIZE];
   };
 
-  Vec4() = default;
+  Vec4()
+    : x(0)
+    , y(0)
+    , z(0)
+    , w(0)
+  {
+    // empty
+  }
 
   Vec4(T vx, T vy, T vz, T vw)
     : x(vx)

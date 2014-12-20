@@ -239,19 +239,30 @@ void DebugProcessor::gather_geometry_cache()
       const GeometryCache &geometry_cache = component->geometry_cache();
 
       if (geometry_cache.vertices.empty()) {
-        continue;
-      }
+        const Model *model = component->model();
+        const Slice<u32> indices = model->find_stream<u32>("indices");
+        const Slice<f32> v = model->find_stream<f32>("vertices");
+        const Vec3f *vertices = reinterpret_cast<const Vec3f *>(v.data());
+        const Mat4f t = entity->transform();
 
-      const Model *model = component->model();
-      const Slice<u32> indices = model->find_stream<u32>("indices");
-      const Slice<Vec3f> vertices = to_slice(geometry_cache.vertices);
-      const Mat4f t = entity->transform();
+        for (u32 i = 0; i < indices.size(); i += 3) {
+          const Vec3f color(rgb_to_vec3f(0x546475));
+          draw_line(t, vertices[indices[i    ]], vertices[indices[i + 1]], color);
+          draw_line(t, vertices[indices[i + 1]], vertices[indices[i + 2]], color);
+          draw_line(t, vertices[indices[i + 2]], vertices[indices[i    ]], color);
+        }
+      } else {
+        const Model *model = component->model();
+        const Slice<u32> indices = model->find_stream<u32>("indices");
+        const Slice<Vec3f> vertices = to_slice(geometry_cache.vertices);
+        const Mat4f t = entity->transform();
 
-      for (u32 i = 0; i < indices.size(); i += 3) {
-        const Vec3f color(rgb_to_vec3f(0x546475));
-        draw_line(t, vertices[indices[i    ]], vertices[indices[i + 1]], color);
-        draw_line(t, vertices[indices[i + 1]], vertices[indices[i + 2]], color);
-        draw_line(t, vertices[indices[i + 2]], vertices[indices[i    ]], color);
+        for (u32 i = 0; i < indices.size(); i += 3) {
+          const Vec3f color(rgb_to_vec3f(0x546475));
+          draw_line(t, vertices[indices[i    ]], vertices[indices[i + 1]], color);
+          draw_line(t, vertices[indices[i + 1]], vertices[indices[i + 2]], color);
+          draw_line(t, vertices[indices[i + 2]], vertices[indices[i    ]], color);
+        }
       }
     }
   }

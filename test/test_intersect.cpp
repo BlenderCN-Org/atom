@@ -1,4 +1,4 @@
-#include <core/math/intersect.h>
+#include <core/intersect.h>
 #include <gtest/gtest.h>
 #include <core/log.h>
 
@@ -222,7 +222,7 @@ TEST(IntersectionPlanePlane, ColinearPlanes)
     Vec4f(-5,  4, -3, 2),
     Vec4f( 5,  5, -3, 1),
   };
-  
+
   const Vec4f plane_set2[] = {
     Vec4f(  1,  0,  0,  2),
     Vec4f(  0,  1,  0,  3),
@@ -234,7 +234,7 @@ TEST(IntersectionPlanePlane, ColinearPlanes)
     Vec4f(-10,  8, -6,  3),
     Vec4f( 10, 10, -6,  3),
   };
-  
+
   Ray result;
   int i = 0;
   for (const Vec4f &p1 : plane_set1) {
@@ -257,7 +257,7 @@ TEST(IntersectionPlanePlane, CoincidencePlanes)
     Vec4f( 1,  1, -3, 3),
     Vec4f(-2,  4, -3, 2),
   };
-  
+
   const Vec4f plane_set2[] = {
     Vec4f( 1,  0,  0,  0),
     Vec4f( 0,  1,  0,  0),
@@ -268,7 +268,7 @@ TEST(IntersectionPlanePlane, CoincidencePlanes)
     Vec4f( 3,  3, -9,  1),
     Vec4f(-2,  4, -3, 2),
   };
-  
+
   Ray result;
   int i = 0;
   for (const Vec4f &p1 : plane_set1) {
@@ -289,7 +289,7 @@ TEST(IntersectionPlanePlane, IntersectingPlanes)
     Vec4f( 0,  0,  1, 0),
     Vec4f( 0,  0,  1, 0),
   };
-  
+
   const Vec4f plane_set2[] = {
     Vec4f( 0,  1,  0,  0),
     Vec4f( 0,  0,  1,  0),
@@ -298,7 +298,7 @@ TEST(IntersectionPlanePlane, IntersectingPlanes)
     Vec4f( 0,  1,  0,  0),
     Vec4f( 1,  0,  0,  0),
   };
-  
+
   Ray result;
   int i = 0;
   for (const Vec4f &p1 : plane_set1) {
@@ -319,7 +319,7 @@ TEST(PlaneSign, PositiveSign)
     Vec4f( 0,  0,  1, 1),
     Vec4f( 0,  0, -1, 1)
   };
-  
+
   const Vec3f points[] = {
     Vec3f( 2,  0,  0),
     Vec3f(-2,  0,  0),
@@ -328,7 +328,7 @@ TEST(PlaneSign, PositiveSign)
     Vec3f( 0,  0,  2),
     Vec3f( 0,  0, -2),
   };
-  
+
   int i = 0;
   for (const Vec4f &plane : planes) {
     const Vec3f &point = points[i];
@@ -347,7 +347,7 @@ TEST(PlaneSign, NegativeSign)
     Vec4f( 0,  0,  1, 2),
     Vec4f( 0,  0, -1, 2)
   };
-  
+
   const Vec3f points[] = {
     Vec3f( 1,  0,  0),
     Vec3f(-1,  0,  0),
@@ -356,7 +356,7 @@ TEST(PlaneSign, NegativeSign)
     Vec3f( 0,  0,  1),
     Vec3f( 0,  0, -1),
   };
-  
+
   int i = 0;
   for (const Vec4f &plane : planes) {
     const Vec3f &point = points[i];
@@ -375,27 +375,27 @@ TEST(IntersectLinePlane, Intersection)
     Vec4f( 0,  0,  1, 1),
     Vec4f( 0,  0, -1, 1)
   };
-  
+
   const Vec3f lines[] = {
     Vec3f( 0,  0,  0),
     Vec3f( 2,  0,  0),
-    
+
     Vec3f( 0,  0,  0),
     Vec3f(-2,  0,  0),
-    
+
     Vec3f( 0,  0,  0),
     Vec3f( 0,  2,  0),
-    
+
     Vec3f( 0,  0,  0),
     Vec3f( 0, -2,  0),
-    
+
     Vec3f( 0,  0,  0),
     Vec3f( 0,  0,  2),
-    
+
     Vec3f( 0,  0,  0),
     Vec3f( 0,  0, -2),
   };
-  
+
   int i = 0;
   for (const Vec4f &plane : planes) {
     const Vec3f &a = lines[i * 2];
@@ -416,27 +416,27 @@ TEST(IntersectLinePlane, NoIntersection)
     Vec4f( 0,  0,  1, 1),
     Vec4f( 0,  0, -1, 1)
   };
-  
+
   const Vec3f lines[] = {
     Vec3f( 0,  0,  0),
     Vec3f(-2,  0,  0),
-    
+
     Vec3f( 0,  0,  0),
     Vec3f( 2,  0,  0),
-    
+
     Vec3f( 0,  0,  0),
     Vec3f( 0, -2,  0),
-    
+
     Vec3f( 0,  0,  0),
     Vec3f( 0,  2,  0),
-    
+
     Vec3f( 0,  0,  0),
     Vec3f( 0,  0, -2),
-    
+
     Vec3f( 0,  0,  0),
     Vec3f( 0,  0,  2),
   };
-  
+
   int i = 0;
   for (const Vec4f &plane : planes) {
     const Vec3f &a = lines[i * 2];
@@ -460,7 +460,7 @@ TEST(IntersectTrianglePlane, Positive)
     Vec3f(0, 5,  5), Vec3f( 0, 5, 0), Vec3f(0, -5, 0),
     Vec3f(0, 0, -5), Vec3f( 0, 0, 5), Vec3f(0,  5, 5)
   };
-  
+
   int i = 0;
   for (const Vec4f &plane : planes) {
     const Vec3f &a = triangles[i * 3];
@@ -468,7 +468,7 @@ TEST(IntersectTrianglePlane, Positive)
     const Vec3f &c = triangles[i * 3 + 2];
     Vec3f start;
     Vec3f end;
-    
+
     ASSERT_TRUE(intersect_triangle_plane(a, b, c, plane, start, end));
     ++i;
   }
@@ -481,13 +481,13 @@ TEST(IntersectTrianglePlane, Negative)
     Vec4f( 0,  1,  0, 1),
     Vec4f( 0,  0,  1, 1),
   };
-  
+
   const Vec3f triangles[] = {
     Vec3f(-5,  0,  0), Vec3f(0, 0, 1), Vec3f(0, 0, 2),
     Vec3f( 0, -5,  0), Vec3f(1, 0, 0), Vec3f(2, 0, 0),
     Vec3f( 0,  0, -5), Vec3f(0, 1, 0), Vec3f(0, 2, 0),
   };
-  
+
   int i = 0;
   for (const Vec4f &plane : planes) {
     const Vec3f &a = triangles[i * 3];
@@ -495,7 +495,7 @@ TEST(IntersectTrianglePlane, Negative)
     const Vec3f &c = triangles[i * 3 + 2];
     Vec3f start;
     Vec3f end;
-    
+
     ASSERT_FALSE(intersect_triangle_plane(a, b, c, plane, start, end));
     ++i;
   }
@@ -506,20 +506,20 @@ TEST(IntersectCircleTriangle, Positive)
   const Circle circles[] = {
     Circle(Vec3f(0, 0, 0), Vec3f(1, 0, 0), 1)
   };
-  
+
   const Vec3f triangles[] = {
     Vec3f(0, 0, 0), Vec3f(1, 5, 0), Vec3f(-1, 5, 0)
   };
-  
+
   int i = 0;
   for (const Circle &circle : circles) {
     const Vec3f &a = triangles[i * 3];
     const Vec3f &b = triangles[i * 3 + 1];
     const Vec3f &c = triangles[i * 3 + 2];
-    
+
     ASSERT_TRUE(intersect_circle_triangle(circle, a, b, c));
   }
-  
+
 }
 
 }

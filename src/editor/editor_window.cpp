@@ -551,7 +551,11 @@ void EditorWindow::on_action_show_aabb_triggered(bool checked)
 
 void EditorWindow::on_action_show_geometry_triggered(bool checked)
 {
-  application().world()->processors().debug.set_debug(DebugCategory::GEOMETRY_CACHE, checked);
+  if (my_clone != nullptr) {
+    my_clone->processors().debug.set_debug(DebugCategory::GEOMETRY_CACHE, checked);
+  } else {
+    application().world()->processors().debug.set_debug(DebugCategory::GEOMETRY_CACHE, checked);
+  }
 }
 
 void EditorWindow::load()

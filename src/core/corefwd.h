@@ -45,7 +45,7 @@ class Music;
 // system
 struct MetaClass;
 struct MetaObject;
-struct GameAPI;
+struct GameEntry;
 class Core;
 class ResourceService;
 class Config;

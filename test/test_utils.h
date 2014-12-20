@@ -12,6 +12,18 @@ const float ERROR = 0.001f;
   EXPECT_FLOAT_EQ(expected.y, q.y);                                   \
   EXPECT_FLOAT_EQ(expected.z, q.z);
 
+#define EXPECT_QUATF_NEAR(expected, q, abs_error)                     \
+  EXPECT_NEAR(expected.w, q.w, abs_error);                            \
+  EXPECT_NEAR(expected.x, q.x, abs_error);                            \
+  EXPECT_NEAR(expected.y, q.y, abs_error);                            \
+  EXPECT_NEAR(expected.z, q.z, abs_error);
+
+#define ASSERT_QUATF_NEAR(expected, q, abs_error)                     \
+  ASSERT_NEAR(expected.w, q.w, abs_error);                            \
+  ASSERT_NEAR(expected.x, q.x, abs_error);                            \
+  ASSERT_NEAR(expected.y, q.y, abs_error);                            \
+  ASSERT_NEAR(expected.z, q.z, abs_error);
+
 #define EXPECT_MAT4F_EQ(expected, m)                                  \
   EXPECT_FLOAT_EQ(expected(0, 0), m(0, 0));                           \
   EXPECT_FLOAT_EQ(expected(0, 1), m(0, 1));                           \
@@ -63,7 +75,7 @@ const float ERROR = 0.001f;
 #define EXPECT_VEC3F_EQ(expected, v)                                  \
   EXPECT_FLOAT_EQ(expected.x, v.x);                                   \
   EXPECT_FLOAT_EQ(expected.y, v.y);                                   \
-  EXPECT_FLOAT_EQ(expected.z, v.z);   
+  EXPECT_FLOAT_EQ(expected.z, v.z);
 
 #define EXPECT_VEC3F_NEAR(expected, v, abs_error)                     \
   EXPECT_NEAR(expected.x, v.x, abs_error);                            \

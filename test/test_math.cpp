@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <core/math/intersect.h>
+#include <core/intersect.h>
 #include <core/log.h>
-#include <core/utils/utils.h>
+#include <core/utils.h>
 #include "test_utils.h"
 
 namespace atom {
@@ -9,7 +9,7 @@ namespace atom {
 TEST(ClosestPointOnPlane, PlaneXY)
 {
   const Vec4f plane(0, 0, 1, 3);
-  
+
   const Vec3f points[] = {
     Vec3f( 0,  0,  4),
     Vec3f( 0,  1,  3),
@@ -18,7 +18,7 @@ TEST(ClosestPointOnPlane, PlaneXY)
     Vec3f( 0, -1,  3),
     Vec3f(-1,  0,  3),
   };
-  
+
   const Vec3f results[] = {
     Vec3f( 0,  0, 3),
     Vec3f( 0,  1, 3),
@@ -27,7 +27,7 @@ TEST(ClosestPointOnPlane, PlaneXY)
     Vec3f( 0, -1, 3),
     Vec3f(-1,  0, 3),
   };
-  
+
   int i = 0;
   for (const Vec3f &p : points) {
     const Vec3f c = closest_point_on_plane(p, plane);
@@ -44,19 +44,19 @@ TEST(DistanceFromPlane, PrimitiveTest)
     Vec4f(0, 0, 1, 0),
     Vec4f(0, 0, 1, 0),
   };
-  
+
   const Vec3f points[] = {
     Vec3f(0, 0, 1),
     Vec3f(0, 0, 1),
     Vec3f(0, 0, 1),
   };
-  
+
   const f32 expected_results[] = {
     1,
     1,
     1
   };
-  
+
   int i = 0;
   for (const Vec4f &plane : planes) {
     const Vec3f &point = points[i];
@@ -76,7 +76,7 @@ TEST(ClosestPointOnLineSegment, Test)
     { Vec3f(-5, -8, 0), Vec3f( 5, 20, 0) },
     { Vec3f(-5, -8, 0), Vec3f( 5, 20, 0) },
   };
-  
+
   const Vec3f points[] = {
     Vec3f( 0,  0, 0), // < start
     Vec3f( 5,  0, 0), // start
@@ -86,7 +86,7 @@ TEST(ClosestPointOnLineSegment, Test)
     Vec3f(-9, -9, 5), // < start
     Vec3f( 0,  6, 2), // center
   };
-  
+
   const Vec3f expected_points[] = {
     Vec3f( 5,  0, 0),
     Vec3f( 5,  0, 0),
@@ -96,7 +96,7 @@ TEST(ClosestPointOnLineSegment, Test)
     Vec3f(-5, -8, 0),
     Vec3f( 0,  6, 0),
   };
-  
+
   const f32 expected_t[] = {
     0,
     0,
@@ -107,7 +107,7 @@ TEST(ClosestPointOnLineSegment, Test)
     0.5,
   };
 
-  int i = 0;  
+  int i = 0;
   for (const Vec3f *segment : segments) {
     const Vec3f &point = points[i];
     const Vec3f &a = segment[0];
@@ -128,7 +128,7 @@ TEST(SquaredDistanceFromLineSegment, Test)
     { Vec3f( -10, 5, 5 ), Vec3f(-4, 5, 5) },
     { Vec3f( -10, 5, 5 ), Vec3f(-4, 5, 5) },
   };
-  
+
   const Vec3f points[] = {
     Vec3f(-11, 5, 5),   // < start
     Vec3f(-10, 5, 5),   // start
@@ -136,7 +136,7 @@ TEST(SquaredDistanceFromLineSegment, Test)
     Vec3f( -4, 5, 5),   // end
     Vec3f( -4, 7, 5),   // > end
   };
-  
+
   const f32 results[] = {
     1,
     0,
@@ -144,13 +144,13 @@ TEST(SquaredDistanceFromLineSegment, Test)
     0,
     2,
   };
-  
+
   int i = 0;
   for (const Vec3f *segment : segments) {
     const Vec3f &a = segment[0];
     const Vec3f &b = segment[1];
     const Vec3f &point = points[i];
-    
+
     EXPECT_NEAR(results[i], distance_from_segment(point, a, b), EPSILON);
     ++i;
   }

@@ -1,9 +1,12 @@
 #include <gtest/gtest.h>
-#include <core/utils/utils.h>
+#include <core/utils.h>
 #include "test_utils.h"
 
 namespace atom {
 
+const Vec3f AXIS_X = Vec3f::x_axis();
+const Vec3f AXIS_Y = Vec3f::y_axis();
+const Vec3f AXIS_Z = Vec3f::z_axis();
 
 TEST(QuaternionTest, ConstructorAndSetOperation)
 {
@@ -164,14 +167,14 @@ TEST(QuaternionTest, MatrixRotation)
   EXPECT_VEC4F_NEAR(Vec4f( 0,  0, 1, 1), rz, ERROR);
 }
 
-TEST(QuaternionTest, QuaternionRotation)
+TEST(QuaternionTest, Rotation)
 {
   const Vec3f x_axis(1, 0, 0);
   const Vec3f y_axis(0, 1, 0);
   const Vec3f z_axis(0, 0, 1);
-  const Quatf qrx = Quatf::from_axis_angle(x_axis, PI / 2).normalized();
-  const Quatf qry = Quatf::from_axis_angle(y_axis, PI / 2).normalized();
-  const Quatf qrz = Quatf::from_axis_angle(z_axis, PI / 2).normalized();
+  const Quatf qrx = Quatf::from_axis_angle(x_axis, PI2).normalized();
+  const Quatf qry = Quatf::from_axis_angle(y_axis, PI2).normalized();
+  const Quatf qrz = Quatf::from_axis_angle(z_axis, PI2).normalized();
 
 
   EXPECT_VEC3F_NEAR(x_axis, rotate(qrx, x_axis), EPSILON);
@@ -185,7 +188,40 @@ TEST(QuaternionTest, QuaternionRotation)
   /// @todo test other rotations
 }
 
+TEST(QuaternionTest, FromToRotation)
+{
+  Quatf qxy = Quatf::from_to_rotation(AXIS_X, AXIS_Y);
+  ASSERT_QUATF_NEAR(qxy, Quatf::from_axis_angle(AXIS_Z, PI2), EPSILON);
 
+  Quatf qyz = Quatf::from_to_rotation(AXIS_Y, AXIS_Z);
+  ASSERT_QUATF_NEAR(qyz, Quatf::from_axis_angle(AXIS_X, PI2), EPSILON);
 
+  Quatf qzx = Quatf::from_to_rotation(AXIS_Z, AXIS_X);
+  ASSERT_QUATF_NEAR(qzx, Quatf::from_axis_angle(AXIS_Y, PI2), EPSILON);
+}
+
+TEST(QuaternionTest, FromToRotationColinear)
+{
+  Quatf qxx = Quatf::from_to_rotation(AXIS_X, AXIS_X);
+  ASSERT_QUATF_NEAR(qxx, Quatf(), EPSILON);
+
+  Quatf qyy = Quatf::from_to_rotation(AXIS_Y, AXIS_Y);
+  ASSERT_QUATF_NEAR(qyy, Quatf(), EPSILON);
+
+  Quatf qzz = Quatf::from_to_rotation(AXIS_Z, AXIS_Z);
+  ASSERT_QUATF_NEAR(qzz, Quatf(), EPSILON);
+}
+
+TEST(QuaternionTest, FromToRotationColinearInverted)
+{
+  Quatf qxx = Quatf::from_to_rotation(AXIS_X, -AXIS_X, AXIS_Y);
+  ASSERT_QUATF_NEAR(qxx, Quatf::from_axis_angle(AXIS_Y, PI), EPSILON);
+
+  Quatf qyy = Quatf::from_to_rotation(AXIS_Y, -AXIS_Y, AXIS_Z);
+  ASSERT_QUATF_NEAR(qyy, Quatf::from_axis_angle(AXIS_Z, PI), EPSILON);
+
+  Quatf qzz = Quatf::from_to_rotation(AXIS_Z, -AXIS_Z, AXIS_X);
+  ASSERT_QUATF_NEAR(qzz, Quatf::from_axis_angle(AXIS_X, PI), EPSILON);
+}
 
 }

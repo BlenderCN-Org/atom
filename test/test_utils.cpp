@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <core/utils/utils.h>
+#include <core/utils.h>
 
 namespace atom {
 

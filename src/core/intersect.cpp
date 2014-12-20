@@ -195,9 +195,10 @@ bool intersect_plane(const Vec3f &a, const Vec3f &b, const Vec4f &plane)
 {
   const Vec3f ab = b - a;
   const f32 t = (plane.w - dot_product3(plane.xyz(), a)) / dot_product3(plane.xyz(), ab);
-  
+
   if (t >= 0.0f && t <= 1.0f) {
-    Vec3f q = a + t * ab;
+    // TODO(majo33): calculate intersection point
+//    Vec3f q = a + t * ab;
     return true;
   }
   // no intersection
@@ -264,39 +265,39 @@ Vec3f closest_point_on_triangle(const Vec3f &point, const Vec3f &a, const Vec3f 
   const Vec3f bc = c - b;
   const Vec3f ap = point - a;
   const Vec3f bp = point - b;
-  
+
   const f32 snom = dot_product3(ap, ab);
   const f32 sdenom = dot_product3(bp, a - b);
-  
+
   const f32 tnom = dot_product3(ap, ac);
   const f32 tdenom = dot_product3(point - c, a - c);
-  
+
   if (snom <= 0.0f && tnom <= 0.0f) {
     return a;
   }
-  
+
   const f32 unom = dot_product3(bp, bc);
   const f32 udenom = dot_product3(point - c, b - c);
-  
+
   if (sdenom <= 0.0f && unom <= 0.0f) {
     return b;
   }
   if (tdenom <= 0.0f && udenom <= 0.0f) {
     return c;
   }
-  
+
   const Vec3f n = cross_product3(ab, ac);
   const f32 vc = dot_product3(n, cross_product3(a - point, b - point));
-  
+
   if (vc <= 0.0f && snom >=0.0f && sdenom >= 0.0f) {
     return a + snom / (snom + sdenom) * ab;
   }
-  
+
   const f32 va = dot_product3(n, cross_product3(b - point, c - point));
   if (va <= 0.0f && unom >= 0.0f && udenom >= 0.0f) {
     return b + unom / (unom + udenom) * bc;
   }
-  
+
   const f32 vb = dot_product3(n, cross_product3(c - point, a - point));
   if (vb <= 0.0f && tnom >= 0.0f && tdenom >= 0.0f) {
     return c + tnom / (tnom + tdenom) * ac;
@@ -333,7 +334,7 @@ bool intersect_line_plane(const Vec3f &a, const Vec3f &b, const Vec4f &plane,
 {
   const Vec3f ab = b - a;
   const f32 t = (plane.w - dot_product3(plane.xyz(), a)) / dot_product3(plane.xyz(), ab);
-  
+
   if (t >= 0.0f && t <= 1.0f) {
     // calculate intersection point
     result = a + t * ab;
@@ -349,11 +350,11 @@ bool intersect_triangle_plane(const Vec3f &a, const Vec3f &b, const Vec3f &c,
   int as = sign(plane_sign(a, plane));
   int bs = sign(plane_sign(b, plane));
   int cs = sign(plane_sign(c, plane));
-  
+
   if (as == bs && bs == cs) {
     return false;
   }
-  
+
   if (as != bs && bs != cs) {
     intersect_line_plane(b, a, plane, start);
     intersect_line_plane(b, c, plane, end);
@@ -364,7 +365,7 @@ bool intersect_triangle_plane(const Vec3f &a, const Vec3f &b, const Vec3f &c,
     intersect_line_plane(a, b, plane, start);
     intersect_line_plane(a, c, plane, end);
   }
-  
+
   return true;
 }
 
@@ -373,14 +374,14 @@ bool intersect_circle_triangle(const Circle &circle, const Vec3f &a,
 {
   const f32 d = (circle.center * circle.normal).sum();
   const Vec4f plane(circle.normal, d);
-  
+
   Vec3f start;
   Vec3f end;
-  
+
   if (!intersect_triangle_plane(a, b, c, plane, start, end)) {
     return false;
   }
-  
+
   Vec3f closest;
   closest_point_on_line_segment(circle.center, start, end, closest);
   return (closest - circle.center).length2() < circle.radius;
