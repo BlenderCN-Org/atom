@@ -18,6 +18,10 @@ cache/
 gmon.out
 moc*cxx
 atom.creator.user*
+atom.config
+atom.creator
+atom.files
+atom.includes
 *.patch
 .waf-*
 waf3*

@@ -1,8 +1,0 @@
-src/
-/usr/include/qt4/QtCore
-/usr/include/qt4/QtGui
-/usr/include/qt4/QtOpenGL
-.
-test
-data/shader
-data/material
