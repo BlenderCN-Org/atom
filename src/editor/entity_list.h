@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QListWidget>
-#include <core/game_api.h> // kvoli VectorObjectUPtr
+#include <core/game_entry.h> // NOTE(majo33): kvoli VectorObjectUPtr
 #include "editorfwd.h"
 
 namespace atom {

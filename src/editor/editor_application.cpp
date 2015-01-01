@@ -4,7 +4,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <core/core.h>
-#include <core/game_api.h>
+#include <core/game_entry.h>
 #include <core/world.h>
 #include <core/exception.h>
 #include "log.h"
@@ -30,7 +30,7 @@ EditorApplication::~EditorApplication()
 
 bool EditorApplication::init_engine()
 {
-  Core &core = Core::init(InitMode::EDITOR, entry_point());
+  Core &core = Core::init(InitMode::EDITOR, game_entry());
   my_core = &core;
 
   my_world = World::create(core);

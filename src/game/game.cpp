@@ -1,7 +1,7 @@
 #include <core/constants.h>
 #include <core/log.h>
 #include <core/frame.h>
-#include <core/game_api.h>
+#include <core/game_entry.h>
 #include <core/mesh_component.h>
 #include <core/render_component.h>
 #include <core/resource_service.h>
@@ -333,7 +333,7 @@ std::vector<EntityCreator> create_object_creators(Core &)
   return creators;
 }
 
-GameAPI game_api = {
+GameEntry game_api = {
   create_first_frame,
   create_object_creators
 };
@@ -343,7 +343,7 @@ GameAPI game_api = {
 
 extern "C" {
 
-const atom::EntryPoint* entry_point()
+const atom::GameEntry* game_entry()
 {
   return &atom::game_api;
 }

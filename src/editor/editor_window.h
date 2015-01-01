@@ -6,7 +6,7 @@
 #include <QTimer>
 #include <memory>
 #include <core/core.h>
-#include <core/game_api.h>
+#include <core/game_entry.h>
 #include "editorfwd.h"
 
 namespace atom {

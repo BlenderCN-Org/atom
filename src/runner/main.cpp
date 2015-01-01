@@ -11,7 +11,7 @@
 using namespace atom;
 
 extern "C" {
-const atom::GameEntry* entry_point();
+const atom::GameEntry* game_entry();
 }
 
 void update_gl_buffers(void *)
@@ -24,9 +24,9 @@ int main(int argc, char *argv[])
   assert(argc > 0); // prvy parameter musi urcovat spustenu hru
 
   try {
-    Core &core = Core::init(InitMode::STANDALONE, entry_point());
+    Core &core = Core::init(InitMode::STANDALONE, game_entry());
 
-    const EntryPoint *game_api = entry_point();
+    const GameEntry *game_api = game_entry();
 
     if (game_api == nullptr) {
       log::error("Can't find game entry point");

@@ -25,17 +25,13 @@ typedef Frame* (*CreateFrameFunc)(Core &);
 typedef VectorObjectUPtr (*ObjectListFunc)(Core &);
 typedef std::vector<EntityCreator> (*CreateObjectCreators)(Core &);
 
-struct GameAPI {
+struct GameEntry {
   CreateFrameFunc make_first_frame;
   CreateObjectCreators make_entity_creators;
 };
 
-typedef GameAPI EntryPoint;
-
-typedef GameAPI* (*GetGameAPIFunc)();
-
 }
 
 extern "C" {
-const atom::EntryPoint* entry_point();
+const atom::GameEntry* game_entry();
 }

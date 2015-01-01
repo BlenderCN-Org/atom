@@ -3,7 +3,7 @@
 #include <cassert>
 #include "corefwd.h"
 #include "noncopyable.h"
-#include "game_api.h"
+#include "game_entry.h"
 
 namespace atom {
 
@@ -37,7 +37,7 @@ public:
    *
    * @return referencia na instanciu God
    */
-  static Core& init(InitMode mode, const EntryPoint *entry_point);
+  static Core& init(InitMode mode, const GameEntry *game_entry);
   static void quit();
 
   ~Core();
@@ -84,7 +84,7 @@ private:
   /**
    * Inicializuje vsetky singletony/podsystemy.
    */
-  Core(const EntryPoint *entry_point);
+  Core(const GameEntry *game_entry);
 
   void do_init(InitMode mode);
 

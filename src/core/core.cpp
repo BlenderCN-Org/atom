@@ -9,7 +9,7 @@
 #include "audio_service.h"
 #include "input_service.h"
 #include "resource_service.h"
-#include "game_api.h"
+#include "game_entry.h"
 #include "config.h"
 
 namespace atom {
@@ -39,7 +39,7 @@ void segmentation_fault_handler(int sig)
   exit(EXIT_FAILURE);
 }
 
-Core& Core::init(InitMode mode, const EntryPoint *entry_point)
+Core& Core::init(InitMode mode, const GameEntry *entry_point)
 {
   assert(core_instance == nullptr);
   core_instance.reset(new Core(entry_point));
@@ -57,7 +57,7 @@ void Core::update()
 {
 }
 
-Core::Core(const EntryPoint *entry_point)
+Core::Core(const GameEntry *entry_point)
   : my_is_initialized(false)
 {
   // registracia backtrace vypisu
