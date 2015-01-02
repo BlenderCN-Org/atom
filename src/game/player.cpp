@@ -15,6 +15,7 @@ namespace atom {
 
 class PlayerScript : public ScriptComponent {
   Vec3f my_position;
+  Quatf my_old_rotation;
   Quatf my_rotation;
   f32   my_pitch;
 
@@ -77,13 +78,6 @@ class PlayerScript : public ScriptComponent {
     Vec3f v1(0, step, 0);
     Vec3f v2(0, 0, -step);
 
-    // reverse collision shape for moving back
-    if (forward < 0) {
-      v0 = -v0;
-      v1 = -v1;
-      v2 = -v2;
-    }
-
     if (forward != 0 || strafe != 0) {
       const Vec3f base = Vec3f::y_axis();
       Vec3f dir(strafe, forward, 0);
@@ -123,6 +117,7 @@ class PlayerScript : public ScriptComponent {
       }
     }
 
+    entity().set_transform(transform());
     refresh_camera();
   }
 
@@ -169,11 +164,14 @@ class PlayerScript : public ScriptComponent {
     f32 screen_height = config.get_screen_height();
     f32 aspect = screen_width / screen_height;
 
+
+    my_old_rotation = slerp(my_old_rotation, my_rotation, 0.05f);
+
     Mat4f view_fix = Mat4f::rotation_x(PI2);
-    Mat4f view_offset = Mat4f::translation(up() - forward());
+    Mat4f view_offset = Mat4f::translation(2 * (up() - forward()));
     Mat4f view = view_offset * Mat4f::translation(my_position) *
       Quatf::from_axis_angle(right(), my_pitch).rotation_matrix() *
-      my_rotation.rotation_matrix() * view_fix;
+      my_old_rotation.rotation_matrix() * view_fix;
 
     processors().debug.draw_line(my_position, my_position + up(), Vec3f(0, 0, 1));
     processors().debug.draw_line(my_position, my_position + forward(), Vec3f(0, 1, 0));
@@ -208,8 +206,8 @@ uptr<Entity> create_player(World &world, Core &core)
   uptr<MaterialComponent> material(new MaterialComponent());
   material->set_material_name("player");
   entity->add_component(std::move(material));
-//  entity->add_component(uptr<Component>(new MeshComponent()));
-//  entity->add_component(uptr<Component>(new RenderComponent()));
+  entity->add_component(uptr<Component>(new MeshComponent()));
+  entity->add_component(uptr<Component>(new RenderComponent()));
 
   uptr<PlayerScript> script(new PlayerScript());
   entity->add_component(std::move(script));
