@@ -66,4 +66,11 @@ const char RESOURCE_MUSIC_TAG[] = "music";
 
 const int REQ_VERTEX_ATTRIBUTES = 4;
 
+// model standard data streams
+const char MODEL_VERTEX[] = "vertices";
+const char MODEL_NORMAL[] = "normals";
+const char MODEL_INDEX[] = "indices";
+const char MODEL_BONE_INDEX[] = "bone_index";
+const char MODEL_BONE_WEIGHT[] = "bone_weight";
+
 }

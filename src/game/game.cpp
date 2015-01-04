@@ -42,12 +42,12 @@ class SkeletonBodyScript : public ScriptComponent {
   {
     const Model &model = my_model->get_model()->model();
 
-    Slice<f32> vertex_stream = model.find_stream<f32>("vertices");
-    Slice<f32> bweight_stream = model.find_stream<f32>("bone_weight");
-    Slice<u32> bindex_stream = model.find_stream<u32>("bone_index");
+    Slice<f32> vertex_stream = model.find_stream<f32>(MODEL_VERTEX);
+    Slice<f32> bweight_stream = model.find_stream<f32>(MODEL_BONE_WEIGHT);
+    Slice<u32> bindex_stream = model.find_stream<u32>(MODEL_BONE_INDEX);
 
     if (!my_is_initialized) {
-      Slice<u32> index_stream = model.find_stream<u32>("indices");
+      Slice<u32> index_stream = model.find_stream<u32>(MODEL_INDEX);
       my_is_initialized = true;
       Mesh *mesh = my_mesh_resource->data();
 

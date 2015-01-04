@@ -240,8 +240,8 @@ void DebugProcessor::gather_geometry_cache()
 
       if (geometry_cache.vertices.empty()) {
         const Model *model = component->model();
-        const Slice<u32> indices = model->find_stream<u32>("indices");
-        const Slice<f32> v = model->find_stream<f32>("vertices");
+        const Slice<u32> indices = model->find_stream<u32>(MODEL_INDEX);
+        const Slice<f32> v = model->find_stream<f32>(MODEL_VERTEX);
         const Vec3f *vertices = reinterpret_cast<const Vec3f *>(v.data());
         const Mat4f t = entity->transform();
 
@@ -253,7 +253,7 @@ void DebugProcessor::gather_geometry_cache()
         }
       } else {
         const Model *model = component->model();
-        const Slice<u32> indices = model->find_stream<u32>("indices");
+        const Slice<u32> indices = model->find_stream<u32>(MODEL_INDEX);
         const Slice<Vec3f> vertices = to_slice(geometry_cache.vertices);
         const Mat4f t = entity->transform();
 

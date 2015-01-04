@@ -337,11 +337,11 @@ void MeshLoader::reload_resource(ResourceService &rs, Resource &resource)
 
 void MeshLoader::load_mesh_from_model(ResourceService &rs, const Model &model, Mesh &mesh)
 {
-  Slice<f32> vertices = model.find_stream<f32>("vertices");
-  Slice<f32> normals = model.find_stream<f32>("normals");
-  Slice<u32> indices = model.find_stream<u32>("indices");
-  Slice<u32> bone_index = model.find_stream<u32>("bone_index");
-  Slice<f32> bone_weight = model.find_stream<f32>("bone_weight");
+  Slice<f32> vertices = model.find_stream<f32>(MODEL_VERTEX);
+  Slice<f32> normals = model.find_stream<f32>(MODEL_NORMAL);
+  Slice<u32> indices = model.find_stream<u32>(MODEL_INDEX);
+  Slice<u32> bone_index = model.find_stream<u32>(MODEL_BONE_INDEX);
+  Slice<f32> bone_weight = model.find_stream<f32>(MODEL_BONE_WEIGHT);
 
   if (!vertices.is_empty()) {
     mesh.vertex.reset(new VideoBuffer(rs.video_service(), VideoBufferUsage::STATIC_DRAW));

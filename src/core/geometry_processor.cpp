@@ -44,10 +44,10 @@ void GeometryProcessor::poll()
       }
 
 
-      Slice<f32> vertices = model->find_stream<f32>("vertices");
-      Slice<u32> indices = model->find_stream<u32>("indices");
-      Slice<u32> bone_index = model->find_stream<u32>("bone_index");
-      Slice<f32> bone_weight = model->find_stream<f32>("bone_weight");
+      Slice<f32> vertices = model->find_stream<f32>(MODEL_VERTEX);
+      Slice<u32> indices = model->find_stream<u32>(MODEL_INDEX);
+      Slice<u32> bone_index = model->find_stream<u32>(MODEL_BONE_INDEX);
+      Slice<f32> bone_weight = model->find_stream<f32>(MODEL_BONE_WEIGHT);
 
       if (vertices.is_empty() || indices.is_empty() ||
           bone_index.is_empty() || bone_weight.is_empty()) {
@@ -115,8 +115,8 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, u32 categories,
 
     const Model &model = model_resource->model();
 
-    const DataStream *vertices = model.find_array("vertices", Type::F32);
-    const DataStream *indices = model.find_array("indices", Type::U32);
+    const DataStream *vertices = model.find_array(MODEL_VERTEX, Type::F32);
+    const DataStream *indices = model.find_array(MODEL_INDEX, Type::U32);
 
     if (vertices == nullptr || indices == nullptr) {
       continue;
