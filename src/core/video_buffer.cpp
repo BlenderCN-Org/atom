@@ -47,7 +47,7 @@ GLenum VideoBuffer::get_gl_usage(VideoBufferUsage usage)
       return GL_STATIC_DRAW;
 
     default:
-      log::error("Unknown video buffer usage %i", usage);
+      log_error("Unknown video buffer usage %i", usage);
       return GL_STATIC_DRAW;
   }
 }

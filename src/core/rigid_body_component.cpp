@@ -17,14 +17,14 @@ void RigidBodyComponent::activate()
   ColliderComponent *collider = entity().find_component<ColliderComponent>();
 
   if (collider == nullptr) {
-    log::error("Entity doesn't contain collider component");
+    log_error("Entity doesn't contain collider component");
     return;
   }
 
   btCollisionShape *shape = collider->get_collision_shape();
 
   if (shape == nullptr) {
-    log::error("ColliderComponent doesn't contains collision shape");
+    log_error("ColliderComponent doesn't contains collision shape");
     return;
   }
 
@@ -36,7 +36,7 @@ void RigidBodyComponent::activate()
 
   switch (my_body_type) {
     case RigidBodyType::STATIC:
-      log::info("Creating static body");
+      log_info("Creating static body");
       my_rigid_body->setFlags(btCollisionObject::CF_STATIC_OBJECT);
       break;
 

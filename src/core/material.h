@@ -97,6 +97,27 @@ public:
 
 
 //
+// Road Material - vertices, indices, color
+//
+
+class RoadMaterial : public SimpleMaterial {
+  Vec3f              my_color;
+  TextureResourcePtr my_texture;
+
+public:
+  static uptr<Material> create(ResourceService &rs);
+
+  RoadMaterial();
+
+  ~RoadMaterial();
+
+  void draw_mesh(const RenderContext &context, const Mesh &mesh) override;
+
+  META_SUB_CLASS(SimpleMaterial);
+};
+
+
+//
 // PhongMaterial - vertices, normals, indices
 //
 

@@ -12,11 +12,11 @@ namespace atom {
 
 namespace {
 
-sptr<Entity> create_entity(const std::vector<EntityCreator> &creators, const String &class_name,
+sptr<Entity> create_entity(const std::vector<EntityDefinition> &creators, const String &class_name,
   World &world, Core &core)
 {
   auto found = std::find_if(creators.begin(), creators.end(),
-    [&class_name](const EntityCreator &creator) { return creator.name == class_name; });
+    [&class_name](const EntityDefinition &creator) { return creator.name == class_name; });
 
   if (found == creators.end()) {
     return nullptr;
@@ -34,7 +34,7 @@ bool load_level_from_file(const String &filename, Core &core, World &world)
   std::ifstream input(filename);
 
   if (!input.is_open()) {
-    log::warning("Can't open file \"%s\"", filename.c_str());
+    log_warning("Can't open file \"%s\"", filename.c_str());
     return false;
   }
 
@@ -43,17 +43,17 @@ bool load_level_from_file(const String &filename, Core &core, World &world)
   doc.ParseStream<0>(stream);
 
   if (doc.HasParseError()) {
-    log::error("%s Offset %i", doc.GetParseError(), doc.GetErrorOffset());
+    log_error("%s Offset %i", doc.GetParseError(), doc.GetErrorOffset());
     return false;
   }
 
   if (!doc.IsObject()) {
-    log::error("Top level element must be object");
+    log_error("Top level element must be object");
     return false;
   }
 
   if (!doc.HasMember("entities")) {
-    log::error("Level file doesn't contain entities");
+    log_error("Level file doesn't contain entities");
     return false;
   }
 
@@ -65,19 +65,19 @@ bool load_level_from_file(const String &filename, Core &core, World &world)
     const rapidjson::Value &obj = entities[i];
     // each entity must be object
     if (!obj.IsObject()) {
-      log::error("Entity must be object, skipping");
+      log_error("Entity must be object, skipping");
       continue;
     }
     // each entity class is identified by "class" field
     if (!obj.HasMember("class")) {
-      log::error("Entity missing \"class\" field, skipping");
+      log_error("Entity missing \"class\" field, skipping");
       continue;
     }
 
     const rapidjson::Value &class_name = obj["class"];
 
     if (!class_name.IsString()) {
-      log::error("Entity \"class\" must be string, skipping");
+      log_error("Entity \"class\" must be string, skipping");
       continue;
     }
 
@@ -86,7 +86,7 @@ bool load_level_from_file(const String &filename, Core &core, World &world)
     sptr<Entity> entity = create_entity(core.entity_creators(), entity_class, world, core);
 
     if (entity == nullptr) {
-      log::warning("Unknown entity class \"%s\"", entity_class.c_str());
+      log_warning("Unknown entity class \"%s\"", entity_class.c_str());
       continue;
     }
 
@@ -98,7 +98,7 @@ bool load_level_from_file(const String &filename, Core &core, World &world)
       utils::ReadResult result = utils::read_basic_property_from_json(obj, *field, entity.get());
 
       if (result != utils::ReadResult::OK) {
-        log::warning("Can't read field \"%s\" of entity \"%s\"", field->name, entity_class.c_str());
+        log_warning("Can't read field \"%s\" of entity \"%s\"", field->name, entity_class.c_str());
       }
     }
 
@@ -146,7 +146,7 @@ void process_sdl_events(InputService &is)
 //      case SDL_JOYBUTTONDOWN:
 //      case SDL_JOYBALLMOTION:
 //      case SDL_JOYHATMOTION:
-//        log::info("Joystick event");
+//        info("Joystick event");
 //        break;
     }
   }

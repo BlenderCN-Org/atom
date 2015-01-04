@@ -21,12 +21,12 @@ bool load_model_element_array_from_json(const rapidjson::Value &node,
   const rapidjson::Value &data = node["data"];
 
   if (!type.IsString()) {
-    log::error("\"type\" element is string");
+    log_error("\"type\" element is string");
     return false;
   }
 
   if (!data.IsArray()) {
-    log::error("\"data\" element is array");
+    log_error("\"data\" element is array");
     return false;
   }
 
@@ -77,11 +77,11 @@ bool load_model_element_array_from_json(const rapidjson::Value &node,
       break;
 
     default:
-      log::warning("Unknown array type \"%s\"", type.GetString());
+      log_warning("Unknown array type \"%s\"", type.GetString());
       break;
   }
 
-  log::warning("%s: Something went wrong", ATOM_FUNC_NAME);
+  log_warning("%s: Something went wrong", ATOM_FUNC_NAME);
   return false;
 }
 
@@ -103,7 +103,7 @@ bool load_model_arrays_from_json(const rapidjson::Value &arrays_node, Model &mod
     DataStream array;
 
     if (!load_model_element_array_from_json(array_node, array)) {
-      log::warning("Error while loading array \"%s\"", i->name.GetString());
+      log_warning("Error while loading array \"%s\"", i->name.GetString());
       return false;
     }
     model.add_array(i->name.GetString(), array.type, std::move(array.data));
@@ -119,12 +119,12 @@ bool load_model_skeleton_from_json(const rapidjson::Value &json_skeleton, Model 
   const rapidjson::Value &json_bones = json_skeleton["bones"];
 
   if (json_bones.IsNull()) {
-    log::warning("Skeleton node doesn't contain bones");
+    log_warning("Skeleton node doesn't contain bones");
     return false;
   }
 
   if (!json_bones.IsObject()) {
-    log::warning("Skeleton node bones is invalid");
+    log_warning("Skeleton node bones is invalid");
     return false;
   }
 
@@ -139,14 +139,14 @@ bool load_model_skeleton_from_json(const rapidjson::Value &json_skeleton, Model 
     const rapidjson::Value &json_index = value["index"];
 
     if (json_index.IsNull() || !json_index.IsInt()) {
-      log::warning("Invalid bone index");
+      log_warning("Invalid bone index");
       return false;
     }
 
     i32 index = json_index.GetInt();
 
     if (index >= count) {
-      log::warning("Too big bone index %i, max %i", index, count);
+      log_warning("Too big bone index %i, max %i", index, count);
       return false;
     }
 
@@ -154,31 +154,31 @@ bool load_model_skeleton_from_json(const rapidjson::Value &json_skeleton, Model 
     bone.name = i->name.GetString();
 
     if (!utils::read_vec3f(value["head"], bone.head)) {
-      log::warning("Can't read bone head");
+      log_warning("Can't read bone head");
     }
 
     if (!utils::read_vec3f(value["tail"], bone.tail)) {
-      log::warning("Can't read bone tail");
+      log_warning("Can't read bone tail");
     }
 
     if (!utils::read_vec3f(value["head_local"], bone.local_head)) {
-      log::warning("Can't read bone head local");
+      log_warning("Can't read bone head local");
     }
 
     if (!utils::read_vec3f(value["tail_local"], bone.local_tail)) {
-      log::warning("Can't read bone tail local");
+      log_warning("Can't read bone tail local");
     }
 
     if (!utils::read_vec3f(value["x"], bone.x)) {
-      log::warning("Can't read bone x axis");
+      log_warning("Can't read bone x axis");
     }
 
     if (!utils::read_vec3f(value["y"], bone.y)) {
-      log::warning("Can't read bone y axis");
+      log_warning("Can't read bone y axis");
     }
 
     if (!utils::read_vec3f(value["z"], bone.z)) {
-      log::warning("Can't read bone z axis");
+      log_warning("Can't read bone z axis");
     }
 
     const rapidjson::Value &json_parent = value["parent"];

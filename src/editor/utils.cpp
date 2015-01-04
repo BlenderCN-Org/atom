@@ -28,7 +28,7 @@ uptr<FieldValue> create_field_value_for_type(Type type)
       break;
 
     default:
-      log::warning("This field type \"%i\" is not supported in the %s", type, ATOM_FUNC_NAME);
+      log_warning("This field type \"%i\" is not supported in the %s", type, ATOM_FUNC_NAME);
       break;
   }
 

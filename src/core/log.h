@@ -9,35 +9,33 @@
 #include "config.h"
 
 namespace atom {
-namespace log {
 
 void set_color_enabled(bool enabled);
 
 /**
  * Vypise zadany text na stdout.
  */
-void info(const char *format, ...);
+void log_info(const char *format, ...);
 
 /**
  * Vypise varovanie, ma podobne chovanie ako @see error, ale neukoncuje aplikaciu
  */
-void warning(const char *format, ...);
+void log_warning(const char *format, ...);
 
 /**
  * Vypise chybu a ukonci aplikaciu.
  */
-void error(const char *format, ...);
+void log_error(const char *format, ...);
 
 /**
  * Debug vypis.
  */
 #ifndef NDEBUG
-void debug(bool print, const char *format, ...);
+void log_debug(bool print, const char *format, ...);
 #else
 inline void debug(bool print, const char *, ...) {}
 #endif
 
-}
 
 #define not_tested() not_tested_message(ATOM_FUNC_NAME)
 #define not_implemented() not_implemented_message(ATOM_FUNC_NAME)

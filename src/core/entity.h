@@ -71,7 +71,7 @@ public:
    */
   void deactivate();
 
-  void add_component(uptr<Component> &&component);
+  void add_component(uptr<Component> component);
 
   const String& id() const;
 

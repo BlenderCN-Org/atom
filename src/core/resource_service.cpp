@@ -42,13 +42,13 @@ sptr<T> find_or_load_resource(ResourceService &rs, const String &name, const Str
   }
 
   ResourcePtr resource = loader.create_resource(rs, name);
-  log::debug(DEBUG_RESOURCES, "Loading resource \"%s\"", resource_name.c_str());
+  log_debug(DEBUG_RESOURCES, "Loading resource \"%s\"", resource_name.c_str());
 
   if (resource != nullptr) {
     rs.add_resource(resource);
     return std::static_pointer_cast<T>(resource);
   } else {
-    log::error("Can't load %s resource \"%s\"", prefix.c_str(), name.c_str());
+    log_error("Can't load %s resource \"%s\"", prefix.c_str(), name.c_str());
     return nullptr;
   }
 }
@@ -56,7 +56,7 @@ sptr<T> find_or_load_resource(ResourceService &rs, const String &name, const Str
 void print_resources(const ResourceArray &resources)
 {
   for (const ResourcePtr &resource : resources)
-    log::info("%s (%i)", resource->name().c_str(), resource.use_count() - 1);
+    log_info("%s (%i)", resource->name().c_str(), resource.use_count() - 1);
 }
 
 }
@@ -75,7 +75,7 @@ ResourceService::ResourceService(Core &core)
 
 ResourceService::~ResourceService()
 {
-  log::debug(DEBUG_RESOURCES, "Releaseing all resources");
+  log_debug(DEBUG_RESOURCES, "Releaseing all resources");
 
   ResourceArray resources = std::move(my_resources);
   ResourceArray used;
@@ -97,12 +97,12 @@ ResourceService::~ResourceService()
   } while (!resources.empty() && !cycle);
 
   if (cycle) {
-    log::info("Resource cycle dependency detected, fix resources");
-    log::info("Resources ----------------");
+    log_info("Resource cycle dependency detected, fix resources");
+    log_info("Resources ----------------");
     print_resources(resources);
-    log::info("Used ----------------");
+    log_info("Used ----------------");
     print_resources(used);
-    log::info("Used end----------------");
+    log_info("Used end----------------");
   }
 
   quit_loaders();
@@ -121,14 +121,14 @@ VideoService& ResourceService::video_service() const
 void ResourceService::init_loaders()
 {
   assert(my_loaders == nullptr);
-  log::debug(DEBUG_RESOURCES, "Creating resource loaders");
+  log_debug(DEBUG_RESOURCES, "Creating resource loaders");
   my_loaders.reset(new ResourceLoaders());
 }
 
 void ResourceService::quit_loaders()
 {
   assert(my_loaders != nullptr);
-  log::debug(DEBUG_RESOURCES, "Destroying resource loaders");
+  log_debug(DEBUG_RESOURCES, "Destroying resource loaders");
   my_loaders.reset();
 }
 
@@ -151,7 +151,7 @@ void ResourceService::garbage_collect()
   while (i != my_resources.end()) {
     const ResourcePtr &resource = *i;
     if (resource.use_count() == 1) {
-      log::debug(DEBUG_RESOURCES, "Unloading the resource \"%s\"", resource->name().c_str());
+      log_debug(DEBUG_RESOURCES, "Unloading the resource \"%s\"", resource->name().c_str());
       i = my_resources.erase(i);
     } else {
       ++i;
@@ -161,9 +161,9 @@ void ResourceService::garbage_collect()
 
 void ResourceService::print()
 {
-  log::info("Managing these (unified) resources");
+  log_info("Managing these (unified) resources");
   for (const ResourcePtr &resource : my_resources)
-    log::info("%s (%i)", resource->name().c_str(), resource.use_count() - 1);
+    log_info("%s (%i)", resource->name().c_str(), resource.use_count() - 1);
 }
 
 ImageResourcePtr ResourceService::get_image(const String &name)
@@ -249,11 +249,11 @@ void ResourceService::refresh(ResourceService &rs, const StringArray &change_lis
           Loader *loader = resource->loader();
 
           if (loader != nullptr) {
-            log::debug(DEBUG_RESOURCES, "Reloading the \"%s\" resource", resource->name().c_str());
+            log_debug(DEBUG_RESOURCES, "Reloading the \"%s\" resource", resource->name().c_str());
             loader->reload_resource(rs, *resource);
             next_changes.push_back(resource->name());
           } else {
-            log::debug(DEBUG_RESOURCES, "There is no loader for \"%s\"", resource->name().c_str());
+            log_debug(DEBUG_RESOURCES, "There is no loader for \"%s\"", resource->name().c_str());
           }
         }
       }
@@ -264,7 +264,7 @@ void ResourceService::refresh(ResourceService &rs, const StringArray &change_lis
   while (!changes.empty());
 
   if (change_list.empty()) {
-    log::warning("Refresh called but there are no changes");
+    log_warning("Refresh called but there are no changes");
     return;
   }
 }

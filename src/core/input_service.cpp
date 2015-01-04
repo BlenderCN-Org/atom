@@ -97,7 +97,7 @@ InputService::InputService()
   clear_key_state();
   int joystick_count = SDL_NumJoysticks();
   for (int i = 0; i < joystick_count; ++i) {
-    log::debug(DEBUG_INPUT, "Opening joystick %i", i);
+    log_debug(DEBUG_INPUT, "Opening joystick %i", i);
     my_joysticks[i] = SDL_JoystickOpen(i);
   }
   SDL_JoystickEventState(SDL_ENABLE);
@@ -224,7 +224,7 @@ void InputService::process_sdl_events()
 //      case SDL_JOYBUTTONDOWN:
 //      case SDL_JOYBALLMOTION:
 //      case SDL_JOYHATMOTION:
-//        log::info("Joystick event");
+//        info("Joystick event");
 //        break;
     }
   }

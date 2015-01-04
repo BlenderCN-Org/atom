@@ -42,7 +42,7 @@ uptr<Image> Image::create_from_file(
 
   // subor neexistuje
   if (file == nullptr) {
-    log::warning("File doesn't exist \"%s\"", filename);
+    log_warning("File doesn't exist \"%s\"", filename);
     return nullptr;
   }
 
@@ -52,7 +52,7 @@ uptr<Image> Image::create_from_file(
   int success = fread(signature, PNG_SIGNATURE_SIZE, 1, file);
 
   if (success != 1) {
-    log::warning("Can't read PNG signature from file \"%s\"", filename);
+    log_warning("Can't read PNG signature from file \"%s\"", filename);
     exit_handler_create_from_file(file, png_ptr, info_ptr);
     return nullptr;
   }
@@ -60,7 +60,7 @@ uptr<Image> Image::create_from_file(
   int png_status = png_sig_cmp((png_byte *) signature, 0, PNG_SIGNATURE_SIZE);
 
   if (png_status != 0) {
-    log::warning("The \"%s\" is not a PNG image", filename);
+    log_warning("The \"%s\" is not a PNG image", filename);
 
     exit_handler_create_from_file(file, png_ptr, info_ptr);
     return nullptr;
@@ -69,7 +69,7 @@ uptr<Image> Image::create_from_file(
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 
   if (png_ptr == nullptr) {
-    log::warning("Can't create \"png_struct\" structure - libpng error");
+    log_warning("Can't create \"png_struct\" structure - libpng error");
 
     exit_handler_create_from_file(file, png_ptr, info_ptr);
     return nullptr;
@@ -78,7 +78,7 @@ uptr<Image> Image::create_from_file(
   info_ptr = png_create_info_struct(png_ptr);
 
   if (info_ptr == nullptr) {
-    log::warning("Can't create \"png_info\" structure - libpng error");
+    log_warning("Can't create \"png_info\" structure - libpng error");
 
     exit_handler_create_from_file(file, png_ptr, info_ptr);
     return nullptr;
@@ -96,19 +96,19 @@ uptr<Image> Image::create_from_file(
   PixelFormat format;
 
   if (channels == 3 && color_type == PNG_COLOR_TYPE_RGB) {
-    log::debug(DEBUG_VIDEO, "RGB %s", filename);
+    log_debug(DEBUG_VIDEO, "RGB %s", filename);
     format = PixelFormat::RGB;
   } else if (channels == 4 && color_type == PNG_COLOR_TYPE_RGBA) {
     format = PixelFormat::RGBA;
-    log::debug(DEBUG_VIDEO, "RGBA %s", filename);
+    log_debug(DEBUG_VIDEO, "RGBA %s", filename);
   } else if (channels == 2 && color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
-    log::debug(DEBUG_VIDEO, "RG %s", filename);
+    log_debug(DEBUG_VIDEO, "RG %s", filename);
     format = PixelFormat::RG;
   } else if (channels == 1 && color_type == PNG_COLOR_TYPE_GRAY) {
-    log::debug(DEBUG_VIDEO, "R %s", filename);
+    log_debug(DEBUG_VIDEO, "R %s", filename);
     format = PixelFormat::R;
   } else {
-    log::warning("Unsupported PNG image, number of channels %i, color type %i", channels, color_type);
+    log_warning("Unsupported PNG image, number of channels %i, color type %i", channels, color_type);
 
     exit_handler_create_from_file(file, png_ptr, info_ptr);
     return nullptr;
@@ -256,7 +256,7 @@ bool Image::save_to_png(const String &filename)
   if (format() != PixelFormat::RGB && format() != PixelFormat::RGBA &&
       format() != PixelFormat::D16 && format() != PixelFormat::RG   &&
       format() != PixelFormat::R) {
-    log::warning("Can't save image, only R/RG/RGB/RGBA/D16 formats are supported");
+    log_warning("Can't save image, only R/RG/RGB/RGBA/D16 formats are supported");
     return false;
   }
 

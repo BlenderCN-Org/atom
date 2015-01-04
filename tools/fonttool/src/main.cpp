@@ -124,7 +124,7 @@ uptr<Image> generate_distance_image(
 
   #pragma omp parallel for schedule(dynamic)
   for (unsigned y = 0; y < dst_height; ++y) {
-    log::info("Row %i", y);
+    info("Row %i", y);
     for (unsigned x = 0; x < dst_width; ++x) {
       PixelR &p = dst[y * dst_width + x];
       bool current_state = pixel_state(state, x, y);
@@ -147,8 +147,8 @@ uptr<Image> generate_distance_image(
 int main(int argc, char *argv[])
 {
   if (argc != 5) {
-    log::error("Invalid arguments, filename and ??? is required");
-    log::error("Usage: mmfont bigimage.png smallimage.png output.png spread");
+    error("Invalid arguments, filename and ??? is required");
+    error("Usage: mmfont bigimage.png smallimage.png output.png spread");
     return EXIT_FAILURE;
   }
 
@@ -161,36 +161,36 @@ int main(int argc, char *argv[])
   uptr<Image> state = Image::create_from_file(state_filename);
 
   if (src == nullptr) {
-    log::error("Can't open source image \"%s\"", input_filename);
+    error("Can't open source image \"%s\"", input_filename);
     return EXIT_FAILURE;
   }
 
   if (src->width() == 0 || src->height() == 0) {
-    log::error("Source image has an invalid size %ix%i", src->width(), src->height());
+    error("Source image has an invalid size %ix%i", src->width(), src->height());
     return EXIT_FAILURE;
   }
 
   if (src->format() != PixelFormat::R) {
-    log::error("Image \"%s\" has invalid format (supported are 1channel images only)", input_filename);
+    error("Image \"%s\" has invalid format (supported are 1channel images only)", input_filename);
     return EXIT_FAILURE;
   }
 
   if (state == nullptr) {
-    log::error("Can't open source image \"%s\"", state_filename);
+    error("Can't open source image \"%s\"", state_filename);
     return EXIT_FAILURE;
   }
 
   if (state->width() == 0 || state->height() == 0) {
-    log::error("State image has an invalid size %ix%i", state->width(), state->height());
+    error("State image has an invalid size %ix%i", state->width(), state->height());
     return EXIT_FAILURE;
   }
 
   if (state->format() != PixelFormat::R) {
-    log::error("State image has invalid format (1channel images only)");
+    error("State image has invalid format (1channel images only)");
     return EXIT_FAILURE;
   }
 
-  log::info("Output size %ix%i", state->width(), state->height());
+  info("Output size %ix%i", state->width(), state->height());
 
   uptr<Image> dst = generate_distance_image(*src, *state, spread);
   dst->save_to_png(output_filename);

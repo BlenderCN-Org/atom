@@ -24,7 +24,7 @@ void load_properties_from_json(const rapidjson::Value &root, const MetaClass &me
     ReadResult result = read_basic_property_from_json(root, *p, data);
 
     if (result == ReadResult::FAIL || (result == ReadResult::MISS && !ignore)) {
-      log::warning("Can't read property \"%s\" for config", p->name);
+      log_warning("Can't read property \"%s\" for config", p->name);
     }
   }
 }
@@ -66,7 +66,7 @@ Config::Config()
   std::ifstream input(CONFIG_FILENAME);
 
   if (!input.is_open()) {
-    log::warning("Can't open config");
+    log_warning("Can't open config");
   }
 
   JsonInputStream stream(input);
@@ -74,16 +74,16 @@ Config::Config()
   doc.ParseStream<0>(stream);
 
   if (doc.HasParseError()) {
-    log::warning("Parse error %s", doc.GetParseError());
+    log_warning("Parse error %s", doc.GetParseError());
   }
 
   load_properties_from_json(doc, meta_class(), this, true);
 
-  log::info("Screen resolution %ix%ix%i", screen_width, screen_height, screen_bpp);
+  log_info("Screen resolution %ix%ix%i", screen_width, screen_height, screen_bpp);
 
   load_environment();
 
-  log::set_color_enabled(color_log);
+  set_color_enabled(color_log);
 }
 
 void Config::load_environment()

@@ -27,7 +27,8 @@ Type str_to_type(const String &str);
  */
 u64 get_file_size(std::ifstream &file_stream);
 
-inline f32 radians_to_degrees(f32 radians)
+/// Convert angle in radians to degrees
+inline f32 to_degrees(f32 radians)
 {
   return radians * 180 / PI;
 }
@@ -157,7 +158,7 @@ namespace log {
 template<typename T>
 inline void print(const T& value)
 {
-  info("%s\n", to_cstring(value));
+  log_info("%s\n", to_cstring(value));
 }
 
 }

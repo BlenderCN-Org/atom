@@ -38,11 +38,34 @@ Building from source
 --------------------
 
 This project use WAF meta build system (http://code.google.com/p/waf/).
-WAF is written in Python so Python (v2 or v3) is required.  
-To configure project use `./waf configure` command:  
-`./waf configure -t debug`  
-`./waf configure -t release`  
+WAF is written in Python so Python (v2 or v3) is required.
+To configure project use `./waf configure` command:
+`./waf configure -t debug`
+`./waf configure -t release`
 `CC=clang CXX=clang++ ./waf configure`
 
-After successful configuration phase execute build command:  
+After successful configuration phase execute build command:
 `./waf`
+
+
+Architecture
+------------
+
+**Core (engine)**
+ - services (InputService, VideoService, AudioService, ResourceService, ...)
+ - world
+ - entity
+ - components
+ - processors (RenderProcessor, DebugProcessor, ...)
+ - config
+ - meta
+ - save/load
+
+**Game (game code)**
+- scripts (derived from ScriptComponent)
+- entity definitions
+- entry point
+
+**Editor**
+- user interface
+- undo & redo

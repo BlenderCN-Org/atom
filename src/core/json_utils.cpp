@@ -399,7 +399,7 @@ ReadResult read_basic_property_from_json(const rapidjson::Value &obj, const Meta
       break;
 
     default:
-      log::error("This type is not handled");
+      log_error("This type is not handled");
       break;
   }
 
@@ -496,7 +496,7 @@ bool write_basic_property_to_json(rapidjson::Document &doc, rapidjson::Value &ob
       return true;
 
     default:
-      log::error("This type is not handled");
+      log_error("This type is not handled");
       return false;
   }
 

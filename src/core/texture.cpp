@@ -59,7 +59,7 @@ Texture::~Texture()
 void Texture::set_data(PixelFormat format, int width, int height, const void *data)
 {
   if (my_type != TextureType::TEXTURE_2D) {
-    log::error("Texture::set_data called on non 2D texture");
+    log_error("Texture::set_data called on non 2D texture");
     return;
   }
 
@@ -111,7 +111,7 @@ GLint Texture::pixel_format_to_gl_format(PixelFormat format)
       return GL_DEPTH_COMPONENT32F;
 
     default:
-      log::warning("This pixel format is not supported %i", format);
+      log_warning("This pixel format is not supported %i", format);
       return -1;
   }
 }
@@ -149,7 +149,7 @@ GLint Texture::pixel_format_to_gl_data_format(PixelFormat format)
       return GL_DEPTH_STENCIL;
 
     default:
-      log::warning("This pixel format is not supported %i", format);
+      log_warning("This pixel format is not supported %i", format);
       return -1;
   }
 }
@@ -189,7 +189,7 @@ GLint Texture::pixel_format_to_gl_data_type(PixelFormat format)
       return GL_FLOAT;
 
     default:
-      log::warning("This pixel format is not supported %i", format);
+      log_warning("This pixel format is not supported %i", format);
       return -1;
   }
 }

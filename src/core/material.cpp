@@ -53,7 +53,7 @@ SimpleMaterial::~SimpleMaterial()
 void SimpleMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
   if (my_technique == nullptr) {
-    log::warning("%s: no shader", ATOM_FUNC_NAME);
+    log_warning("%s: no shader", ATOM_FUNC_NAME);
     return;
   }
 
@@ -61,7 +61,7 @@ void SimpleMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 
   if (my_flags & DrawFlags::VERTEX) {
     if (mesh.vertex == nullptr) {
-      log::warning("%s: mesh missing vertex data", ATOM_FUNC_NAME);
+      log_warning("%s: mesh missing vertex data", ATOM_FUNC_NAME);
       return;
     }
 
@@ -71,7 +71,7 @@ void SimpleMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 
   if (my_flags & DrawFlags::NORMAL) {
     if (mesh.normal == nullptr) {
-      log::warning("%s: mesh missing normal data", ATOM_FUNC_NAME);
+      log_warning("%s: mesh missing normal data", ATOM_FUNC_NAME);
       return;
     }
     command.attributes[1] = mesh.normal.get();
@@ -80,7 +80,7 @@ void SimpleMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 
   if (my_flags & DrawFlags::COLOR) {
     if (mesh.color == nullptr) {
-      log::warning("%s: mesh missing color data", ATOM_FUNC_NAME);
+      log_warning("%s: mesh missing color data", ATOM_FUNC_NAME);
       return;
     }
     command.attributes[2] = mesh.color.get();
@@ -89,7 +89,7 @@ void SimpleMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 
   if (my_flags & DrawFlags::INDEX) {
     if (mesh.surface == nullptr) {
-      log::warning("%s: mesh missing index data", ATOM_FUNC_NAME);
+      log_warning("%s: mesh missing index data", ATOM_FUNC_NAME);
       return;
     }
     command.indices = mesh.surface.get();
@@ -146,6 +146,39 @@ FlatMaterial::~FlatMaterial()
 }
 
 void FlatMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
+{
+  context.uniforms.color = my_color;
+  SimpleMaterial::draw_mesh(context, mesh);
+}
+
+
+//
+// Road Material
+//
+
+META_CLASS(RoadMaterial,
+  FIELD(my_color, "color"),
+  FIELD(my_texture, "texture")
+)
+
+uptr<Material> RoadMaterial::create(ResourceService &rs)
+{
+  return uptr<Material>(new RoadMaterial());
+}
+
+RoadMaterial::RoadMaterial()
+  : SimpleMaterial(DrawFlags::VERTEX | DrawFlags::INDEX)
+  , my_color(1, 0, 0)
+{
+  META_INIT();
+}
+
+RoadMaterial::~RoadMaterial()
+{
+  // empty
+}
+
+void RoadMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
 {
   context.uniforms.color = my_color;
   SimpleMaterial::draw_mesh(context, mesh);
@@ -215,10 +248,10 @@ void FlatSkinMaterial::draw_mesh(const RenderContext &context, const Mesh &mesh)
   assert(my_shader != nullptr);
 
   if (mesh.vertex == nullptr || mesh.normal == nullptr || mesh.surface == nullptr) {
-    log::warning("%s: mesh is missing vertex, normal or surface data", ATOM_FUNC_NAME);
+    log_warning("%s: mesh is missing vertex, normal or surface data", ATOM_FUNC_NAME);
     return;
   } else if (mesh.bone_weight == nullptr || mesh.bone_index == nullptr) {
-    log::warning("%s: mesh is missing bone weight or bone index data", ATOM_FUNC_NAME);
+    log_warning("%s: mesh is missing bone weight or bone index data", ATOM_FUNC_NAME);
     return;
   }
 

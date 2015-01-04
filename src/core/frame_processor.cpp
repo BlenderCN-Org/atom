@@ -50,7 +50,7 @@ void FrameProcessor::run(const FramePtr &frame)
     if (ip.is_key_pressed(Key::KEY_Q) &&
         (ip.is_key_pressed(Key::KEY_LSHIFT) || ip.is_key_pressed(Key::KEY_RSHIFT)) &&
         (ip.is_key_pressed(Key::KEY_LCTRL) || ip.is_key_pressed(Key::KEY_RCTRL))) {
-      log::warning("Emergency Abort");
+      log_warning("Emergency Abort");
       break;
     }
 
@@ -66,7 +66,7 @@ void FrameProcessor::run(const FramePtr &frame)
     my_current_frame->draw();
     counters.stop("Frame rendering");
 
-//    log::info("Drawing counter");
+//    info("Drawing counter");
     // render counters
     draw_counters(counters.to_string());
     // clear counters and start a new measurement
@@ -83,7 +83,7 @@ void FrameProcessor::run(const FramePtr &frame)
     if (my_post_frame_callback != nullptr) {
       my_post_frame_callback(nullptr);
     } else {
-      log::warning("Missing frame buffer update callback");
+      log_warning("Missing frame buffer update callback");
     }
 
 //    auto now = high_resolution_clock::now();

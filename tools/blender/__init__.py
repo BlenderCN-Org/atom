@@ -28,7 +28,7 @@ from . import export
 from bpy.props import BoolProperty, StringProperty
 
 
-default_base_dir = "~/dev/atom/data/"
+default_base_dir = "~/projects/atom/data/"
 
 
 class AtomSceneSettings(bpy.types.PropertyGroup):
@@ -80,9 +80,9 @@ class AtomPluginPanel(bpy.types.Panel):
             # skeleton
             if export.has_bones(context.object):
                 layout.prop(context.object.atom, "export_bones")
-            
-            
-            
+
+
+
             # export button
             layout.operator("atom.export_object")
 

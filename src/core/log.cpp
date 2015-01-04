@@ -6,7 +6,6 @@
 #include "string.h"
 
 namespace atom {
-namespace log {
 
 namespace {
 
@@ -16,6 +15,7 @@ String color_red;
 String color_end;
 
 std::mutex log_mutex;
+
 }
 
 void set_color_enabled(bool enabled)
@@ -33,7 +33,7 @@ void set_color_enabled(bool enabled)
   }
 }
 
-void error(const char *format, ...)
+void log_error(const char *format, ...)
 {
   std::lock_guard<std::mutex> lock(log_mutex);
   va_list ap;
@@ -45,7 +45,7 @@ void error(const char *format, ...)
   va_end(ap);
 }
 
-void info(const char *format, ...)
+void log_info(const char *format, ...)
 {
   std::lock_guard<std::mutex> lock(log_mutex);
   va_list ap;
@@ -58,7 +58,7 @@ void info(const char *format, ...)
   fflush(stdout);
 }
 
-void warning(const char *format, ...)
+void log_warning(const char *format, ...)
 {
   std::lock_guard<std::mutex> lock(log_mutex);
 
@@ -75,7 +75,7 @@ void warning(const char *format, ...)
 
 #ifndef NDEBUG
 
-void debug(bool print, const char *format, ...)
+void log_debug(bool print, const char *format, ...)
 {
   if (!print)
     return;
@@ -93,11 +93,9 @@ void debug(bool print, const char *format, ...)
 
 #endif
 
-}
-
 void not_implemented_message(const char *msg)
 {
-  std::lock_guard<std::mutex> lock(log::log_mutex);
+  std::lock_guard<std::mutex> lock(log_mutex);
   if (msg != nullptr)
     printf("This is not implemented yet %s\n", msg);
   else
@@ -106,7 +104,7 @@ void not_implemented_message(const char *msg)
 
 void not_tested_message(const char *msg)
 {
-  std::lock_guard<std::mutex> lock(log::log_mutex);
+  std::lock_guard<std::mutex> lock(log_mutex);
   if (msg != nullptr)
     printf("This is not tested yet: %s\n", msg);
   else
@@ -115,7 +113,7 @@ void not_tested_message(const char *msg)
 
 void subclass_responsibility_message(const char *msg)
 {
-  std::lock_guard<std::mutex> lock(log::log_mutex);
+  std::lock_guard<std::mutex> lock(log_mutex);
   if (msg != nullptr)
     printf("This method must be implemented in subclass: %s\n", msg);
   else

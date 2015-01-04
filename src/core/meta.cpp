@@ -91,7 +91,7 @@ void set_value(Type type, const void *src, void *dst)
       break;
 
     default:
-      log::warning("Unsupported type %i", type);
+      log_warning("Unsupported type %i", type);
       break;
   }
 }

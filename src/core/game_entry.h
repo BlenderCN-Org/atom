@@ -9,25 +9,20 @@ typedef std::vector<uptr<Entity>> VectorObjectUPtr;
 
 typedef uptr<Entity> (*ObjectCreateFunc)(World &world, Core &);
 
-struct EntityCreator {
-  String           name;
-  ObjectCreateFunc create;
-
-  EntityCreator(const String &object_name, ObjectCreateFunc create_func)
-    : name(object_name)
-    , create(create_func)
-  {
-
-  }
-};
-
 typedef Frame* (*CreateFrameFunc)(Core &);
 typedef VectorObjectUPtr (*ObjectListFunc)(Core &);
-typedef std::vector<EntityCreator> (*CreateObjectCreators)(Core &);
+
+
+struct EntityDefinition {
+  const char *name;
+  uptr<Entity> (*create)(World &, Core &core);
+};
+
+typedef std::vector<EntityDefinition> (*CreateObjectCreators)(Core &);
 
 struct GameEntry {
   CreateFrameFunc make_first_frame;
-  CreateObjectCreators make_entity_creators;
+  const EntityDefinition *entities;   ///< list of named entity creators, ends with one null record
 };
 
 }

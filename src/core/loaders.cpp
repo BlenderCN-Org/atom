@@ -34,7 +34,7 @@ ResourcePtr ImageLoader::create_resource(ResourceService &rs, const String &name
   uptr<Image> image = Image::create_from_file(filename.c_str());
 
   if (image == nullptr) {
-    log::warning("Can't load image \"%s\"", filename.c_str());
+    log_warning("Can't load image \"%s\"", filename.c_str());
     return nullptr;
   }
 
@@ -78,7 +78,7 @@ ResourcePtr TextureLoader::create_resource(ResourceService &rs, const String &na
   ImageResourcePtr image = rs.get_image(name);
 
   if (image == nullptr) {
-    log::error("Can't find image \"%s\"", name.c_str());
+    log_error("Can't find image \"%s\"", name.c_str());
     return nullptr;
   }
 
@@ -123,7 +123,7 @@ ResourcePtr TechniqueLoader::create_resource(ResourceService &rs, const String &
   auto program = Technique::create(name);
 
   if (program == nullptr) {
-    log::error("Can't create shader \"%s\"", name.c_str());
+    log_error("Can't create shader \"%s\"", name.c_str());
     return nullptr;
   }
 
@@ -154,7 +154,7 @@ void TechniqueLoader::reload_resource(ResourceService &rs, Resource &resource)
   if (program != nullptr) {
     dynamic_cast<TechniqueResource &>(resource).set_data(std::move(program));
   } else {
-    log::warning("Can't reload technique \"%s\"", name.c_str());
+    log_warning("Can't reload technique \"%s\"", name.c_str());
   }
 }
 
@@ -180,12 +180,12 @@ void load_material_properties_from_json(const rapidjson::Value &obj, Material &m
     utils::ReadResult result = utils::read_property_from_json(obj, *p, &material, rs);
 
     if (result != utils::ReadResult::OK)
-      log::warning("Can't read property \"%s\" for material \"%s\"", p->name, filename.c_str());
+      log_warning("Can't read property \"%s\" for material \"%s\"", p->name, filename.c_str());
   }
 
 //  for (unsigned i = 0; i < count; ++i) {
 //    if (!read_property_from_json(&json, *p, &material, rp))
-//      log::warning("Can't read property \"%s\" for material \"%s\"", p->name, filename.c_str());
+//      warning("Can't read property \"%s\" for material \"%s\"", p->name, filename.c_str());
 //    ++p;
 //  }
 }
@@ -200,7 +200,7 @@ uptr<Material> create_material(
   std::ifstream input(filename);
 
   if (!input.is_open()) {
-    log::error("Can't load material file \"%s\"", filename.c_str());
+    log_error("Can't load material file \"%s\"", filename.c_str());
     return nullptr;
   }
 
@@ -209,20 +209,20 @@ uptr<Material> create_material(
   doc.ParseStream<0>(stream);
 
   if (doc.HasParseError()) {
-    log::error("Can't parse material file \"%s\", error \"%s\", offset %i", filename.c_str(),
+    log_error("Can't parse material file \"%s\", error \"%s\", offset %i", filename.c_str(),
       doc.GetParseError(), doc.GetErrorOffset());
     return nullptr;
   }
 
   if (!doc.HasMember("type")) {
-    log::error("Material \"%s\" missing \"type\" value", filename.c_str());
+    log_error("Material \"%s\" missing \"type\" value", filename.c_str());
     return nullptr;
   }
 
   const rapidjson::Value &material_type = doc["type"];
 
   if (!material_type.IsString()) {
-    log::error("Invalid \"type\" for material \"%s\"", filename.c_str());
+    log_error("Invalid \"type\" for material \"%s\"", filename.c_str());
     return nullptr;
   }
 
@@ -250,7 +250,7 @@ ResourcePtr MaterialLoader::create_resource(ResourceService &rs, const String &n
   auto material = create_material(*this, name, rs);
 
   if (material == nullptr) {
-    log::error("Material \"%s\" is not implemented", name.c_str());
+    log_error("Material \"%s\" is not implemented", name.c_str());
     return nullptr;
   }
 
@@ -268,7 +268,7 @@ void MaterialLoader::reload_resource(ResourceService &rs, Resource &resource)
   auto material = create_material(*this, tokens[1], rs);
 
   if (material == nullptr) {
-    log::error("Can't reload material \"%s\"", resource.name().c_str());
+    log_error("Can't reload material \"%s\"", resource.name().c_str());
     return;
   }
 
@@ -380,7 +380,7 @@ ResourcePtr BitmapFontLoader::create_resource(ResourceService &rs, const String 
   auto texture = rs.get_texture(name);
 
   if (texture == nullptr) {
-    log::error("Can't find texture \"%s\"", name.c_str());
+    log_error("Can't find texture \"%s\"", name.c_str());
     return nullptr;
   }
 

@@ -53,7 +53,7 @@ void Entity::deactivate()
   }
 }
 
-void Entity::add_component(uptr<Component> &&component)
+void Entity::add_component(uptr<Component> component)
 {
   assert(component != nullptr);
   my_components.push_back(std::move(component));

@@ -23,7 +23,7 @@ TextureSampler::TextureSampler(TextureFilter filter, TextureWrap wrap)
       break;
 
     default:
-      log::error("Unknown TextureFilter value");
+      log_error("Unknown TextureFilter value");
       break;
   }
 
@@ -44,7 +44,7 @@ TextureSampler::TextureSampler(TextureFilter filter, TextureWrap wrap)
       break;
 
     default:
-      log::error("Unknown TextureWrap value");
+      log_error("Unknown TextureWrap value");
       break;
   }
 }

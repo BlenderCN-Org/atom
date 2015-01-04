@@ -15,13 +15,14 @@ namespace atom {
 
 class PlayerScript : public ScriptComponent {
   Vec3f my_position;
-  Quatf my_old_rotation;
-  Quatf my_rotation;
+  f32   my_yaw;
   f32   my_pitch;
+  Vec3f my_normal;
+  f32   my_velocity;
 
   Mat4f transform() const
   {
-    return Mat4f::translation(my_position) * my_rotation.rotation_matrix();
+    return Mat4f::translation(my_position) * Mat4f::rotation_z(my_yaw);
   }
 
   void on_activate() override
@@ -31,6 +32,8 @@ class PlayerScript : public ScriptComponent {
     camera.set_yaw(0);
     camera.set_pitch(0);
     my_pitch = -0.3;
+    my_velocity = 0;
+    my_normal = Vec3f::z_axis();
 
     Camera world_camera = world().camera();
     world_camera.view = camera.get_view_matrix();
@@ -46,41 +49,48 @@ class PlayerScript : public ScriptComponent {
 
     Vec2f mouse = is.mouse().delta;
 
-    f32 yaw = -mouse.x;
     my_pitch += mouse.y;
 
-    if (yaw != 0) {
-      my_rotation = Quatf::from_axis_angle(up(), yaw) * my_rotation;
-    }
-
-    i32 forward = 0;
-    i32 strafe = 0;
+    f32 acoef = 0; // acceleration
 
     if (is.is_key_down(Key::KEY_W) || is.is_key_down(Key::KEY_UP)) {
-      forward += 1;
+      acoef = 1;
     }
 
     if (is.is_key_down(Key::KEY_S) || is.is_key_down(Key::KEY_DOWN)) {
-      forward -= 1;
+      acoef = -5;
     }
 
+    const f32 TURN_STEP = stf(1);
+
     if (is.is_key_down(Key::KEY_D) || is.is_key_down(Key::KEY_RIGHT)) {
-      strafe += 1;
+      my_yaw -= TURN_STEP;
     }
 
     if (is.is_key_down(Key::KEY_A) || is.is_key_down(Key::KEY_LEFT)) {
-      strafe -= 1;
+      my_yaw += TURN_STEP;
     }
 
+    f32 slope = std::acos(dot3(forward(), my_normal.normalized())) - PI2;
+    log_info("Diff %f", slope);
+
+    const f32 gravity = -9;
+    const f32 rcoef = 0; //my_velocity > 5 ? pow(1.0002, my_velocity / 25) : 0;
+    my_velocity = my_velocity + acoef + gravity * slope * my_velocity / 15 - rcoef;
+    my_velocity = max(my_velocity, 0.0f);
+
+    f32 speed = stf(my_velocity);
+
+
     // collision shape (triangle)
-    const f32 step = 0.1f;
+    const f32 step = speed;
     Vec3f v0(0, 0, step);
     Vec3f v1(0, step, 0);
     Vec3f v2(0, 0, -step);
 
-    if (forward != 0 || strafe != 0) {
+    if (my_velocity > 0) {
       const Vec3f base = Vec3f::y_axis();
-      Vec3f dir(strafe, forward, 0);
+      Vec3f dir(0, speed, 0);
       Quatf rotation = Quatf::from_to_rotation(base, dir.normalized()).normalized();
       v0 = rotate(rotation, v0);
       v1 = rotate(rotation, v1);
@@ -97,7 +107,7 @@ class PlayerScript : public ScriptComponent {
     bool hit0 = processors().geometry.intersect_ray(r0, CollisionMask::WORLD | CollisionMask::ENEMY, result0);
     bool hit1 = processors().geometry.intersect_ray(r1, CollisionMask::WORLD | CollisionMask::ENEMY, result1);
 
-    if (forward != 0 || strafe != 0) {
+    if (my_velocity > 0) {
       bool hit = hit0 || hit1;
       Vec3f normal;
       Vec3f pos;
@@ -111,9 +121,8 @@ class PlayerScript : public ScriptComponent {
       }
 
       if (hit) {
-        const Quatf delta = Quatf::from_to_rotation(up(), normal);
         my_position = pos;
-        my_rotation = delta * my_rotation;
+        my_normal = normal;
       }
     }
 
@@ -123,17 +132,17 @@ class PlayerScript : public ScriptComponent {
 
   Vec3f up() const
   {
-    return rotate(my_rotation, Vec3f::z_axis());
+    return Vec3f::z_axis();
   }
 
   Vec3f forward() const
   {
-    return rotate(my_rotation, Vec3f::y_axis());
+    return transform_vec(Mat4f::rotation_z(my_yaw), Vec3f::y_axis());
   }
 
   Vec3f right() const
   {
-    return rotate(my_rotation, Vec3f::x_axis());
+    return transform_vec(Mat4f::rotation_y(my_yaw), Vec3f::x_axis());
   }
 
   uptr<Component> clone() const override
@@ -149,7 +158,6 @@ class PlayerScript : public ScriptComponent {
 
     if (hit) {
       point = result.hit;
-      my_rotation = Quatf::from_to_rotation(up(), result.normal);
     }
 
     return hit;
@@ -165,13 +173,10 @@ class PlayerScript : public ScriptComponent {
     f32 aspect = screen_width / screen_height;
 
 
-    my_old_rotation = slerp(my_old_rotation, my_rotation, 0.05f);
-
     Mat4f view_fix = Mat4f::rotation_x(PI2);
-    Mat4f view_offset = Mat4f::translation(2 * (up() - forward()));
-    Mat4f view = view_offset * Mat4f::translation(my_position) *
-      Quatf::from_axis_angle(right(), my_pitch).rotation_matrix() *
-      my_old_rotation.rotation_matrix() * view_fix;
+    Mat4f view_offset = Mat4f::translation(-2 * forward()) * Mat4f::translation(0, 0, 0.4);
+
+    Mat4f view = view_offset * transform() * view_fix;
 
     processors().debug.draw_line(my_position, my_position + up(), Vec3f(0, 0, 1));
     processors().debug.draw_line(my_position, my_position + forward(), Vec3f(0, 1, 0));
@@ -201,7 +206,7 @@ uptr<Entity> create_player(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   uptr<ModelComponent> model(new ModelComponent());
-  model->set_model_name("player");
+  model->set_model_name("monkey_rider");
   entity->add_component(std::move(model));
   uptr<MaterialComponent> material(new MaterialComponent());
   material->set_material_name("player");

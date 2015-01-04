@@ -29,13 +29,13 @@ int main(int argc, char *argv[])
     const GameEntry *game_api = game_entry();
 
     if (game_api == nullptr) {
-      log::error("Can't find game entry point");
+      log_error("Can't find game entry point");
       return EXIT_FAILURE;
     }
 
     FramePtr first_frame(game_api->make_first_frame(core));
     if (first_frame == nullptr) {
-      log::error("The game library doesn't contain start frame");
+      log_error("The game library doesn't contain start frame");
       return EXIT_FAILURE;
     }
 

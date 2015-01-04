@@ -50,7 +50,7 @@ uptr<Sound> Sound::create_from_file(
     bytes = ov_read(&vorbis_file, (char *) &buffer[offset], LOAD_SOUND_BUFFER_SIZE, 0, 2, 1, nullptr);
 
     if (bytes < 0) {
-      log::info("Error while reading Sound data");
+      log_info("Error while reading Sound data");
       break;
     }
 
@@ -90,7 +90,7 @@ int Sound::read_old(void *buffer, int start, int size)
   if (start == AudioBuffer::CURRENT_POSITION) {
     start = my_position;
   } else if (start >= my_samples_size) {
-//    log::error("Sound buffer overflow");
+//    error("Sound buffer overflow");
     return 0;
   }
 

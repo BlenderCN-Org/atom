@@ -33,13 +33,13 @@ void GeometryProcessor::poll()
       const Model *model = component->model();
       // skip components without geometry model data
       if (model == nullptr) {
-        log::error("Dynamic GeometryComponent without model");
+        log_error("Dynamic GeometryComponent without model");
         continue;
       }
       // skip components without skeleton data
       const SkeletonComponent *skeleton = component->skeleton();
       if (skeleton == nullptr) {
-        log::error("Dynamic GeometryComponent without skeleton");
+        log_error("Dynamic GeometryComponent without skeleton");
         continue;
       }
 
@@ -51,7 +51,7 @@ void GeometryProcessor::poll()
 
       if (vertices.is_empty() || indices.is_empty() ||
           bone_index.is_empty() || bone_weight.is_empty()) {
-        log::error("Dynamic GeometryComponent with invalid model");
+        log_error("Dynamic GeometryComponent with invalid model");
         continue;
       }
 
@@ -144,7 +144,7 @@ bool GeometryProcessor::intersect_ray(const Ray &ray, u32 categories,
       Vec3f v0 = v[i[index * 3    ]];
       Vec3f v1 = v[i[index * 3 + 1]];
       Vec3f v2 = v[i[index * 3 + 2]];
-      normal = cross_product3(v1 - v0, v2 - v0).normalized();
+      normal = cross3(v1 - v0, v2 - v0).normalized();
 
     }
   }

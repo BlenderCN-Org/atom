@@ -2,6 +2,7 @@
   "type" : "flat",
   "shader" : "flat",
   "color" : [ 1, 1, 1 ],
+  "texture" : "seamless",
   "draw_type" : "triangles",
   "draw_face" : "both",
   "depth_test" : true

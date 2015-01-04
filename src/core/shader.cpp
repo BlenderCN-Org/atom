@@ -33,7 +33,7 @@ bool Shader::compile(const String &src)
     const int INFO_LENGTH = 2048;
     char compile_info[INFO_LENGTH];
     glGetShaderInfoLog(my_gl_shader, INFO_LENGTH, nullptr, compile_info);
-    log::warning("Can't compile shader, status: %s", compile_info);
+    log_warning("Can't compile shader, status: %s", compile_info);
     return false;
   }
 

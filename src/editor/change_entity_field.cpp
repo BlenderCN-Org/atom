@@ -32,7 +32,7 @@ void ChangeEntityField::redo()
   my_prev_value = create_field_value_for_type(field.type);
 
   if (my_prev_value == nullptr) {
-    log::error("This type %i is not supported by field value", field.type);
+    log_error("This type %i is not supported by field value", field.type);
     return;
   }
 
@@ -54,7 +54,7 @@ const MetaField& ChangeEntityField::meta_field() const
   const MetaField *field = my_entity->meta->find_field(my_field_name.c_str());
 
   if (field == nullptr) {
-    log::error("The entity doesn't have field \"%s\"", my_field_name.c_str());
+    log_error("The entity doesn't have field \"%s\"", my_field_name.c_str());
   }
 
   return *field;

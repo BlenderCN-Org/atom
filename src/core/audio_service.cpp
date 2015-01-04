@@ -23,19 +23,19 @@ AudioService::AudioService()
   desired.userdata = this;
 
   if (SDL_OpenAudio(&desired, &obtained) != 0) {
-    log::error("Can't initialize audio");
+    log_error("Can't initialize audio");
     return;
   }
 
   if (obtained.freq != AUDIO_FREQUENCY || obtained.channels != AUDIO_CHANNELS) {
-    log::error("Your sound card doesn't support frequency 44100 stereo sound!");
+    log_error("Your sound card doesn't support frequency 44100 stereo sound!");
     return;
   }
 
   // init buffer
   my_buffer.resize(obtained.size / AUDIO_SAMPLE_SIZE, 0);
 
-  log::info("Audio initialized");
+  log_info("Audio initialized");
   SDL_PauseAudio(0);
 }
 
@@ -46,7 +46,7 @@ AudioService::~AudioService()
 void AudioService::mix_audio(u8 *buffer, u32 len)
 {
   assert(len == my_buffer.size() * AUDIO_SAMPLE_SIZE);
-  log::debug(DEBUG_AUDIO, "Audio buffer size %i bytes", len);
+  log_debug(DEBUG_AUDIO, "Audio buffer size %i bytes", len);
 
   if (my_sounds.empty()) {
     return;
@@ -105,7 +105,7 @@ void AudioService::clear()
 
 void AudioService::mix_test_audio(u8 *buffer, u32 len)
 {
-  log::info("Mixing audio %i", my_counter);
+  log_info("Mixing audio %i", my_counter);
   u32 count = len / 2;
   i16 *samples = reinterpret_cast<i16 *>(buffer);
 

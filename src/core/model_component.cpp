@@ -14,7 +14,7 @@ void ModelComponent::activate()
   my_model = core().resource_service().get_model(my_model_name);
 
   if (my_model == nullptr) {
-    log::warning("Can't find model \"%s\"", my_model_name.c_str());
+    log_warning("Can't find model \"%s\"", my_model_name.c_str());
   }
 }
 

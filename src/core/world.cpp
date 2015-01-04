@@ -52,7 +52,7 @@ void World::remove_entity(const sptr<Entity> &entity)
   auto found = std::find(my_entities.begin(), my_entities.end(), entity);
 
   if (found == my_entities.end()) {
-    log::warning("Entity not found");
+    log_warning("Entity not found");
     return;
   }
 
@@ -141,7 +141,7 @@ sptr<World> World::clone() const
     sptr<Entity> duplicate = entity->clone(*world);
 
     if (duplicate == nullptr) {
-      log::warning("Can't clone entity names \"%s\"", entity->id().c_str());
+      log_warning("Can't clone entity names \"%s\"", entity->id().c_str());
       continue;
     }
 

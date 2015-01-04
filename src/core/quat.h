@@ -65,7 +65,7 @@ struct Quat {
   static Quat<T> from_to_rotation(const Vec3<T> &from, const Vec3<T> &to,
     const Vec3<T> &fallback_axis = Vec3<T>())
   {
-    const T d = dot_product3(from, to);
+    const T d = dot3(from, to);
     // colinear vectors, return identity quaternion
     if (d >= 1) {         // NOTE(majo33): maybe use EPSILON
       return Quat<T>();
@@ -75,15 +75,15 @@ struct Quat {
       }
 
       // generate rotation axis
-      Vec3<T> axis = cross_product3(Vec3<T>::x_axis(), from);
+      Vec3<T> axis = cross3(Vec3<T>::x_axis(), from);
       // generate another axis when FROM vector is colinear with X axis
       if (axis.is_zero()) {
-        axis = cross_product3(Vec3<T>::y_axis(), from);
+        axis = cross3(Vec3<T>::y_axis(), from);
       }
       // return 180 degree rotation around calculated axis
       return Quat<T>::from_axis_angle(axis.normalized(), PI);
     }
-    const Vec3<T> v = cross_product3(from, to);
+    const Vec3<T> v = cross3(from, to);
     const T w = sqrt((from.length2()) * (to.length2())) + d;
     return Quat<T>(w, v).normalized();
   }

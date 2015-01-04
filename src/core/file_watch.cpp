@@ -59,7 +59,7 @@ FileWatch::FileWatch()
 {
   my_watch_fd = inotify_init();
   if (my_watch_fd < 0) {
-    log::error("Can't initialize inotify \"%s\"", strerror(errno));
+    log_error("Can't initialize inotify \"%s\"", strerror(errno));
   }
 }
 
@@ -104,10 +104,10 @@ void FileWatch::poll()
     // spracuj nacitane eventy, vypis chbu ak sa nepodarilo event nacitat
     if (bytes > 0) {
       process_inotify_events(buffer, bytes);
-//      log::info("Sizeof inotify_event is %i", sizeof(inotify_event));
+//      info("Sizeof inotify_event is %i", sizeof(inotify_event));
 //      refresh(changed_files);
     } else {
-      log::error("Can't read inotify data - too small buffer");
+      log_error("Can't read inotify data - too small buffer");
     }
   }
 }
@@ -125,7 +125,7 @@ void FileWatch::process_inotify_events(const char *data, size_t len)
   while (data < end) {
     const inotify_event *event = reinterpret_cast<const inotify_event *>(data);
     data += sizeof(inotify_event) + event->len;
-    log::debug(DEBUG_INOTIFY, "%s", to_string(event).c_str());
+    log_debug(DEBUG_INOTIFY, "%s", to_string(event).c_str());
 
     const WatchInfo &info = get_watch_info(event->wd);
     const String name = get_full_path(event->wd, event->name);
@@ -146,7 +146,7 @@ void FileWatch::process_inotify_events(const char *data, size_t len)
       if (event->mask & IN_CLOSE_WRITE) {
         auto found = std::find(my_modifed_files.begin(), my_modifed_files.end(), name);
         if (found != my_modifed_files.end()) {
-          log::info("Changed %s", name.c_str());
+          log_info("Changed %s", name.c_str());
           my_change_list.push_back(name);
           my_modifed_files.erase(found);
         }
@@ -195,7 +195,7 @@ String FileWatch::get_full_path(int wd, const char *name)
     else
       return String(name);
   } else {
-    log::error("Can't find watch info for wd %i \"%s\"", wd, name);
+    log_error("Can't find watch info for wd %i \"%s\"", wd, name);
     return String(name);
   }
 }

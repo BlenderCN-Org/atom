@@ -46,7 +46,7 @@ public:
 
   void reportErrorWarning(const char* text) override
   {
-    log::warning("%s", text);
+    log_warning("%s", text);
   }
 
   void draw3dText(const btVector3& location,const char* textString) override

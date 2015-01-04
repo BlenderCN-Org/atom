@@ -3,5 +3,5 @@
   "shader" : "phong",
   "draw_type" : "triangles",
   "draw_face" : "front",
-  "color" : [ 1, 0, 0 ]
+  "color" : "0xc3354e"
 }

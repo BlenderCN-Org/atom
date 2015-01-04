@@ -33,20 +33,20 @@ void gl_check_error_with_message(const char *first, const char *second)
 {
   GLenum error;
   while ((error = glGetError()) != GL_NO_ERROR) {
-    log::warning("OpenGL error %s %s", gl_get_error_string(error).c_str(), first);
-    log::warning("%s", second);
+    log_warning("OpenGL error %s %s", gl_get_error_string(error).c_str(), first);
+    log_warning("%s", second);
 
 #ifdef __linux__
-    log::warning("Backtrace");
+    log_warning("Backtrace");
     const int BACKTRACE_SIZE = 5;
     void * array[BACKTRACE_SIZE];
     int size = backtrace(array, BACKTRACE_SIZE);
     uptr<char *, void (*)(void *)> symbols(backtrace_symbols(array, size), free);
     /// @todo pridat regularny vyraz na oseknutie vypisu, aby sa vypisoval len nazov metody/funkcie bez offsetu...
     for (int i = 0; i < size; ++i)
-      log::warning("  %s", symbols.get()[i]);
+      log_warning("  %s", symbols.get()[i]);
 #else
-    log::warning("Use Linux to print backtracke, Windows stacktrace is not supported yet");
+    warning("Use Linux to print backtracke, Windows stacktrace is not supported yet");
 #endif
   }
 }

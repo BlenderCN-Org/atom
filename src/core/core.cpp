@@ -65,14 +65,24 @@ Core::Core(const GameEntry *entry_point)
   previous_handler = signal(SIGSEGV, segmentation_fault_handler);
 #endif
 
-  log::info("Project Atom (build %s %s)", __DATE__, __TIME__);
+  log_info("Project Atom (build %s %s)", __DATE__, __TIME__);
 
   if (entry_point == nullptr) {
     error("Can't find game entry point");
-    return ;
+    return;
   }
-  // load game object creators
-  my_entity_creators = entry_point->make_entity_creators(*this);
+  // load entity creators
+  const EntityDefinition *entity_def = entry_point->entities;
+
+  if (entity_def == nullptr) {
+    error("Entry doesn't define any entity creators");
+    return;
+  }
+
+  while (entity_def->name != nullptr) {
+    my_entity_creators.push_back(*entity_def);
+    ++entity_def;
+  }
 }
 
 Core::~Core()
@@ -114,7 +124,7 @@ void Core::do_init(InitMode mode)
     if (SDL_SetVideoMode(width, height, bpp, SDL_OPENGL) == 0) {
       error("Can't set video mode %ix%ix%i: %s", width, height, bpp, SDL_GetError());
     }
-    log::info("Video mode %ix%ix%i", width, height, bpp);
+    log_info("Video mode %ix%ix%i", width, height, bpp);
 
     // disable software key repeat
     SDL_EnableKeyRepeat(0, 0);
@@ -166,7 +176,7 @@ void Core::unload_game_lib()
   my_entity_creators.clear();
 }
 
-const std::vector<EntityCreator> &Core::entity_creators() const
+const std::vector<EntityDefinition> &Core::entity_creators() const
 {
   return my_entity_creators;
 }

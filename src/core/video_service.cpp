@@ -23,11 +23,11 @@ namespace {
 bool check_gl_limits()
 {
   // print OpenGL info
-  log::info("OpenGL %s %s", glGetString(GL_VERSION), glGetString(GL_RENDERER));
+  log_info("OpenGL %s %s", glGetString(GL_VERSION), glGetString(GL_RENDERER));
 
   GLint gl_max_texture_size;
   glGetIntegerv(GL_MAX_TEXTURE_SIZE, &gl_max_texture_size);
-  log::debug(DEBUG_VIDEO, "Max texture size %i", gl_max_texture_size);
+  log_debug(DEBUG_VIDEO, "Max texture size %i", gl_max_texture_size);
 
   if (gl_max_texture_size < 4096) {
     error("Big textures aren't supported");
@@ -36,7 +36,7 @@ bool check_gl_limits()
 
   GLint gl_max_vertex_attribs;
   glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &gl_max_vertex_attribs);
-  log::debug(DEBUG_VIDEO, "Max vertex attributes %i", gl_max_vertex_attribs);
+  log_debug(DEBUG_VIDEO, "Max vertex attributes %i", gl_max_vertex_attribs);
   // verify that graphic card support enought vertex attributes
   if (gl_max_vertex_attribs < REQ_VERTEX_ATTRIBUTES) {
     error("Not enough vertex attributes");
@@ -51,21 +51,21 @@ bool check_gl_limits()
   glGetIntegerv(GL_MAX_GEOMETRY_UNIFORM_COMPONENTS, &gl_max_geometry_uniform_components);
   glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &gl_max_fragment_uniform_components);
 
-  log::debug(DEBUG_VIDEO, "Max uniform components vertex %i, geometry %i, fragment %i",
+  log_debug(DEBUG_VIDEO, "Max uniform components vertex %i, geometry %i, fragment %i",
     gl_max_vertex_uniform_components, gl_max_geometry_uniform_components,
     gl_max_fragment_uniform_components);
 
   GLint gl_max_draw_buffers;
   glGetIntegerv(GL_MAX_DRAW_BUFFERS, &gl_max_draw_buffers);
-  log::debug(DEBUG_VIDEO, "Max draw buffers %i", gl_max_draw_buffers);
+  log_debug(DEBUG_VIDEO, "Max draw buffers %i", gl_max_draw_buffers);
 
   GLint gl_max_elements_indices;
   glGetIntegerv(GL_MAX_ELEMENTS_INDICES, &gl_max_elements_indices);
-  log::debug(DEBUG_VIDEO, "Max elements indices %i", gl_max_elements_indices);
+  log_debug(DEBUG_VIDEO, "Max elements indices %i", gl_max_elements_indices);
 
   GLint gl_max_texture_buffer_size;
   glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &gl_max_texture_buffer_size);
-  log::debug(DEBUG_VIDEO, "Max texture buffer size %i", gl_max_texture_buffer_size);
+  log_debug(DEBUG_VIDEO, "Max texture buffer size %i", gl_max_texture_buffer_size);
 
   return true;
 }
@@ -109,7 +109,7 @@ VideoService::~VideoService()
 void VideoService::draw(const DrawCommand &command)
 {
   if (command.program == nullptr) {
-    log::warning("DrawCommand without program");
+    log_warning("DrawCommand without program");
     return;
   }
 
@@ -138,7 +138,7 @@ void VideoService::draw(const DrawCommand &command)
       draw_arrays(GL_LINES, 0, command.attributes[0]->size() / sizeof(Vec3f));
     }
   } else {
-    log::warning("DrawCommand is missing primitive type");
+    log_warning("DrawCommand is missing primitive type");
   }
 
   for (u32 i = 0; i < MAX_ATTRIBUTES; ++i) {
@@ -204,7 +204,7 @@ void VideoService::unbind_texture(u32 index)
     } else if (type == TextureType::RECTANGLE) {
       glBindTexture(GL_TEXTURE_RECTANGLE, 0);
     } else {
-      log::warning("This texture type is not supported %i (%s)", type, ATOM_FUNC_NAME);
+      log_warning("This texture type is not supported %i (%s)", type, ATOM_FUNC_NAME);
     }
     my_state.textures[index] = nullptr;
   }
@@ -259,7 +259,7 @@ void VideoService::bind_attribute(u32 index, const VideoBuffer &buffer, Type typ
       break;
 
     default:
-      log::error("Unsupported attribute type %i", static_cast<int>(type));
+      log_error("Unsupported attribute type %i", static_cast<int>(type));
       break;
   }
 
@@ -468,7 +468,7 @@ void VideoService::set_draw_face(DrawFace face)
       break;
 
     default:
-      log::warning("%s: unknown DrawFacee %i", ATOM_FUNC_NAME, static_cast<int>(face));
+      log_warning("%s: unknown DrawFacee %i", ATOM_FUNC_NAME, static_cast<int>(face));
       return;
   }
 
@@ -495,7 +495,7 @@ void VideoService::set_fill_mode(FillMode mode)
       break;
 
     default:
-      log::warning("%s: unknown polygon fill mode %i", ATOM_FUNC_NAME,
+      log_warning("%s: unknown polygon fill mode %i", ATOM_FUNC_NAME,
         static_cast<int>(mode));
       return;
   }

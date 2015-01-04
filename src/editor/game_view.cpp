@@ -81,11 +81,11 @@ Camera GameView::current_camera() const
 
 void GameView::dragEnterEvent(QDragEnterEvent *event)
 {
-  log::debug(DEBUG_EDITOR, "Drag action for mime format %s",
+  log_debug(DEBUG_EDITOR, "Drag action for mime format %s",
     event->mimeData()->formats().join(" ").toStdString().c_str());
 
   if (event->mimeData()->hasFormat("mm/object")) {
-    log::debug(DEBUG_EDITOR, "Accepting drag");
+    log_debug(DEBUG_EDITOR, "Accepting drag");
     event->acceptProposedAction();
   }
 }
@@ -97,20 +97,20 @@ void GameView::dropEvent(QDropEvent *event)
   }
 
   if (event->mimeData()->hasFormat("mm/object")) {
-    log::debug(DEBUG_EDITOR, "Drop accepted");
+    log_debug(DEBUG_EDITOR, "Drop accepted");
 
     const QMimeData *mime_data = event->mimeData();
 
     if (mime_data->hasFormat("mm/object")) {
       event->acceptProposedAction();
       QString object_type(mime_data->data("mm/object"));
-      log::debug(DEBUG_EDITOR, "Drop event %s", object_type.toLatin1().data());
+      log_debug(DEBUG_EDITOR, "Drop event %s", object_type.toLatin1().data());
 
       bool ok = false;
       u32 index = object_type.toLatin1().toInt(&ok);
 
       if (index >= application().core().entity_creators().size()) {
-        log::warning("Invalid object index %i, max index is %i", index,
+        log_warning("Invalid object index %i, max index is %i", index,
           application().core().entity_creators().size());
         return;
       }
@@ -123,15 +123,15 @@ void GameView::dropEvent(QDropEvent *event)
 
       if (entity != nullptr) {
         entity->set_class_name(application().core().entity_creators()[index].name);
-        log::info("Adding entity to the world");
+        log_info("Adding entity to the world");
 
         EntityAdd *command = new EntityAdd(entity, application().world());
         undo_stack().push(command);
       } else {
-        log::warning("Error while creating object");
+        log_warning("Error while creating object");
       }
     } else {
-      log::debug(DEBUG_EDITOR, "Drop ignored");
+      log_debug(DEBUG_EDITOR, "Drop ignored");
       event->ignore();
     }
   }
@@ -244,12 +244,12 @@ void GameView::resizeGL(int w, int h)
 
 void GameView::load()
 {
-  log::debug(DEBUG_EDITOR, "Loading game view");
+  log_debug(DEBUG_EDITOR, "Loading game view");
 }
 
 void GameView::unload()
 {
-  log::debug(DEBUG_EDITOR, "Unloading game view");
+  log_debug(DEBUG_EDITOR, "Unloading game view");
   my_world.reset();
   my_origin_node.reset();
   my_current_object.reset();

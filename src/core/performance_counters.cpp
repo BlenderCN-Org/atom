@@ -15,7 +15,7 @@ void PerformanceCounters::start(const String &counter_name)
     { return counter_name == counter_info.name; }) == my_counters.end() && "This counter already exist, you can't start existing counter");
   // ak aktualne bezi nejaky casovac tak ho nastav ako nadradeny
 
-  log::debug(DEBUG_COUNTERS, "Starting counter %s", counter_name.c_str());
+  log_debug(DEBUG_COUNTERS, "Starting counter %s", counter_name.c_str());
 
   int parent = -1;
   if (!my_running_counters.empty())
@@ -33,7 +33,7 @@ void PerformanceCounters::stop(const String &counter_name)
     { return counter_name == counter_info.name; });
   // casovac musi bezat (musi o nom existovat zaznam)
   assert(counter != my_counters.end() && "Trying to stop a nonexistent counter");
-  log::debug(DEBUG_COUNTERS, "Stopping counter %s", counter_name.c_str());
+  log_debug(DEBUG_COUNTERS, "Stopping counter %s", counter_name.c_str());
   // nastav stop time a odstran ho zo zasobnika beziacich casovacov
   counter->stop_time = std::chrono::high_resolution_clock::now();
   my_running_counters.pop_back();
@@ -42,7 +42,7 @@ void PerformanceCounters::stop(const String &counter_name)
 void PerformanceCounters::clear()
 {
 //  assert(my_running_counters.empty());
-  log::debug(DEBUG_COUNTERS, "Clearing counters");
+  log_debug(DEBUG_COUNTERS, "Clearing counters");
   my_counters.clear();
 }
 

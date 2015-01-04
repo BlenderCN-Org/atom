@@ -70,7 +70,7 @@ Key qt_key_event_to_key(const QKeyEvent &e)
     case Qt::Key_Y:       return Key::KEY_Y;
     case Qt::Key_Z:       return Key::KEY_Z;
     case Qt::Key_Control:
-//      log::info("Native %i, virtual %i", e.nativeScanCode(), e.nativeVirtualKey());
+//      info("Native %i, virtual %i", e.nativeScanCode(), e.nativeVirtualKey());
       return e.nativeVirtualKey() == 65508 ? Key::KEY_RCTRL : Key::KEY_LCTRL;
 
   }
@@ -97,11 +97,11 @@ Key qt_mouse_button_to_key(const QMouseEvent &e)
   return Key::KEY_UNKNOWN;
 }
 
-sptr<Entity> create_entity(const std::vector<EntityCreator> &creators, const String &class_name,
+sptr<Entity> create_entity(const std::vector<EntityDefinition> &creators, const String &class_name,
   World &world, Core &core)
 {
   auto found = std::find_if(creators.begin(), creators.end(),
-    [&class_name](const EntityCreator &creator) { return creator.name == class_name; });
+    [&class_name](const EntityDefinition &creator) { return creator.name == class_name; });
 
   if (found == creators.end()) {
     return nullptr;
@@ -122,7 +122,7 @@ bool save_to_file(const QString &filename, const World &world)
   entity_array.SetArray();
 
   for (const sptr<Entity> &o : world.objects()) {
-    log::debug(DEBUG_EDITOR_SAVE, "Saving entity id=\"%s\", class=\"%s\"",
+    log_debug(DEBUG_EDITOR_SAVE, "Saving entity id=\"%s\", class=\"%s\"",
       o->id().c_str(), o->class_name().c_str());
     rapidjson::Value obj_json;
     obj_json.SetObject();
@@ -133,7 +133,7 @@ bool save_to_file(const QString &filename, const World &world)
     const MetaField *field;
 
     while ((field = fields.next())) {
-      log::debug(DEBUG_EDITOR_SAVE, "Saving entity field \"%s\"", field->name);
+      log_debug(DEBUG_EDITOR_SAVE, "Saving entity field \"%s\"", field->name);
       utils::write_basic_property_to_json(doc, obj_json, *field, o.get());
     }
 
@@ -158,7 +158,7 @@ bool load_from_file(const QString &filename, Core &core, World &world)
   std::ifstream input(filename.toLatin1());
 
   if (!input.is_open()) {
-    log::warning("Can't open file \"%s\"", filename.toLatin1().constData());
+    log_warning("Can't open file \"%s\"", filename.toLatin1().constData());
     return false;
   }
 
@@ -167,17 +167,17 @@ bool load_from_file(const QString &filename, Core &core, World &world)
   doc.ParseStream<0>(stream);
 
   if (doc.HasParseError()) {
-    log::error("%s Offset %i", doc.GetParseError(), doc.GetErrorOffset());
+    log_error("%s Offset %i", doc.GetParseError(), doc.GetErrorOffset());
     return false;
   }
 
   if (!doc.IsObject()) {
-    log::error("Top level element must be object");
+    log_error("Top level element must be object");
     return false;
   }
 
   if (!doc.HasMember("entities")) {
-    log::error("Level file doesn't contain entities");
+    log_error("Level file doesn't contain entities");
     return false;
   }
 
@@ -185,25 +185,25 @@ bool load_from_file(const QString &filename, Core &core, World &world)
 
   u32 count = entities.Size();
 
-  log::debug(DEBUG_EDITOR_LOAD, "Loading entities (%u)", count);
+  log_debug(DEBUG_EDITOR_LOAD, "Loading entities (%u)", count);
 
   for (uint i = 0; i < count; ++i) {
     const rapidjson::Value &obj = entities[i];
     // each entity must be object
     if (!obj.IsObject()) {
-      log::error("Entity must be object, skipping");
+      log_error("Entity must be object, skipping");
       continue;
     }
     // each entity class is identified by "class" field
     if (!obj.HasMember("class")) {
-      log::error("Entity missing \"class\" field, skipping");
+      log_error("Entity missing \"class\" field, skipping");
       continue;
     }
 
     const rapidjson::Value &class_name = obj["class"];
 
     if (!class_name.IsString()) {
-      log::error("Entity \"class\" must be string, skipping");
+      log_error("Entity \"class\" must be string, skipping");
       continue;
     }
 
@@ -212,7 +212,7 @@ bool load_from_file(const QString &filename, Core &core, World &world)
     sptr<Entity> entity = create_entity(core.entity_creators(), entity_class, world, core);
 
     if (entity == nullptr) {
-      log::warning("Unknown entity class \"%s\"", entity_class.c_str());
+      log_warning("Unknown entity class \"%s\"", entity_class.c_str());
       continue;
     }
 
@@ -221,11 +221,11 @@ bool load_from_file(const QString &filename, Core &core, World &world)
     const MetaField *field;
 
     while ((field = enumerator.next())) {
-      log::debug(DEBUG_EDITOR_LOAD, "Loading entity field \"%s\"", field->name);
+      log_debug(DEBUG_EDITOR_LOAD, "Loading entity field \"%s\"", field->name);
       utils::ReadResult result = utils::read_basic_property_from_json(obj, *field, entity.get());
 
       if (result != utils::ReadResult::OK) {
-        log::warning("Can't read field \"%s\" of entity \"%s\"", field->name, entity_class.c_str());
+        log_warning("Can't read field \"%s\" of entity \"%s\"", field->name, entity_class.c_str());
       }
     }
 
@@ -277,7 +277,7 @@ EditorWindow::~EditorWindow()
 
 void EditorWindow::on_action_quit_triggered()
 {
-  log::debug(DEBUG_EDITOR, "Action quit");
+  log_debug(DEBUG_EDITOR, "Action quit");
   close();
 }
 
@@ -322,7 +322,7 @@ void EditorWindow::switch_mode(EditorWindowMode mode)
   }
   // initialize edit mode
   if (mode == EditorWindowMode::EDIT) {
-    log::debug(DEBUG_EDITOR, "Switching to EDIT mode");
+    log_debug(DEBUG_EDITOR, "Switching to EDIT mode");
     application().core().audio_service().clear();
     my_game_view->set_world(application().world());
     // destroy cloned world
@@ -335,7 +335,7 @@ void EditorWindow::switch_mode(EditorWindowMode mode)
   }
   // initialize game mode
   if (mode == EditorWindowMode::GAME) {
-    log::debug(DEBUG_EDITOR, "Switching to GAME mode");
+    log_debug(DEBUG_EDITOR, "Switching to GAME mode");
     // save panels visibility state
     my_panels.entity_list = my_ui->entity_list_dock->isVisible();
     my_panels.entity_edit = my_ui->entity_edit_dock->isVisible();
@@ -523,14 +523,14 @@ bool EditorWindow::eventFilterMouseMove(QMouseEvent &event)
 
 void EditorWindow::on_action_run_triggered()
 {
-  log::debug(DEBUG_EDITOR, "Action run");
+  log_debug(DEBUG_EDITOR, "Action run");
 
   if (my_mode == EditorWindowMode::EDIT) {
     switch_mode(EditorWindowMode::GAME);
   } else if (my_mode == EditorWindowMode::GAME) {
     switch_mode(EditorWindowMode::EDIT);
   } else {
-    log::error("Unknown editor mode");
+    log_error("Unknown editor mode");
   }
 }
 
@@ -560,14 +560,14 @@ void EditorWindow::on_action_show_geometry_triggered(bool checked)
 
 void EditorWindow::load()
 {
-  log::debug(DEBUG_EDITOR, "Loading editor window");
+  log_debug(DEBUG_EDITOR, "Loading editor window");
   add_undo_redo();
   my_game_view->set_world(application().world());
 }
 
 void EditorWindow::unload()
 {
-  log::debug(DEBUG_EDITOR, "Unloading editor window");
+  log_debug(DEBUG_EDITOR, "Unloading editor window");
   remove_undo_redo();
   my_clone.reset();
 }
@@ -608,7 +608,7 @@ void EditorWindow::on_action_open_triggered()
 
 void EditorWindow::on_action_save_triggered()
 {
-  log::debug(DEBUG_EDITOR, "Save action");
+  log_debug(DEBUG_EDITOR, "Save action");
 
   if (my_filename.isEmpty()) {
     on_action_save_as_triggered();
@@ -620,7 +620,7 @@ void EditorWindow::on_action_save_triggered()
 
 void EditorWindow::on_action_save_as_triggered()
 {
-  log::debug(DEBUG_EDITOR, "Save as action");
+  log_debug(DEBUG_EDITOR, "Save as action");
 
   QString file = QFileDialog::getSaveFileName(this, "Save to file", LEVEL_RESOURCE_DIR,
     tr("Level files (*.lev);;All files (*.*)"));

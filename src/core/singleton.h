@@ -35,7 +35,7 @@ protected:
 
   ~Singleton()
   {
-//    log::info("Singleton destroy %s ", demangle(typeid(T).name()).c_str());
+//    info("Singleton destroy %s ", demangle(typeid(T).name()).c_str());
   }
 
   static void set_instance(T *instance)

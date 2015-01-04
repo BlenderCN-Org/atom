@@ -24,14 +24,14 @@ uptr<BitmapFont> BitmapFont::create(ResourceService &rs, const std::string &name
   fnt_file.getline(buffer, BUFFER_SIZE);
 
   if (!fnt_file) {
-    log::error("Error while reading FNT file header");
+    log_error("Error while reading FNT file header");
     return nullptr;
   }
 
   unsigned line_height, base_height, texture_width, texture_height;
   if (sscanf(buffer, "common lineHeight=%u base=%u scaleW=%u scaleH=%u",
         &line_height, &base_height, &texture_width, &texture_height) != 4) {
-    log::error("Error while reading FNT file header - common section");
+    log_error("Error while reading FNT file header - common section");
     return nullptr;
   }
 
@@ -40,13 +40,13 @@ uptr<BitmapFont> BitmapFont::create(ResourceService &rs, const std::string &name
   fnt_file.getline(buffer, BUFFER_SIZE);
 
   if (!fnt_file) {
-    log::error("Error while reading FNT file header");
+    log_error("Error while reading FNT file header");
     return nullptr;
   }
 
   unsigned count = 0;
   if (sscanf(buffer, "chars count=%u", &count) != 1) {
-    log::error("Error while reading FNT file header");
+    log_error("Error while reading FNT file header");
     return nullptr;
   }
 
@@ -55,7 +55,7 @@ uptr<BitmapFont> BitmapFont::create(ResourceService &rs, const std::string &name
 
   for (unsigned i = 0; i < count; ++i) {
     if (!fnt_file.getline(buffer, BUFFER_SIZE)) {
-      log::error("Error while reading FNT file \"%s\"", fnt_filename.c_str());
+      log_error("Error while reading FNT file \"%s\"", fnt_filename.c_str());
       return nullptr;
     }
 
@@ -67,7 +67,7 @@ uptr<BitmapFont> BitmapFont::create(ResourceService &rs, const std::string &name
       &id, &x, &y, &width, &height, &xoffset, &yoffset, &xadvance);
 
     if (read_count != 8) {
-      log::error("Error while reading char records from FNT file \"%s\"", fnt_filename.c_str());
+      log_error("Error while reading char records from FNT file \"%s\"", fnt_filename.c_str());
       return nullptr;
     }
     // prepocitaj nacitane hodnoty do rozsahu 0.0 - 1.0 pre OpenGL texturu

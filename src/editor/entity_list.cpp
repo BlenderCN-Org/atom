@@ -27,8 +27,8 @@ void EntityList::load_entity_list()
 
   int index = 0;
 
-  for (const EntityCreator &info : application().core().entity_creators()) {
-    log::debug(DEBUG_EDITOR, "Adding object to list %s", info.name.c_str());
+  for (const EntityDefinition &info : application().core().entity_creators()) {
+    log_debug(DEBUG_EDITOR, "Adding object to list %s", info.name);
     addItem(new EntityListItem(QString::fromStdString(info.name), index++));
   }
 }
@@ -40,13 +40,13 @@ void EntityList::unload_entity_list()
 
 void EntityList::load()
 {
-  log::debug(DEBUG_EDITOR, "Loading entity list");
+  log_debug(DEBUG_EDITOR, "Loading entity list");
   load_entity_list();
 }
 
 void EntityList::unload()
 {
-  log::debug(DEBUG_EDITOR, "Unloading entity list");
+  log_debug(DEBUG_EDITOR, "Unloading entity list");
   unload_entity_list();
 }
 
@@ -60,7 +60,7 @@ QMimeData* EntityList::mimeData(const QList<QListWidgetItem *> items) const
   assert(items.size() == 1 && "Only single selection mode is supported");
 
   if (items.size() != 1) {
-    log::warning("Only single selected item supported for drag&drop");
+    log_warning("Only single selected item supported for drag&drop");
     return nullptr;
   }
 

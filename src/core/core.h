@@ -71,7 +71,7 @@ public:
   bool load_game_lib(const char *name);
   void unload_game_lib();
 
-  const std::vector<EntityCreator>& entity_creators() const;
+  const std::vector<EntityDefinition>& entity_creators() const;
 
 private:
   struct Services {
@@ -96,7 +96,7 @@ private:
   bool              my_is_initialized;
   uptr<Config>      my_config;
   Services          my_services;
-  std::vector<EntityCreator> my_entity_creators;
+  std::vector<EntityDefinition> my_entity_creators;
 };
 
 }

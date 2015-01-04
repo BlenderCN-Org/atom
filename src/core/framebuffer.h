@@ -54,7 +54,7 @@ private:
 //    } else if (vp.current_read_framebuffer() == this) {
 //      return GL_READ_FRAMEBUFFER;
 //    } else {
-//      log::error("The framebuffer is not bound, can't set color attachment");
+//      error("The framebuffer is not bound, can't set color attachment");
 //      return GL_INVALID_ENUM;
 //    }
 //  }

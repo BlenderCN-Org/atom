@@ -122,7 +122,7 @@ inline bool operator!=(const Vec2<T> &a, const Vec2<T> &b)
  * Dot product operation for Vec2
  */
 template<typename T>
-inline T dot_product2(const Vec2<T> &a, const Vec2<T> &b)
+inline T dot2(const Vec2<T> &a, const Vec2<T> &b)
 {
   return a[0] * b[0] + a[1] * b[1];
 }
@@ -301,7 +301,7 @@ inline Vec3<T>& operator*=(Vec3<T> &v, T x)
 }
 
 template<typename T>
-inline T dot_product3(T ax, T ay, T az, T bx, T by, T bz)
+inline T dot3(T ax, T ay, T az, T bx, T by, T bz)
 {
   return ax * bx + ay * by + az * bz;
 }
@@ -311,16 +311,16 @@ inline T dot_product3(T ax, T ay, T az, T bx, T by, T bz)
  * e.g. Vec4f and Vec3f, Vec3f and Vec3f, Vec4f and Vec4f
  */
 template<typename T, typename U>
-inline typename T::value_type dot_product3(const T &a, const U &b)
+inline typename T::value_type dot3(const T &a, const U &b)
 {
-  return dot_product3(a.x, a.y, a.z, b.x, b.y, b.z);
+  return dot3(a.x, a.y, a.z, b.x, b.y, b.z);
 }
 
 /**
  * Skalarny sucin.
  */
 template<typename T>
-inline Vec3<T> cross_product3(const Vec3<T> &a, const Vec3<T> &b)
+inline Vec3<T> cross3(const Vec3<T> &a, const Vec3<T> &b)
 {
   return Vec3<T>(
     a[1] * b[2] - a[2] * b[1],

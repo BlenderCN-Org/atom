@@ -160,15 +160,15 @@ String demangle(const char *mangled_name)
       return String(demangled_name.get());
 
     case -1:
-      log::warning("Memory allocation failed in demangle function");
+      log_warning("Memory allocation failed in demangle function");
       break;
 
     case -2:
-      log::warning("This is not a valid C++ mangled name %s", mangled_name);
+      log_warning("This is not a valid C++ mangled name %s", mangled_name);
       break;
 
     case -3:
-      log::warning("Invalid arguments for abi::__cxx_demangle");
+      log_warning("Invalid arguments for abi::__cxx_demangle");
       break;
   }
 #endif
@@ -291,7 +291,7 @@ void error(const char *format, ...)
   va_list ap;
   va_start(ap, format);
   vsnprintf(buffer, BUFFER_SIZE, format, ap);
-  log::error(buffer);
+  log_error(buffer);
   va_end(ap);
   throw Exception(buffer);
 }

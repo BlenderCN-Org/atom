@@ -45,14 +45,14 @@ void SkeletonComponent::activate()
   ModelResourcePtr resource  = my_model->get_model();
 
   if (resource == nullptr) {
-    log::warning("Can't find model for skeleton");
+    log_warning("Can't find model for skeleton");
     return;
   }
 
   const Model &model = resource->model();
 
   i32 count = model.bones.size();
-  log::info("Found %i bones", count);
+  log_info("Found %i bones", count);
 
   my_transforms.clear();
   my_transforms.resize(count, Mat4f());

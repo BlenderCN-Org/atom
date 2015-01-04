@@ -70,7 +70,7 @@ class SkeletonBodyScript : public ScriptComponent {
     u32 bindex_count = bindex_stream.raw_size() / sizeof(Vec4u8);
 
     if (vertex_count != bweight_count || vertex_count != bindex_count) {
-      log::error("Corrupted model data arrays");
+      log_error("Corrupted model data arrays");
       return;
     }
 
@@ -214,6 +214,26 @@ uptr<Entity> create_monster(World &world, Core &core)
   return entity;
 }
 
+uptr<Entity> create_track(World &world, Core &core)
+{
+  uptr<Entity> entity(new Entity(world, core));
+  uptr<ModelComponent> model(new ModelComponent());
+  model->set_model_name("track");
+  uptr<MaterialComponent> material(new MaterialComponent());
+  material->set_material_name("road");
+  uptr<MeshComponent> mesh(new MeshComponent());
+  uptr<SkeletonComponent> skeleton(new SkeletonComponent());
+  uptr<GeometryComponent> geometry(new GeometryComponent());
+  uptr<RenderComponent> render(new RenderComponent());
+  entity->set_bounding_box(BoundingBox(-20, 20, -20, 20, 0, 20));
+  entity->add_component(std::move(model));
+  entity->add_component(std::move(material));
+  entity->add_component(std::move(mesh));
+  entity->add_component(std::move(geometry));
+  entity->add_component(std::move(render));
+  return entity;
+}
+
 uptr<Entity> create_manual_monster(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
@@ -318,25 +338,23 @@ uptr<Entity> create_bumpy_terrain(World &world, Core &core)
   return entity;
 }
 
-std::vector<EntityCreator> create_object_creators(Core &)
-{
-  std::vector<EntityCreator> creators;
+const EntityDefinition entity_creators[] = {
+  { "TestObject", create_test_object },
+  { "Suzanne", create_suzanne },
+  { "Monster", create_monster },
+  { "ManualMonster", create_manual_monster },
+  { "Ground", create_ground },
+  { "Box", create_box },
+  { "FlatTerrain", create_flat_terrain },
+  { "BumpyTerrain", create_bumpy_terrain },
+  { "Player", create_player },
+  { "Track", create_track },
+  { nullptr, nullptr }
+};
 
-  creators.push_back(EntityCreator("TestObject", create_test_object));
-  creators.push_back(EntityCreator("Suzanne", create_suzanne));
-  creators.push_back(EntityCreator("Monster", create_monster));
-  creators.push_back(EntityCreator("ManualMonster", create_manual_monster));
-  creators.push_back(EntityCreator("Ground", create_ground));
-  creators.push_back(EntityCreator("Box", create_box));
-  creators.push_back(EntityCreator("FlatTerrain", create_flat_terrain));
-  creators.push_back(EntityCreator("BumpyTerrain", create_bumpy_terrain));
-  creators.push_back(EntityCreator("Player", create_player));
-  return creators;
-}
-
-GameEntry game_api = {
+const GameEntry game_api = {
   create_first_frame,
-  create_object_creators
+  entity_creators
 };
 
 }

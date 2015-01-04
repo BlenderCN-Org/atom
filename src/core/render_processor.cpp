@@ -58,7 +58,7 @@ void RenderProcessor::render(const Camera &camera)
     const MeshResourcePtr &mesh = component->mesh();
 
     if (material == nullptr || mesh == nullptr) {
-      log::warning("RenderComponent without mesh or material");
+      log_warning("RenderComponent without mesh or material");
       continue;
     }
 

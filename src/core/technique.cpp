@@ -31,12 +31,12 @@ uptr<Technique> Technique::create(const String &name)
   const String geometry_src_filename = prefix + ".gs";
   // load vertex shader
   if (!load_and_compile(vertex_src_filename, vertex_shader)) {
-    log::warning("Can't load shader \"%s\"", vertex_src_filename.c_str());
+    log_warning("Can't load shader \"%s\"", vertex_src_filename.c_str());
     return nullptr;
   }
   // load pixel shader
   if (!load_and_compile(pixel_src_filename, pixel_shader)) {
-    log::warning("Can't load shader \"%s\"", pixel_src_filename.c_str());
+    log_warning("Can't load shader \"%s\"", pixel_src_filename.c_str());
     return nullptr;
   }
   load_and_compile(geometry_src_filename, geometry_shader);
@@ -45,7 +45,7 @@ uptr<Technique> Technique::create(const String &name)
 
   uptr<Technique> program(new Technique());
   if (!program->link(shaders, geometry_shader.is_compiled() ? 3 : 2)) {
-    log::warning("Can't link program \"%s\"", name.c_str());
+    log_warning("Can't link program \"%s\"", name.c_str());
     return nullptr;
   }
 
@@ -91,7 +91,7 @@ bool Technique::link(const Shader *shaders[], int count)
     const int INFO_LENGTH = 2048;
     char link_info[INFO_LENGTH];
     glGetProgramInfoLog(my_gl_program, INFO_LENGTH, nullptr, link_info);
-    log::warning("Can't link shader program. Link info:\n%s\n", link_info);
+    log_warning("Can't link shader program. Link info:\n%s\n", link_info);
     return false;
   }
 
@@ -106,7 +106,7 @@ void Technique::set_param(const char *name, const Vec3f &v) const
   if (uniform != nullptr) {
     glUniform3f(uniform->gl_location, v.x, v.y, v.z);
   } else {
-    log::warning("Uniform not found \"%s\"", name);
+    log_warning("Uniform not found \"%s\"", name);
   }
 }
 
@@ -118,7 +118,7 @@ void Technique::set_param(const char *name, const Mat4f &m) const
   if (uniform != nullptr) {
     glUniformMatrix4fv(uniform->gl_location, 1, false, reinterpret_cast<const GLfloat *>(&m));
   } else {
-    log::warning("Uniform not found \"%s\"", name);
+    log_warning("Uniform not found \"%s\"", name);
   }
 }
 
@@ -141,7 +141,7 @@ void Technique::locate_uniforms()
     ShaderUniform u;
 
     if (get_shader_uniform_info(my_gl_program, i, u)) {
-//      log::info("Adding uniform %s", u.name.c_str());
+//      info("Adding uniform %s", u.name.c_str());
       my_uniforms.push_back(u);
     }
   }
@@ -187,7 +187,7 @@ void set_uniform(const MetaField &meta_field, const void *data, GLint gl_locatio
     }
 
     default:
-      log::warning("Uniform pull: unknown type %i", meta_field.type);
+      log_warning("Uniform pull: unknown type %i", meta_field.type);
       break;
   }
 }
@@ -197,7 +197,7 @@ void Technique::pull(const MetaObject &properties)
   for (const ShaderUniform &u : my_uniforms) {
     const MetaField *meta_field = properties.meta_class.find_field(u.name.c_str());
     if (meta_field != nullptr) {
-//      log::info("Pulling uniform %s", u.name.c_str());
+//      info("Pulling uniform %s", u.name.c_str());
       set_uniform(*meta_field, properties.data, u.gl_location);
     }
   }
@@ -247,25 +247,25 @@ bool Technique::get_shader_uniform_info(GLuint gl_program, GLuint index,
   glGetActiveUniform(gl_program, index, BUFFER_SIZE, &length, &size, &type, name);
   // skip uniforms with long names
   if (length == 0) {
-    log::warning("Too long uniform name, skipping");
+    log_warning("Too long uniform name, skipping");
     return false;
   }
 
   GLint location = glGetUniformLocation(gl_program, name);
 
   if (location < 0) {
-    log::warning("Can't find uniform location");
+    log_warning("Can't find uniform location");
     return false;
   }
 
   Type uniform_type = get_type_from_gl_type(type, size);
 
   if (uniform_type == Type::UNKNOWN) {
-    log::error("Unknown uniform type \"%s\" (%i)", name, type);
+    log_error("Unknown uniform type \"%s\" (%i)", name, type);
     return false;
   }
 
-//  log::info("Uniform info %s, type=%i, size=%i", name, type, size);
+//  info("Uniform info %s, type=%i, size=%i", name, type, size);
   uniform.type = uniform_type;
   uniform.name = name;
   uniform.gl_location = location;

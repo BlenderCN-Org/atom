@@ -80,7 +80,7 @@ uptr<Music> Music::create_from_file(
   }
 
   if (input.peek() != EOF)
-    log::warning("Invalid file size, reading less bytes than actual file size");
+    log_warning("Invalid file size, reading less bytes than actual file size");
 
   input.close();
 

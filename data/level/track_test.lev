@@ -1,0 +1,92 @@
+{
+    "entities": [
+        {
+            "id": "flat_terrain",
+            "class": "FlatTerrain",
+            "transform": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                40,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "id": "bumpy_terrain",
+            "class": "BumpyTerrain",
+            "transform": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                -20,
+                0,
+                0,
+                1
+            ]
+        },
+        {
+            "id": "track",
+            "class": "Track",
+            "transform": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                3,
+                0,
+                5,
+                1
+            ]
+        },
+        {
+            "id": "player",
+            "class": "Player",
+            "transform": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                1.7,
+                1
+            ]
+        }
+    ]
+}

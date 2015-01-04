@@ -31,7 +31,7 @@ uptr<FieldEdit> create_field_edit(Type type)
       break;
 
     default:
-      log::warning("Entity edit is not able to edit this field");
+      log_warning("Entity edit is not able to edit this field");
       break;
   }
 
@@ -61,7 +61,7 @@ void EntityEdit::set_entity(const sptr<Entity> &entity)
     return;
   }
 
-  log::debug(DEBUG_EDITOR, "Setting current entity to %p", entity.get());
+  log_debug(DEBUG_EDITOR, "Setting current entity to %p", entity.get());
   my_entity = entity;
 
   clear_field_edits();
@@ -73,12 +73,12 @@ void EntityEdit::set_entity(const sptr<Entity> &entity)
 
 void EntityEdit::load()
 {
-  log::debug(DEBUG_EDITOR, "Loading entity edit");
+  log_debug(DEBUG_EDITOR, "Loading entity edit");
 }
 
 void EntityEdit::unload()
 {
-  log::debug(DEBUG_EDITOR, "Unloading entity edit");
+  log_debug(DEBUG_EDITOR, "Unloading entity edit");
   set_entity(nullptr);
 }
 
@@ -91,7 +91,7 @@ void EntityEdit::on_field_value_change()
   FieldEdit *field_edit = qobject_cast<FieldEdit*>(sender());
 
   if (field_edit == nullptr) {
-    log::error("Invalid sender");
+    log_error("Invalid sender");
     return;
   }
 
@@ -109,11 +109,11 @@ void EntityEdit::on_entity_changed(sptr<Entity> entity)
 
 void EntityEdit::clear_field_edits()
 {
-  log::debug(DEBUG_EDITOR, "Removing all edit fields");
+  log_debug(DEBUG_EDITOR, "Removing all edit fields");
 
   if (my_layout != nullptr) {
     for (const NamedFieldEdit &field_edit : my_field_edits) {
-      log::debug(DEBUG_EDITOR, "Removing field edit \"%s\"", field_edit.name.c_str());
+      log_debug(DEBUG_EDITOR, "Removing field edit \"%s\"", field_edit.name.c_str());
       delete my_layout->labelForField(field_edit.edit.get());
     }
 
@@ -129,14 +129,14 @@ void EntityEdit::reload_field_edits()
   assert(layout() == nullptr);
 
   if (my_entity == nullptr) {
-    log::debug(DEBUG_EDITOR, "No entity selected, no fields to reload");
+    log_debug(DEBUG_EDITOR, "No entity selected, no fields to reload");
     return;
   }
 
   const MetaClass *meta_class = my_entity->meta;
 
   if (meta_class == nullptr) {
-    log::warning("Entity without meta class, each entity should has metaclass");
+    log_warning("Entity without meta class, each entity should has metaclass");
     return;
   }
 
@@ -154,7 +154,7 @@ void EntityEdit::reload_field_edits()
       field_edit->set_field_name(field->name);
       add_field_to_layout(field->name, std::move(field_edit));
     } else {
-      log::warning("This field type is not supported by EntityEdit");
+      log_warning("This field type is not supported by EntityEdit");
     }
   }
 
@@ -170,7 +170,7 @@ void EntityEdit::update_field_values()
   const MetaClass *meta_class = my_entity->meta;
 
   if (meta_class == nullptr) {
-    log::warning("Entity without meta class, each entity should has metaclass");
+    log_warning("Entity without meta class, each entity should has metaclass");
     return;
   }
 
@@ -183,7 +183,7 @@ void EntityEdit::update_field_values()
     uptr<FieldValue> value = create_field_value_for_type(field->type);
 
     if (value == nullptr) {
-      log::warning("This type of field (%i) is not supported, skipping", field->type);
+      log_warning("This type of field (%i) is not supported, skipping", field->type);
       continue;
     }
 
@@ -193,7 +193,7 @@ void EntityEdit::update_field_values()
     if (edit != nullptr) {
       edit->set_value(*value);
     } else {
-      log::warning("Can't find field edit for property \"%s\"", field->name);
+      log_warning("Can't find field edit for property \"%s\"", field->name);
     }
   }
 
@@ -212,7 +212,7 @@ FieldEdit *EntityEdit::get_field_edit_by_name(const String &field_name)
 void EntityEdit::add_field_to_layout(const QString &label, uptr<FieldEdit> field_edit)
 {
   assert(field_edit != nullptr);
-  log::debug(DEBUG_EDITOR, "Adding field edit for \"%s\"", label.toStdString().c_str());
+  log_debug(DEBUG_EDITOR, "Adding field edit for \"%s\"", label.toStdString().c_str());
   my_layout->addRow(label, field_edit.get());
 
   connect(field_edit.get(), SIGNAL(value_changed()), SLOT(on_field_value_change()));

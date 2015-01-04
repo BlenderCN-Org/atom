@@ -17,7 +17,7 @@ FieldEdit::FieldEdit(QWidget *parent)
 
 FieldEdit::~FieldEdit()
 {
-  log::debug(DEBUG_EDITOR, "Destroying field edit");
+  log_debug(DEBUG_EDITOR, "Destroying field edit");
 }
 
 String FieldEdit::field_name() const
@@ -64,7 +64,7 @@ void FieldEditInt::set_value(const FieldValue &value)
     const FieldValueInt &int_value = dynamic_cast<const FieldValueInt &>(value);
     my_spin_box->setValue(int_value.value());
   } else {
-    log::error("Invalid value type");
+    log_error("Invalid value type");
   }
 }
 
@@ -97,7 +97,7 @@ void FieldEditFloat::set_value(const FieldValue &value)
     const FieldValueFloat &float_value = dynamic_cast<const FieldValueFloat &>(value);
     my_spin_box->setValue(float_value.value());
   } else {
-    log::error("Invalid value type");
+    log_error("Invalid value type");
   }
 }
 
@@ -129,7 +129,7 @@ void FieldEditString::set_value(const FieldValue &value)
     const FieldValueString &string_value = dynamic_cast<const FieldValueString &>(value);
     my_line_edit->setText(QString::fromStdString(string_value.value()));
   } else {
-    log::error("Invalid value type");
+    log_error("Invalid value type");
   }
 }
 
@@ -160,7 +160,7 @@ void FieldEditVec2f::set_value(const FieldValue &value)
     const FieldValueVec2f &vec2f_value = dynamic_cast<const FieldValueVec2f &>(value);
     my_edit->set_value(vec2f_value.value());
   } else {
-    log::error("Invalid value type");
+    log_error("Invalid value type");
   }
 }
 
