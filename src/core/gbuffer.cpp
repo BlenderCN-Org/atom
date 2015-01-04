@@ -12,6 +12,7 @@ GBuffer::GBuffer(VideoService &vs)
   , my_normal(vs)
   , my_depth_stencil(vs)
 {
+  // empty
 }
 
 void GBuffer::set_resolution(int width, int height)

@@ -102,7 +102,7 @@ def build(ctx):
     build_flext_lib(ctx)
     build_core_lib(ctx)
     build_game_lib(ctx)
-    #build_starter(ctx)
+    build_starter(ctx)
     build_editor(ctx)
 
     if 'ATOM_BUILD_FONTTOOL' in ctx.env:
@@ -267,7 +267,7 @@ def build_starter(ctx):
     ctx.program(
       name='run',
       target = 'run',
-      source=ctx.path.ant_glob('src/runner/**/*.cpp'),
+      source=ctx.path.ant_glob('src/run/**/*.cpp'),
       includes=['src'],
       use=['game', 'core']
     )

@@ -120,6 +120,8 @@ enum class Button {
   COUNT
 };
 
+Key sdl_key_to_key(unsigned sdl_key);
+
 class Controller {
 public:
   Controller();
@@ -212,10 +214,14 @@ public:
   void poll();
 
   const Mouse& mouse() const
-  { return my_mouse; }
+  {
+    return my_mouse;
+  }
 
   const Controller& controller() const
-  { return my_controller; }
+  {
+    return my_controller;
+  }
 
   /**
    * Zisti ci od predchadzajuceho volania poll bola stlacena dana klavesa. Tato metoda zistuje len

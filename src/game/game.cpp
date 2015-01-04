@@ -14,6 +14,7 @@
 #include <core/model_component.h>
 #include <core/model.h>
 #include <core/mesh.h>
+#include "game_frame.h"
 #include "monster.h"
 #include "player.h"
 #include "game.h"
@@ -162,7 +163,7 @@ public:
 
 Frame* create_first_frame(Core &core)
 {
-  return nullptr;
+  return new GameFrame(core, "data/level/terrain_level.lev");
 }
 
 

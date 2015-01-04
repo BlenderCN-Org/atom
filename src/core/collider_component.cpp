@@ -20,12 +20,12 @@ void ColliderComponent::deactivate()
 ColliderComponent::ColliderComponent()
   : NullComponent(ComponentType::COLLIDER)
 {
-
+  // empty
 }
 
 ColliderComponent::~ColliderComponent()
 {
-
+  // empty
 }
 
 void ColliderComponent::set_collision_shape(uptr<btCollisionShape> &&shape)

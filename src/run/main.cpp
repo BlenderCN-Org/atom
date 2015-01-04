@@ -1,10 +1,10 @@
 #include <iostream>
 #include <core/corefwd.h>
 #include <core/frame_processor.h>
-#include <core/system/core.h>
+#include <core/core.h>
 #include <core/log.h>
-#include <core/system/game_api.h>
-#include <core/system/file_watch.h>
+#include <core/game_entry.h>
+#include <core/file_watch.h>
 #include <core/frame.h>
 #include <SDL/SDL.h>
 

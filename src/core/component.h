@@ -71,7 +71,8 @@ class Component : NonCopyable {
 
 public:
   // doesn't need to be private because it is abstract class
-  Component(ComponentType type);
+  explicit Component(ComponentType type);
+
   virtual ~Component();
 
   uptr<Component> duplicate() const;

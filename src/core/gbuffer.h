@@ -9,7 +9,7 @@ namespace atom {
 
 class GBuffer : NonCopyable {
 public:
-  GBuffer(VideoService &vs);
+  explicit GBuffer(VideoService &vs);
 
   void set_resolution(int width, int height);
 
