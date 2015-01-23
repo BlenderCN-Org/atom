@@ -27,7 +27,6 @@ class RigidBodyComponent : public NullComponent {
 
   void deactivate() override;
 
-  uptr<Component> clone() const override;
 public:
   RigidBodyComponent();
   ~RigidBodyComponent();
@@ -46,7 +45,7 @@ public:
   {
     return my_rigid_body.get();
   }
-  
+
   META_SUB_CLASS(NullComponent);
 };
 

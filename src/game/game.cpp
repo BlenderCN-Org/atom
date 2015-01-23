@@ -33,11 +33,6 @@ class SkeletonBodyScript : public ScriptComponent {
   bool                    my_is_initialized;
   VideoBuffer            *my_mesh_vertices;
 
-  uptr<Component> clone() const override
-  {
-    return uptr<Component>(new SkeletonBodyScript());
-  }
-
   void on_update() override
   {
     const Model &model = my_model->get_model()->model();
@@ -124,11 +119,6 @@ public:
 class AnimalScript : public ScriptComponent {
   u32 my_tick;
   Slot<SkeletonComponent> my_skeleton;
-
-  uptr<Component> clone() const override
-  {
-    return uptr<Component>(new AnimalScript());
-  }
 
   void on_update() override
   {

@@ -25,20 +25,6 @@ Entity::~Entity()
 {
 }
 
-uptr<Entity> Entity::clone(World &world) const
-{
-  uptr<Entity> entity(new Entity(world, core()));
-  entity->set_bounding_box(my_bounding_box);
-
-  for (const uptr<Component> &component : my_components) {
-    uptr<Component> duplicate = component->duplicate();
-    entity->set_transform(my_transform);
-    entity->add_component(std::move(duplicate));
-  }
-
-  return entity;
-}
-
 void Entity::activate()
 {
   for (const uptr<Component> &component : my_components) {

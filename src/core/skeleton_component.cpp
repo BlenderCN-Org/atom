@@ -76,11 +76,6 @@ void SkeletonComponent::deactivate()
 
 }
 
-uptr<Component> SkeletonComponent::clone() const
-{
-  return uptr<Component>(new SkeletonComponent());
-}
-
 Mat4f SkeletonComponent::calculate_bone_matrix(const Bone &bone) const
 {
   Mat4f m = Mat4f::translation(bone.local_head) * bone.transform.rotation_matrix() * Mat4f::translation(-bone.local_head);

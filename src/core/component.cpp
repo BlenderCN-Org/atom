@@ -22,16 +22,6 @@ Component::~Component()
 
 }
 
-uptr<Component> Component::duplicate() const
-{
-  uptr<Component> component = clone();
-
-  // copy properties
-  copy_field_values(*this, *component);
-
-  return component;
-}
-
 void Component::attach(Entity &entity)
 {
   my_entity = &entity;

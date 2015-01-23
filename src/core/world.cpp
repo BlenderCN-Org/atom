@@ -102,7 +102,7 @@ void World::deactivate()
   }
 }
 
-void World::step()
+void World::tick()
 {
   my_processors.physics->poll();
   my_processors.geometry->poll();
@@ -112,11 +112,6 @@ void World::step()
   if (my_is_live) {
     ++my_tick;
   }
-}
-
-const EntityVector& World::objects() const
-{
-  return my_entities;
 }
 
 Slice<sptr<Entity> > World::all_entities() const
@@ -131,24 +126,6 @@ void World::clear()
   }
 
   my_entities.clear();
-}
-
-sptr<World> World::clone() const
-{
-  sptr<World> world(new World(my_core));
-
-  for (const sptr<Entity> &entity : my_entities) {
-    sptr<Entity> duplicate = entity->clone(*world);
-
-    if (duplicate == nullptr) {
-      log_warning("Can't clone entity names \"%s\"", entity->id().c_str());
-      continue;
-    }
-
-    world->add_entity(duplicate);
-  }
-
-  return world;
 }
 
 const WorldProcessorsRef& World::processors() const

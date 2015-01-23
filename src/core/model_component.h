@@ -12,18 +12,16 @@ class ModelComponent : public NullComponent {
 
   void deactivate() override;
 
-  uptr<Component> clone() const override;
-
 public:
   ModelComponent();
   ~ModelComponent();
-  
+
   void set_model_name(const String &model_name);
 
   ModelResourcePtr get_model() const;
 
   const String& get_model_name() const;
-  
+
   META_SUB_CLASS(NullComponent);
 };
 

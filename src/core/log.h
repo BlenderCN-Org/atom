@@ -33,7 +33,7 @@ void log_error(const char *format, ...);
 #ifndef NDEBUG
 void log_debug(bool print, const char *format, ...);
 #else
-inline void debug(bool print, const char *, ...) {}
+inline void log_debug(bool print, const char *, ...) {}
 #endif
 
 

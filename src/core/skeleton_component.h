@@ -34,8 +34,6 @@ private:
 
   void deactivate() override;
 
-  uptr<Component> clone() const override;
-
   Mat4f calculate_bone_matrix(const Bone &bone) const;
 };
 

@@ -7,11 +7,6 @@ META_CLASS(MaterialComponent,
   FIELD(my_material_name, "material_name")
 )
 
-uptr<Component> MaterialComponent::clone() const
-{
-  return uptr<Component>(new MaterialComponent());
-}
-
 void MaterialComponent::activate()
 {
   my_material = entity().core().resource_service().get_material(my_material_name);

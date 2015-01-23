@@ -1,7 +1,8 @@
 #include "editor_window.h"
-#include <iostream>
+#include <cstdio>
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
+#include <rapidjson/filestream.h>
 #include <QSettings>
 #include <QKeyEvent>
 #include <QFileDialog>
@@ -112,16 +113,16 @@ sptr<Entity> create_entity(const std::vector<EntityDefinition> &creators, const 
   return entity;
 }
 
-bool save_to_file(const QString &filename, const World &world)
+bool save_to_file(FILE *file, const World &world)
 {
-  assert(!filename.isEmpty());
+  assert(file != nullptr);
 
   rapidjson::Document doc;
   doc.SetObject();
   rapidjson::Value entity_array;
   entity_array.SetArray();
 
-  for (const sptr<Entity> &o : world.objects()) {
+  for (const sptr<Entity> &o : world.all_entities()) {
     log_debug(DEBUG_EDITOR_SAVE, "Saving entity id=\"%s\", class=\"%s\"",
       o->id().c_str(), o->class_name().c_str());
     rapidjson::Value obj_json;
@@ -142,29 +143,33 @@ bool save_to_file(const QString &filename, const World &world)
 
   doc.AddMember("entities", entity_array, doc.GetAllocator());
 
-  std::ofstream output(filename.toLatin1().constData());
-  utils::JsonOutputStream stream(output);
-
-  rapidjson::PrettyWriter<utils::JsonOutputStream> writer(stream);
-
+  rapidjson::FileStream output(file);
+  rapidjson::PrettyWriter<rapidjson::FileStream> writer(output);
   doc.Accept(writer);
   return true;
 }
 
-bool load_from_file(const QString &filename, Core &core, World &world)
+bool save_to_file(const QString &filename, const World &world)
 {
-  world.clear();
+  assert(!filename.isEmpty());
 
-  std::ifstream input(filename.toLatin1());
+  FILE *file = fopen(filename.toLatin1(), "w+");
 
-  if (!input.is_open()) {
-    log_warning("Can't open file \"%s\"", filename.toLatin1().constData());
+  if (file == nullptr) {
     return false;
   }
 
-  utils::JsonInputStream stream(input);
+  bool ok = save_to_file(file, world);
+  fclose(file);
+  return ok;
+}
+
+bool load_from_file(FILE *file, Core &core, World &world)
+{
+  rapidjson::FileStream input(file);
+
   rapidjson::Document doc;
-  doc.ParseStream<0>(stream);
+  doc.ParseStream<0>(input);
 
   if (doc.HasParseError()) {
     log_error("%s Offset %i", doc.GetParseError(), doc.GetErrorOffset());
@@ -235,6 +240,19 @@ bool load_from_file(const QString &filename, Core &core, World &world)
   return true;
 }
 
+bool load_from_file(const QString &filename, Core &core, World &world)
+{
+  FILE *file = fopen(filename.toLatin1(), "r");
+
+  if (file == nullptr) {
+    return false;
+  }
+
+  bool ok = load_from_file(file, core, world);
+  fclose(file);
+  return ok;
+}
+
 EditorWindow::EditorWindow()
   : QMainWindow()
   , my_ui(new Ui::MainWindow())
@@ -289,11 +307,11 @@ void EditorWindow::update_world()
 
   switch (my_mode) {
     case EditorWindowMode::EDIT:
-      app.world()->step();
+      app.world()->tick();
       break;
 
     case EditorWindowMode::GAME:
-      my_clone->step();
+      my_clone->tick();
       break;
   }
 
@@ -341,7 +359,17 @@ void EditorWindow::switch_mode(EditorWindowMode mode)
     my_panels.entity_edit = my_ui->entity_edit_dock->isVisible();
     my_panels.undo_view   = my_ui->undo_view_dock->isVisible();
     // make clone of active world
-    my_clone = application().world()->clone();
+    // save world to file
+
+    FILE *temporary = tmpfile();
+
+    save_to_file(temporary, *application().world());
+    my_clone.reset(new World(application().core()));
+    fseek(temporary, 0, SEEK_SET);
+    load_from_file(temporary, application().core(), *my_clone);
+
+    fclose(temporary);
+
     my_clone->activate();
     my_game_view->set_world(my_clone);
     my_game_view->set_camera_free_look(false);

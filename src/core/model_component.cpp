@@ -23,11 +23,6 @@ void ModelComponent::deactivate()
   my_model.reset();
 }
 
-uptr<Component> ModelComponent::clone() const
-{
-  return uptr<Component>(new ModelComponent());
-}
-
 ModelComponent::ModelComponent()
   : NullComponent(ComponentType::MODEL)
 {

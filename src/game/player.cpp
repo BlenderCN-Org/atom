@@ -145,11 +145,6 @@ class PlayerScript : public ScriptComponent {
     return transform_vec(Mat4f::rotation_y(my_yaw), Vec3f::x_axis());
   }
 
-  uptr<Component> clone() const override
-  {
-    return uptr<Component>(new PlayerScript());
-  }
-
   bool collision_at(const Vec2f &pos, Vec3f &point)
   {
     Ray ray(Vec3f(pos.x, pos.y, 100), -Vec3f::z_axis());

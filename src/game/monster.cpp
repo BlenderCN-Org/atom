@@ -26,9 +26,4 @@ void MonsterScript::on_update()
   my_skeleton->recalculate_skeleton();
 }
 
-uptr<Component> MonsterScript::clone() const
-{
-  return uptr<Component>(new MonsterScript());
-}
-
 }

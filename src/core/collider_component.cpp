@@ -49,11 +49,6 @@ void PlaneColliderComponent::activate()
     new btStaticPlaneShape(to_bt_vector3(my_normal), my_w)));
 }
 
-uptr<Component> PlaneColliderComponent::clone() const
-{
-  return uptr<Component>(new PlaneColliderComponent());
-}
-
 PlaneColliderComponent::PlaneColliderComponent()
 {
   META_INIT();
@@ -73,11 +68,6 @@ void PlaneColliderComponent::set_plane(const Vec3f &normal, f32 w)
 META_CLASS(BoxColliderComponent,
   FIELD(my_size, "size")
 )
-
-uptr<Component> BoxColliderComponent::clone() const
-{
-  return uptr<Component>(new BoxColliderComponent());
-}
 
 BoxColliderComponent::BoxColliderComponent()
   : my_size(1, 1, 1)

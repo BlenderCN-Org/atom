@@ -18,14 +18,12 @@ typedef sptr<World> WorldPtr;
  *
  * Properties:
  *  - no inheritance, don't derive Entity
- *  - clone method (that clones all entity properties)
  *
  * Important methods:
  *  - init
  *  - activate
  *  - deactivate
  *  - terminate
- *  - clone
  *
  * Lifecycle:
  *  - init
@@ -58,8 +56,6 @@ public:
   Entity(World &world, Core &core);
 
   ~Entity();
-
-  uptr<Entity> clone(World &world) const;
 
   /**
    * Entity was added to the world.

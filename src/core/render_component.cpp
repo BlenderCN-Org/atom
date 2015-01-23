@@ -22,11 +22,6 @@ void RenderComponent::deactivate()
   processors().video.unregister_component(this);
 }
 
-uptr<Component> RenderComponent::clone() const
-{
-  return uptr<Component>(new RenderComponent());
-}
-
 RenderComponent::RenderComponent()
   : NullComponent(ComponentType::RENDER)
   , my_material(this, "")

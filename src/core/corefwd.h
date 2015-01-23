@@ -33,9 +33,6 @@ struct PixelRGBA;
 struct PixelR32I;
 struct PixelBGRA;
 
-typedef sptr<Framebuffer> FramebufferPtr;
-typedef sptr<Renderbuffer> RenderbufferPtr;
-
 // audio
 class AudioService;
 class AudioBuffer;

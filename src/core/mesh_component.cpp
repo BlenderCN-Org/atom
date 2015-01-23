@@ -21,11 +21,6 @@ void MeshComponent::deactivate()
   my_mesh.reset();
 }
 
-uptr<Component> MeshComponent::clone() const
-{
-  return uptr<MeshComponent>(new MeshComponent());
-}
-
 MeshComponent::MeshComponent()
   : NullComponent(ComponentType::MESH)
   , my_mode(MeshComponentMode::AUTO)

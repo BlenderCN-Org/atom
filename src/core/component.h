@@ -67,15 +67,11 @@ class Component : NonCopyable {
 
   virtual void terminate() = 0;
 
-  virtual uptr<Component> clone() const = 0;
-
 public:
   // doesn't need to be private because it is abstract class
   explicit Component(ComponentType type);
 
   virtual ~Component();
-
-  uptr<Component> duplicate() const;
 
   void attach(Entity &entity);
   void detach();

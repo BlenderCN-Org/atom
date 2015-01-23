@@ -86,17 +86,13 @@ public:
   void deactivate();
 
   /// vykonaj jeden simulacny krok (1 krok = 1s / FPS)
-  void step();
+  void tick();
 
 //  MeshTree& mesh_tree();
-
-  const EntityVector& objects() const;
 
   Slice<sptr<Entity>> all_entities() const;
 
   void clear();
-
-  sptr<World> clone() const;
 
   const WorldProcessorsRef& processors() const;
 

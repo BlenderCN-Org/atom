@@ -37,7 +37,6 @@ class PlaneColliderComponent : public ColliderComponent {
 
   void activate();
 
-  uptr<Component> clone() const override;
 public:
   PlaneColliderComponent();
 
@@ -52,8 +51,6 @@ public:
  */
 class BoxColliderComponent : public ColliderComponent {
   Vec3f my_size;
-
-  uptr<Component> clone() const override;
 
 public:
   BoxColliderComponent();

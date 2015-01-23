@@ -21,11 +21,6 @@ void GeometryComponent::terminate()
   processors().geometry.unregister_component(this);
 }
 
-uptr<Component> GeometryComponent::clone() const
-{
-  return uptr<Component>(new GeometryComponent());
-}
-
 GeometryComponent::GeometryComponent()
   : NullComponent(ComponentType::GEOMETRY)
   , my_is_dynamic(false)

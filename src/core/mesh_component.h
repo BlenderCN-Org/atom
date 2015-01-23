@@ -17,8 +17,6 @@ class MeshComponent : public NullComponent {
   Slot<ModelComponent> my_model;
   MeshResourcePtr      my_mesh;
 
-  uptr<Component> clone() const override;
-
   void activate() override;
 
   void deactivate() override;
@@ -30,9 +28,9 @@ public:
   MeshResourcePtr mesh() const;
 
   void set_mesh(MeshResourcePtr mesh);
-  
+
   void set_mode(MeshComponentMode mode);
-  
+
   META_SUB_CLASS(NullComponent);
 };
 

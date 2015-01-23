@@ -13,8 +13,6 @@ class MaterialComponent : public NullComponent {
 
   void deactivate() override;
 
-  uptr<Component> clone() const override;
-
 public:
   MaterialComponent();
 

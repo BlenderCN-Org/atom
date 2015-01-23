@@ -63,14 +63,6 @@ void RigidBodyComponent::deactivate()
   my_motion_state.reset();
 }
 
-uptr<Component> RigidBodyComponent::clone() const
-{
-  uptr<RigidBodyComponent> duplicate(new RigidBodyComponent());
-  duplicate->set_body_type(my_body_type);
-  duplicate->set_mass(my_mass);
-  return std::move(duplicate);
-}
-
 RigidBodyComponent::RigidBodyComponent()
   : NullComponent(ComponentType::RIGID_BODY)
   , my_mass(1.0f)

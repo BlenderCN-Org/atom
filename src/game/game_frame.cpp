@@ -184,7 +184,7 @@ void GameFrame::update()
 {
   process_sdl_events(core().input_service());
   core().update();
-  my_world->step();
+  my_world->tick();
 }
 
 void GameFrame::draw()

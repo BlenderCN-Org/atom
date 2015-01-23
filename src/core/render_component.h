@@ -10,8 +10,6 @@ class RenderComponent : public NullComponent {
   Slot<MeshComponent>     my_mesh;
   bool                    my_is_enabled;
 
-  uptr<Component> clone() const override;
-
   void activate() override;
 
   void deactivate() override;
