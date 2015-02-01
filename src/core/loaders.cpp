@@ -6,6 +6,7 @@
 #include "sound.h"
 #include "music.h"
 #include "resource_service.h"
+#include <rapidjson/filestream.h>
 
 namespace atom {
 
@@ -53,7 +54,7 @@ void ImageLoader::reload_resource(ResourceService &rp, Resource &resource)
   if (tokens.size() > 1) {
     String filename = String(IMAGE_RESOURCE_DIR) + "/" + tokens[1] + ".png";
     auto image = Image::create_from_file(filename.c_str());
-    dynamic_cast<ImageResource &>(resource).set_data(std::move(image));
+    static_cast<ImageResource &>(resource).set_data(std::move(image));
   }
 }
 
@@ -100,7 +101,7 @@ void TextureLoader::reload_resource(ResourceService &rs, Resource &resource)
   if (tokens.size() > 1) {
     uptr<Texture> texture(new Texture(rs.video_service()));
     texture->init_from_image(rs.get_image(tokens[1])->image());
-    dynamic_cast<TextureResource &>(resource).set_data(std::move(texture));
+    static_cast<TextureResource &>(resource).set_data(std::move(texture));
   }
 //  if (!my_texture_name.empty()) {
 //    auto texture = Texture::create_from_image(rp.video_service(), *rp.get_image(my_texture_name));
@@ -152,7 +153,7 @@ void TechniqueLoader::reload_resource(ResourceService &rs, Resource &resource)
   auto program = Technique::create(name);
   // replace old technique only when the new one has been succesfully loaded
   if (program != nullptr) {
-    dynamic_cast<TechniqueResource &>(resource).set_data(std::move(program));
+    static_cast<TechniqueResource &>(resource).set_data(std::move(program));
   } else {
     log_warning("Can't reload technique \"%s\"", name.c_str());
   }
@@ -197,16 +198,17 @@ uptr<Material> create_material(
 {
   String filename = MaterialLoader::get_material_filename(name);
 
-  std::ifstream input(filename);
+  FILE *file = fopen(filename.c_str(), "r");
 
-  if (!input.is_open()) {
+  if (file == nullptr) {
     log_error("Can't load material file \"%s\"", filename.c_str());
     return nullptr;
   }
 
-  utils::JsonInputStream stream(input);
+  rapidjson::FileStream input(file);
   rapidjson::Document doc;
-  doc.ParseStream<0>(stream);
+  doc.ParseStream<0>(input);
+  fclose(file);
 
   if (doc.HasParseError()) {
     log_error("Can't parse material file \"%s\", error \"%s\", offset %i", filename.c_str(),
@@ -272,7 +274,7 @@ void MaterialLoader::reload_resource(ResourceService &rs, Resource &resource)
     return;
   }
 
-  dynamic_cast<MaterialResource &>(resource).set_data(std::move(material));
+  static_cast<MaterialResource &>(resource).set_data(std::move(material));
 }
 
 String MaterialLoader::get_material_filename(const String &name)
@@ -331,7 +333,7 @@ void MeshLoader::reload_resource(ResourceService &rs, Resource &resource)
 
     uptr<Mesh> mesh(new Mesh());
     load_mesh_from_model(rs, model_resource->model(), *mesh);
-    dynamic_cast<MeshResource &>(resource).set_data(std::move(mesh));
+    static_cast<MeshResource &>(resource).set_data(std::move(mesh));
   }
 }
 
@@ -401,7 +403,7 @@ void BitmapFontLoader::reload_resource(ResourceService &rs, Resource &resource)
 
   if (tokens.size() > 1) {
     auto bitmap_font = BitmapFont::create(rs, tokens[1]);
-    dynamic_cast<BitmapFontResource &>(resource).set_data(std::move(bitmap_font));
+    static_cast<BitmapFontResource &>(resource).set_data(std::move(bitmap_font));
   }
 }
 

@@ -1,6 +1,7 @@
 #include "model_loader.h"
 #include "utils.h"
 #include "json_utils.h"
+#include <rapidjson/filestream.h>
 
 namespace atom {
 
@@ -207,15 +208,16 @@ bool load_model_from_json(const rapidjson::Value &mesh_node, Model &model)
 
 bool load_model(const String &filename, Model &model)
 {
-  std::ifstream input(filename);
+  FILE *file = fopen(filename.c_str(), "r");
 
-  if (!input.is_open()) {
+  if (file == nullptr) {
     return false;
   }
 
-  utils::JsonInputStream stream(input);
+  rapidjson::FileStream input(file);
   rapidjson::Document doc;
-  doc.ParseStream<0>(stream);
+  doc.ParseStream<0>(input);
+  fclose(file);
 
   if (!doc.IsObject()) {
     return false;
@@ -249,7 +251,7 @@ void ModelLoader::reload_resource(ResourceService &rs, Resource &resource)
     auto model = load_model(get_model_filename(tokens[1]));
 
     if (model != nullptr) {
-      dynamic_cast<ModelResource &>(resource).set_data(std::move(model));
+      static_cast<ModelResource &>(resource).set_data(std::move(model));
     }
   }
 }

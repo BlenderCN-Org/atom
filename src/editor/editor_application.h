@@ -49,8 +49,6 @@ public:
 
   bool is_loaded() const;
 
-  bool notify(QObject *obj, QEvent *event) override;
-
 signals:
   /**
    * Emitted after gamelib (entity creators) has been loaded

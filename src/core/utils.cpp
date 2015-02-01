@@ -292,8 +292,9 @@ void error(const char *format, ...)
   va_start(ap, format);
   vsnprintf(buffer, BUFFER_SIZE, format, ap);
   log_error(buffer);
+  log_error("Aborting");
   va_end(ap);
-  throw Exception(buffer);
+  abort();
 }
 
 }

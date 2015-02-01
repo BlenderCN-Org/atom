@@ -76,16 +76,6 @@ bool EditorApplication::is_loaded() const
   return my_is_loaded;
 }
 
-bool EditorApplication::notify(QObject *obj, QEvent *event)
-{
-  try {
-    return QApplication::notify(obj, event);
-  } catch (const Exception &e) {
-    QMessageBox::critical(nullptr, "Editor Application Error", e.what());
-    return true;
-  }
-}
-
 EditorApplication& application()
 {
   return *static_cast<EditorApplication *>(qApp);

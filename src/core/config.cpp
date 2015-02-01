@@ -3,6 +3,7 @@
 #include <cstring>
 #include <rapidjson/reader.h>
 #include <rapidjson/document.h>
+#include <rapidjson/filestream.h>
 #include "constants.h"
 #include "log.h"
 #include "meta.h"
@@ -63,19 +64,21 @@ Config::Config()
   , screen_bpp(32)
 {
   META_INIT();
-  std::ifstream input(CONFIG_FILENAME);
 
-  if (!input.is_open()) {
+  FILE *file = fopen(CONFIG_FILENAME, "r");
+
+  if (file == nullptr) {
     log_warning("Can't open config");
   }
 
-  JsonInputStream stream(input);
+  rapidjson::FileStream input(file);
   rapidjson::Document doc;
-  doc.ParseStream<0>(stream);
+  doc.ParseStream<0>(input);
 
   if (doc.HasParseError()) {
     log_warning("Parse error %s", doc.GetParseError());
   }
+  fclose(file);
 
   load_properties_from_json(doc, meta_class(), this, true);
 

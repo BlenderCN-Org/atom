@@ -117,6 +117,7 @@ def get_linux_params(type, ctx):
     :param ctx: configuration context
     """
     ctx.env.append_unique('CXXFLAGS', ['-std=c++11', '-Wall', '-Wno-invalid-offsetof'])
+    ctx.env.append_unique('CXXFLAGS', ['-fno-rtti', '-fno-exceptions'])
     ctx.env.append_value('CXXFLAGS', ['-I', '/usr/local/include/bullet'])
 
     if ctx.env.RELEASE:

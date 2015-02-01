@@ -1,12 +1,13 @@
 #include "game_frame.h"
 #include <core/world.h>
-#include <fstream>
 #include <core/json_utils.h>
 #include <core/input_service.h>
 #include <core/gbuffer.h>
 #include <core/render_processor.h>
 #include <core/resource_service.h>
 #include <core/debug_processor.h>
+#include <fstream>
+#include <rapidjson/filestream.h>
 
 namespace atom {
 
@@ -29,18 +30,17 @@ sptr<Entity> create_entity(const std::vector<EntityDefinition> &creators, const 
 
 bool load_level_from_file(const String &filename, Core &core, World &world)
 {
-  world.clear();
+  FILE *file = fopen(filename.c_str(), "r");
 
-  std::ifstream input(filename);
-
-  if (!input.is_open()) {
+  if (file == nullptr) {
     log_warning("Can't open file \"%s\"", filename.c_str());
     return false;
   }
 
-  utils::JsonInputStream stream(input);
+  rapidjson::FileStream input(file);
   rapidjson::Document doc;
-  doc.ParseStream<0>(stream);
+  doc.ParseStream<0>(input);
+  fclose(file);
 
   if (doc.HasParseError()) {
     log_error("%s Offset %i", doc.GetParseError(), doc.GetErrorOffset());

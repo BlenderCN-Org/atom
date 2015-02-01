@@ -72,6 +72,4 @@ private:
   Mat4f get_rotationm() const;
 };
 
-typedef sptr<Camera> CameraPtr;
-
 }

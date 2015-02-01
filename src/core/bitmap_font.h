@@ -1,6 +1,5 @@
 #pragma once
 
-#include <fstream>
 #include "texture.h"
 
 namespace atom {

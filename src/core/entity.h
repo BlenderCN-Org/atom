@@ -7,8 +7,6 @@
 
 namespace atom {
 
-typedef sptr<World> WorldPtr;
-
 /**
  * Game entity - entity is each object in world. Entity is composed of components.
  *

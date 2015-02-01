@@ -36,7 +36,6 @@ TYPE_OF(ComponentType, COMPONENT_TYPE)
  *  - (v)activate
  *  - (v)deactivate
  *  - (v)terminate
- *  - (v)clone
  *
  * Lifecycle:
  *  - init (Entity has been put into world)
@@ -46,7 +45,6 @@ TYPE_OF(ComponentType, COMPONENT_TYPE)
  *
  * Properties of component:
  *  - constructor with no parameters
- *  - clone method
  *  - controlled activation/deactivation through activate/deactivate method
  *  - component has distinct types
  *  - access to parent entity (entity is valid between calls activate/deactivate)

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <fstream>
 #include "resource_service.h"
 
 namespace atom {

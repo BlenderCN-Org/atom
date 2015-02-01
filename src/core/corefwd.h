@@ -90,7 +90,6 @@ typedef sptr<MusicResource> MusicResourcePtr;
 class World;
 class Entity;
 struct UpdateContext;
-typedef sptr<World> WorldPtr;
 
 struct WorldProcessorsRef;
 

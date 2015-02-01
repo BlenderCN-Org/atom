@@ -61,7 +61,7 @@ uptr<FieldValue> FieldEditInt::value() const
 void FieldEditInt::set_value(const FieldValue &value)
 {
   if (value.type() == Type::I32) {
-    const FieldValueInt &int_value = dynamic_cast<const FieldValueInt &>(value);
+    const FieldValueInt &int_value = static_cast<const FieldValueInt &>(value);
     my_spin_box->setValue(int_value.value());
   } else {
     log_error("Invalid value type");
@@ -94,7 +94,7 @@ uptr<FieldValue> FieldEditFloat::value() const
 void FieldEditFloat::set_value(const FieldValue &value)
 {
   if (value.type() == Type::F32) {
-    const FieldValueFloat &float_value = dynamic_cast<const FieldValueFloat &>(value);
+    const FieldValueFloat &float_value = static_cast<const FieldValueFloat &>(value);
     my_spin_box->setValue(float_value.value());
   } else {
     log_error("Invalid value type");
@@ -126,7 +126,7 @@ uptr<FieldValue> FieldEditString::value() const
 void FieldEditString::set_value(const FieldValue &value)
 {
   if (value.type() == Type::STRING) {
-    const FieldValueString &string_value = dynamic_cast<const FieldValueString &>(value);
+    const FieldValueString &string_value = static_cast<const FieldValueString &>(value);
     my_line_edit->setText(QString::fromStdString(string_value.value()));
   } else {
     log_error("Invalid value type");
@@ -157,7 +157,7 @@ uptr<FieldValue> FieldEditVec2f::value() const
 void FieldEditVec2f::set_value(const FieldValue &value)
 {
   if (value.type() == Type::VEC2F) {
-    const FieldValueVec2f &vec2f_value = dynamic_cast<const FieldValueVec2f &>(value);
+    const FieldValueVec2f &vec2f_value = static_cast<const FieldValueVec2f &>(value);
     my_edit->set_value(vec2f_value.value());
   } else {
     log_error("Invalid value type");

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <fstream>
 #include <rapidjson/document.h>
 #include "foundation.h"
 #include "stdvec.h"
@@ -54,41 +53,6 @@ bool read_vec2f(const rapidjson::Value &node, Vec2f &v);
 bool read_vec3f(const rapidjson::Value &node, Vec3f &v);
 
 bool read_vec4f(const rapidjson::Value &node, Vec4f &v);
-
-class JsonInputStream {
-public:
-  typedef char Ch;
-
-  explicit JsonInputStream(std::ifstream &input);
-
-  char Peek();
-  char Take();
-
-  std::size_t Tell();
-
-  void Put(char c);
-
-  char* PutBegin();
-  std::size_t PutEnd(char *);
-
-private:
-  char transform_eof(int ch);
-
-private:
-  std::ifstream *my_input;
-};
-
-class JsonOutputStream {
-public:
-  explicit JsonOutputStream(std::ofstream &output);
-
-  std::size_t Tell();
-
-  void Put(char c);
-
-private:
-  std::ofstream *my_output;
-};
 
 }
 }
