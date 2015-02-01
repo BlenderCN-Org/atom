@@ -8,8 +8,8 @@ Waf script used to build:
 
 Usage:
  waf configure build
- waf configure -t debug --test=1 build
- waf configure -t release --fonttool=1
+ waf configure --release build
+ waf configure --debug --test --fonttool=1
  CC=clang CXX=clang++ waf configure build
  ...
 
@@ -45,8 +45,9 @@ def options(ctx):
     """Define build options
     """
     ctx.load('compiler_c compiler_cxx qt4')
-    ctx.add_option('-t', '--type', action='store', default='debug', help='build type debug/release/profile')
-    ctx.add_option('--test', action='store', default='0', help='build and run tests 0/1')
+    ctx.add_option('--release', action='store_true', default=False, help='enable optimizations')
+    ctx.add_option('--test', action='store_true', default=False, help='build and run tests')
+    ctx.add_option('--profile', action='store_true', default=False, help='enable profiling information')
     ctx.add_option('--fonttool', action='store', default='0', help='build fonttool 0/1')
 
 
@@ -57,26 +58,16 @@ def configure(ctx):
     """
     ctx.load('compiler_c compiler_cxx qt4')
 
+    # process & save cmd options
+    ctx.env['TEST'] = ctx.options.test == True
+    ctx.env['PROFILE'] = ctx.options.profile == True
+    ctx.env['RELEASE'] = ctx.options.release == True
+    ctx.env['SYMBOLS'] = True
+
     # suppress 'deprecated register storage class' warning under clang
     if 'clang++' in ctx.env.CXX:
         ctx.env.append_unique('CCFLAGS', '-Wno-deprecated-register')
         ctx.env.append_unique('CXXFLAGS', '-Wno-deprecated-register')
-
-    type = BuildType.DEBUG
-
-    if ctx.options.type == 'release':
-        type = BuildType.RELEASE
-    elif ctx.options.type == 'profile':
-        type = BuildType.PROFILE
-    elif ctx.options.type == 'debug':
-        type = BuildType.DEBUG
-
-
-    if str_to_bool(ctx.options.test):
-        ctx.env.append_unique('ATOM_BUILD_TESTS', ['1'])
-
-    if ctx.options.fonttool != '0':
-        ctx.env.append_unique('ATOM_BUILD_FONTTOOL', ['1'])
 
     if is_linux():
         get_linux_params(type, ctx)
@@ -105,10 +96,10 @@ def build(ctx):
     build_starter(ctx)
     build_editor(ctx)
 
-    if 'ATOM_BUILD_FONTTOOL' in ctx.env:
-        build_fonttool(ctx)
+    #if 'ATOM_BUILD_FONTTOOL' in ctx.env:
+    #    build_fonttool(ctx)
 
-    if 'ATOM_BUILD_TESTS' in ctx.env:
+    if ctx.env.TEST:
         build_tests(ctx)
 
 
@@ -128,15 +119,17 @@ def get_linux_params(type, ctx):
     ctx.env.append_unique('CXXFLAGS', ['-std=c++11', '-Wall', '-Wno-invalid-offsetof'])
     ctx.env.append_value('CXXFLAGS', ['-I', '/usr/local/include/bullet'])
 
-    if type == BuildType.RELEASE:
-        ctx.env.append_unique('CXXFLAGS', ['-O2', '-g'])
+    if ctx.env.RELEASE:
+        ctx.env.append_unique('CXXFLAGS', ['-O2'])
         ctx.env.append_unique('DEFINES', ['NDEBUG'])
-    elif type == BuildType.PROFILE:
-        ctx.env.append_unique('CXXFLAGS', ['NDEBUG', '-O2', '-g', '-pg'])
-    elif type == BuildType.DEBUG:
-        ctx.env.append_unique('CXXFLAGS', ['-O0', '-g'])
     else:
-        ctx.fatal('Unsupported build type: ' + type)
+        ctx.env.append_unique('CXXFLAGS', ['-O0'])
+
+    if ctx.env.SYMBOLS:
+        ctx.env.append_unique('CXXFLAGS', ['-g'])
+
+    if ctx.env.PROFILE:
+        ctx.env.append_unique('CXXFLAGS', ['-pg'])
 
 
 def get_windows_params(type, ctx):
@@ -330,15 +323,17 @@ def print_summary(ctx):
     :type ctx: waflib.Configure.ConfigurationContext
     :param ctx: configuration context
     """
-    Logs.pprint('BLUE', 'Platform : ' + platform)
-    Logs.pprint('BLUE', 'Compiler : ' + str(ctx.env.CXX))
-    Logs.pprint('BLUE', 'Monolith : ' + str(ctx.env.MONOLITH))
-    Logs.pprint('BLUE', 'CXXFLAGS : ' + str(ctx.env.CXXFLAGS))
-    Logs.pprint('BLUE', 'LINKFLAGS: ' + str(ctx.env.LINKFLAGS))
+    Logs.pprint('BLUE', 'Platform  : ' + platform)
+    Logs.pprint('BLUE', 'Compiler  : ' + str(ctx.env.CXX))
+    Logs.pprint('BLUE', 'Optimize  : ' + str(ctx.env.RELEASE))
+    Logs.pprint('BLUE', 'Profiling : ' + str(ctx.env.PROFILE))
+    Logs.pprint('BLUE', 'Symbols   : ' + str(ctx.env.SYMBOLS))
+    Logs.pprint('BLUE', 'CXXFLAGS  : ' + str(ctx.env.CXXFLAGS))
+    Logs.pprint('BLUE', 'LINKFLAGS : ' + str(ctx.env.LINKFLAGS))
 
     modules = ['core', 'game']
 
-    if 'ATOM_BUILD_TESTS' in ctx.env:
+    if ctx.env.TEST:
         modules.append('test')
 
     Logs.pprint('BLUE', 'Modules  : ' + str(modules))
