@@ -119,6 +119,7 @@ def get_linux_params(type, ctx):
     ctx.env.append_unique('CXXFLAGS', ['-std=c++11', '-Wall', '-Wno-invalid-offsetof'])
     ctx.env.append_unique('CXXFLAGS', ['-fno-rtti', '-fno-exceptions'])
     ctx.env.append_value('CXXFLAGS', ['-I', '/usr/local/include/bullet'])
+    ctx.env.append_value('CXXFLAGS', ['-I', 'src'])
 
     if ctx.env.RELEASE:
         ctx.env.append_unique('CXXFLAGS', ['-O2'])
@@ -241,6 +242,7 @@ def build_core_lib(ctx):
       name='core',
       target = 'core',
       source=ctx.path.ant_glob('src/core/unity/*.cpp'),
+      includes=['src'],
       export_includes=['src'],
       use=['SDL', 'bullet', 'png', 'ogg', 'vorbisfile', 'flext']
     )
