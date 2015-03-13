@@ -12,7 +12,13 @@ META_CLASS(MeshComponent,
 void MeshComponent::activate()
 {
   if (my_mode == MeshComponentMode::AUTO) {
-    my_mesh = core().resource_service().get_mesh(my_model->get_model_name());
+    if (my_model->get_model() == nullptr) {
+      log_error("%s: no model", ATOM_FUNC_NAME);
+      return;
+    }
+
+    StringArray tokens = split_resource_name(my_model->get_model()->name());
+    my_mesh = core().resource_service().get_mesh(tokens[1]);
   }
 }
 

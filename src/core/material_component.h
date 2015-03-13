@@ -6,7 +6,6 @@
 namespace atom {
 
 class MaterialComponent : public NullComponent {
-  String my_material_name;
   MaterialResourcePtr my_material;
 
   void activate() override;
@@ -16,7 +15,7 @@ class MaterialComponent : public NullComponent {
 public:
   MaterialComponent();
 
-  void set_material_name(const String &name);
+  void set_material(const MaterialResourcePtr material);
 
   MaterialResourcePtr material() const;
 

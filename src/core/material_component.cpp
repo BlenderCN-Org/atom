@@ -4,12 +4,10 @@
 namespace atom {
 
 META_CLASS(MaterialComponent,
-  FIELD(my_material_name, "material_name")
 )
 
 void MaterialComponent::activate()
 {
-  my_material = entity().core().resource_service().get_material(my_material_name);
 }
 
 void MaterialComponent::deactivate()
@@ -23,9 +21,9 @@ MaterialComponent::MaterialComponent()
   META_INIT();
 }
 
-void MaterialComponent::set_material_name(const String &name)
+void MaterialComponent::set_material(const MaterialResourcePtr material)
 {
-  my_material_name = name;
+  my_material = material;
 }
 
 MaterialResourcePtr MaterialComponent::material() const

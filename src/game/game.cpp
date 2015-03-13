@@ -162,9 +162,9 @@ uptr<Entity> create_test_object(World &world, Core &core)
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
   uptr<ModelComponent> model(new ModelComponent());
-  model->set_model_name("animal");
+  model->set_model(core.resource_service().get_model("animal"));
   uptr<MaterialComponent> material(new MaterialComponent());
-  material->set_material_name("animal");
+  material->set_material(core.resource_service().get_material("animal"));
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<RenderComponent> render(new RenderComponent());
@@ -183,9 +183,9 @@ uptr<Entity> create_monster(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   uptr<ModelComponent> model(new ModelComponent());
-  model->set_model_name("monster");
+  model->set_model(core.resource_service().get_model("monster"));
   uptr<MaterialComponent> material(new MaterialComponent());
-  material->set_material_name("flat");
+  material->set_material(core.resource_service().get_material("flat"));
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<GeometryComponent> geometry(new GeometryComponent());
@@ -208,9 +208,9 @@ uptr<Entity> create_track(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   uptr<ModelComponent> model(new ModelComponent());
-  model->set_model_name("track");
+  model->set_model(core.resource_service().get_model("track"));
   uptr<MaterialComponent> material(new MaterialComponent());
-  material->set_material_name("road");
+  material->set_material(core.resource_service().get_material("road"));
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
   uptr<GeometryComponent> geometry(new GeometryComponent());
@@ -228,9 +228,9 @@ uptr<Entity> create_manual_monster(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   uptr<ModelComponent> model(new ModelComponent());
-  model->set_model_name("monster");
+  model->set_model(core.resource_service().get_model("monster"));
   uptr<MaterialComponent> material(new MaterialComponent());
-  material->set_material_name("manual");
+  material->set_material(core.resource_service().get_material("manual"));
   uptr<MeshComponent> mesh(new MeshComponent());
   mesh->set_mode(MeshComponentMode::MANUAL);
   uptr<SkeletonComponent> skeleton(new SkeletonComponent());
@@ -278,9 +278,9 @@ uptr<Entity> create_suzanne(World &world, Core &core)
   uptr<Entity> entity(new Entity(world, core));
   // suzanne
   uptr<ModelComponent> model(new ModelComponent());
-  model->set_model_name("suzzane");
+  model->set_model(core.resource_service().get_model("suzzane"));
   uptr<MaterialComponent> material(new MaterialComponent());
-  material->set_material_name("flat");
+  material->set_material(core.resource_service().get_material("flat"));
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
   entity->add_component(std::move(model));
@@ -294,9 +294,9 @@ uptr<Entity> create_flat_terrain(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   uptr<ModelComponent> model(new ModelComponent());
-  model->set_model_name("quad_terrain");
+  model->set_model(core.resource_service().get_model("quad_terrain"));
   uptr<MaterialComponent> material(new MaterialComponent());
-  material->set_material_name("terrain");
+  material->set_material(core.resource_service().get_material("terrain"));
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
   uptr<GeometryComponent> geometry(new GeometryComponent());
@@ -313,9 +313,9 @@ uptr<Entity> create_bumpy_terrain(World &world, Core &core)
 {
   uptr<Entity> entity(new Entity(world, core));
   uptr<ModelComponent> model(new ModelComponent());
-  model->set_model_name("bumpy_terrain");
+  model->set_model(core.resource_service().get_model("bumpy_terrain"));
   uptr<MaterialComponent> material(new MaterialComponent());
-  material->set_material_name("terrain");
+  material->set_material(core.resource_service().get_material("terrain"));
   uptr<MeshComponent> mesh(new MeshComponent());
   uptr<RenderComponent> render(new RenderComponent());
   uptr<GeometryComponent> geometry(new GeometryComponent());

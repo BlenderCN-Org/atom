@@ -5,7 +5,6 @@
 namespace atom {
 
 class ModelComponent : public NullComponent {
-  String           my_model_name;
   ModelResourcePtr my_model;
 
   void activate() override;
@@ -16,11 +15,9 @@ public:
   ModelComponent();
   ~ModelComponent();
 
-  void set_model_name(const String &model_name);
+  void set_model(const ModelResourcePtr& model);
 
   ModelResourcePtr get_model() const;
-
-  const String& get_model_name() const;
 
   META_SUB_CLASS(NullComponent);
 };
